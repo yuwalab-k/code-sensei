@@ -1,0 +1,18 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app:cached
+      - /app/node_modules
+
+  backend:
+    build: ./backend
+    ports:
+      - "8081:8081"
+
+  runner:
+    build: ./runner
+    ports:
+      - "8002:8002"

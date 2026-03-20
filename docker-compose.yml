@@ -6,13 +6,30 @@ services:
     volumes:
       - ./frontend:/app:cached
       - /app/node_modules
+    depends_on:
+      - backend
 
   backend:
     build: ./backend
     ports:
       - "8081:8081"
+    volumes:
+      - ./db:/app/db
+    depends_on:
+      - runner
+      - ollama
 
   runner:
     build: ./runner
     ports:
       - "8002:8002"
+
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+volumes:
+  ollama_data:

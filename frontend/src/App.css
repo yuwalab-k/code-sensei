@@ -61,6 +61,73 @@ body {
   border-radius: 20px;
 }
 
+/* ===== Frameworks Bar ===== */
+.frameworks-bar {
+  background: #f8faff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 8px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  overflow-x: auto;
+}
+
+.frameworks-bar-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #a0aec0;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.frameworks-list {
+  display: flex;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.framework-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #4a5568;
+  white-space: nowrap;
+  cursor: default;
+  transition: border-color 0.15s;
+}
+
+.framework-chip:hover {
+  border-color: #4c6ef5;
+  color: #4c6ef5;
+}
+
+.framework-chip i {
+  font-size: 1rem;
+}
+
+.framework-chip .material-symbols-outlined {
+  font-size: 0.9rem;
+  color: #a0aec0;
+}
+
+.framework-modal-logo {
+  font-size: 1.4rem;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+.framework-modal-desc {
+  font-weight: 700;
+  color: #2d3748 !important;
+  margin-bottom: 8px !important;
+}
+
 /* ===== Features Bar ===== */
 .features-bar {
   background: #fff;
@@ -1037,6 +1104,22 @@ body {
   font-size: 0.78rem;
   color: #718096;
   line-height: 1.4;
+}
+
+.lang-card-usefor {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.lang-card-usefor-tag {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #718096;
+  background: #edf2f7;
+  padding: 1px 6px;
+  border-radius: 8px;
 }
 
 .lang-card-tag {

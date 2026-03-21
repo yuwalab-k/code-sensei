@@ -9,6 +9,7 @@ const config: LanguageConfig = {
     description: "ウェブサービスの裏側で動く言語",
     tag: "ウェブ開発に挑戦したい人に！",
     available: true,
+    usedFor: ["ウェブ開発", "CMS開発", "サーバーサイド"],
   },
   outputMode: "text",
   initialCode: "<?php\n// AI先生に話しかけてみよう！\n// 例：「掛け算クイズを作って」\n",
@@ -72,6 +73,26 @@ const config: LanguageConfig = {
         { text: "星のピラミッドを描く", context: "for ループのネスト（入れ子）の練習。繰り返しの中に繰り返しを書く方法が身につくよ！" },
         { text: "数字の逆順カウントダウンを表示する", context: "for と echo の組み合わせ。条件付き繰り返しの基本が学べるよ！" },
       ],
+    },
+  ],
+  frameworks: [
+    {
+      name: "Laravel",
+      logo: "devicon-laravel-plain colored",
+      description: "モダン PHP 開発の王道フレームワーク",
+      detail: "現在 PHP フレームワークで圧倒的人気 No.1。「美しいコードが書けるフレームワーク」として設計され、認証・データベース・メール・キューなどウェブアプリに必要な機能が全部揃っている。日本の受託開発会社での採用率も高く、「PHP で仕事を取りたい」なら Laravel を覚えるのが一番の近道。ただし機能が多い分、覚えることも多い。",
+    },
+    {
+      name: "Symfony",
+      logo: "devicon-symfony-original colored",
+      description: "大規模ウェブアプリ向けの堅牢なフレームワーク",
+      detail: "Laravel 自身も Symfony の部品（コンポーネント）を使って作られているほど、PHP エコシステムの土台になっている老舗フレームワーク。大企業の基幹システムや複雑なビジネスロジックを持つウェブサービスに向く。ヨーロッパ企業での採用が特に多い。「長く運用する大きなシステムを作る・企業の基幹システムに関わりたい」なら選ばれる。",
+    },
+    {
+      name: "CakePHP",
+      logo: "devicon-cakephp-plain colored",
+      description: "日本でも長年使われてきた老舗フレームワーク",
+      detail: "Rails にインスパイアされ 2005 年に登場した老舗フレームワーク。日本の PHP 開発現場で長年採用されてきた実績があり、既存システムのメンテナンス案件などで今でも登場する。「設定より規約」で素早く開発できる点は Laravel と似ているが、現在の新規開発では Laravel が選ばれることが多い。既存の CakePHP プロジェクトを引き継ぐ機会がある人は把握しておきたい。",
     },
   ],
   installGuide: {

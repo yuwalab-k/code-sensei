@@ -9,6 +9,7 @@ const config: LanguageConfig = {
     description: "速くて軽い！サーバー向けの言語",
     tag: "本格的なサーバー開発に挑戦！",
     available: true,
+    usedFor: ["マイクロサービス", "CLIツール", "クラウドインフラ"],
   },
   outputMode: "text",
   initialCode: "// AI先生に話しかけてみよう！\n// 例：「掛け算クイズを作って」\npackage main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n",
@@ -72,6 +73,23 @@ const config: LanguageConfig = {
         { text: "学生の成績管理システムを作る", context: "スライスと構造体の組み合わせ。データベースの基本的な考え方が身につくよ！" },
         { text: "動物の構造体を作って鳴き声を管理する", context: "構造体とメソッドの総合練習。Goでオブジェクト指向プログラミングの基礎が学べる！" },
       ],
+    },
+  ],
+  frameworks: [
+    {
+      name: "Gin",
+      description: "高速・軽量な Go のウェブ API フレームワーク",
+      detail: "Go のウェブフレームワークで GitHub スター数 No.1。シンプルな設計で迷いにくく、日本でも「Go でバックエンド開発をするなら最初に覚える」フレームワークとして定番。情報量・サンプルコード・求人数ともに Go フレームワークの中で最も多い。「Go を仕事に使いたい・はじめて Go でウェブサーバーを作る」なら Gin から始めるのが無難。",
+    },
+    {
+      name: "Echo",
+      description: "シンプルで高性能なウェブフレームワーク",
+      detail: "Gin と並ぶ Go の人気フレームワーク。ミドルウェア（処理の間に挟む共通機能）が充実していてカスタマイズがしやすく、API の設計が Gin よりも整理されやすいと言われる。「Gin は使ったことがある・もう少し構造化されたフレームワークを試したい」というときに比較対象として挙がる。どちらを選ぶかは好みの問題が大きい。",
+    },
+    {
+      name: "Fiber",
+      description: "Express.js にインスパイアされた Go フレームワーク",
+      detail: "Node.js の Express.js に似た API 設計を持つ Go フレームワーク。「JavaScript から Go に移行したい・Express の書き方に慣れている」エンジニアが移行しやすいと評判。内部で超高速な HTTP ライブラリ（fasthttp）を使っているため速度は Gin・Echo より高い。ただし標準の net/http と互換性がないため、ライブラリの選択肢が少し減る点は注意。",
     },
   ],
   installGuide: {

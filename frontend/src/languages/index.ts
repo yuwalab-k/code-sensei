@@ -7,7 +7,7 @@ import perlConfig from "./perl";
 import rustConfig from "./rust";
 import goConfig from "./go";
 
-export type { LanguageId, LanguageConfig, Feature, LanguageDef, OS } from "./types";
+export type { LanguageId, LanguageConfig, Feature, LanguageDef, Framework, OS } from "./types";
 
 // 言語レジストリ
 // 新しい言語を追加するには、このマップにエントリを追加するだけ

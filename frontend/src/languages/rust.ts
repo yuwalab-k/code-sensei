@@ -9,6 +9,7 @@ const config: LanguageConfig = {
     description: "安全で高速なシステム言語",
     tag: "本格的なプログラミングに挑戦！",
     available: true,
+    usedFor: ["システム開発", "WebAssembly", "組み込みシステム"],
   },
   outputMode: "text",
   initialCode: "// AI先生に話しかけてみよう！\n// 例：「掛け算クイズを作って」\nfn main() {\n    println!(\"Hello, World!\");\n}\n",
@@ -72,6 +73,28 @@ const config: LanguageConfig = {
         { text: "文字列を結合して文章を作る", context: "format! マクロで文字列を組み立てる。Rustの文字列操作の基本！" },
         { text: "ベクタから最大値・最小値を求める", context: "iter().max() と iter().min() を使う。Rustの関数型スタイルが体験できるよ！" },
       ],
+    },
+  ],
+  frameworks: [
+    {
+      name: "Actix-web",
+      description: "世界最速クラスのウェブサーバーフレームワーク",
+      detail: "ウェブフレームワークのベンチマーク（速さ比較）で常にトップを争う超高速フレームワーク。「とにかく最速の API を作りたい・大量のリクエストを少ないサーバーで捌きたい」という要件に向く。ただし学習コストが高く、Rust の所有権・ライフタイムへの理解が必要。「Rust に慣れてきて、本格的なウェブサーバーを書いてみたい」段階で挑戦する。",
+    },
+    {
+      name: "Axum",
+      description: "Tokio 公式の使いやすいウェブフレームワーク",
+      detail: "Tokio チームが開発した「書きやすさと速さを両立」したウェブフレームワーク。Actix-web より学習コストが低く、Rust のエコシステムに自然に馴染む設計。現在 Rust でウェブ開発をするなら Axum が最初の選択肢になってきている。「Rust でウェブ API を作りたい・Actix-web は難しそう」というときに選ぶ。",
+    },
+    {
+      name: "Tokio",
+      description: "Rust の非同期処理の標準ランタイム",
+      detail: "「同時に大量の処理を並行して動かす」ための非同期ランタイム。Axum・Actix-web など Rust のほぼすべてのウェブフレームワークが Tokio の上で動いている。フレームワークというより「土台となるインフラ」に近い存在。Rust でネットワークやサーバーを扱うコードを書くなら必ず登場するライブラリ。",
+    },
+    {
+      name: "Tauri",
+      description: "Rust でデスクトップアプリを作れるフレームワーク",
+      detail: "HTML・CSS・JavaScript でデザインし、Rust でバックエンドを書くデスクトップアプリフレームワーク。同じことができる Electron と比べてインストーラーサイズが 10 分の 1 以下でメモリ使用量も大幅に少ない。「ウェブの知識を活かしてデスクトップアプリを作りたいが、Electron は重すぎる」という場面で選ばれる。",
     },
   ],
   installGuide: {

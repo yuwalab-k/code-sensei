@@ -77,6 +77,22 @@ export default function App() {
       browser: localStorage.getItem("codeRubyBrowser") ?? LANGUAGE_CONFIGS.ruby.initialCode,
       file: localStorage.getItem("codeRubyFile") ?? LANGUAGE_CONFIGS.ruby.initialCode,
     },
+    php: {
+      browser: localStorage.getItem("codePhpBrowser") ?? LANGUAGE_CONFIGS.php.initialCode,
+      file: localStorage.getItem("codePhpFile") ?? LANGUAGE_CONFIGS.php.initialCode,
+    },
+    perl: {
+      browser: localStorage.getItem("codePerlBrowser") ?? LANGUAGE_CONFIGS.perl.initialCode,
+      file: localStorage.getItem("codePerlFile") ?? LANGUAGE_CONFIGS.perl.initialCode,
+    },
+    rust: {
+      browser: localStorage.getItem("codeRustBrowser") ?? LANGUAGE_CONFIGS.rust.initialCode,
+      file: localStorage.getItem("codeRustFile") ?? LANGUAGE_CONFIGS.rust.initialCode,
+    },
+    go: {
+      browser: localStorage.getItem("codeGoBrowser") ?? LANGUAGE_CONFIGS.go.initialCode,
+      file: localStorage.getItem("codeGoFile") ?? LANGUAGE_CONFIGS.go.initialCode,
+    },
   }));
 
   const [chats, setChats] = useState<Record<LanguageId, Record<ExecMode, ChatMessage[]>>>(() => ({
@@ -92,18 +108,42 @@ export default function App() {
       browser: (() => { try { const s = localStorage.getItem("chatRubyBrowser"); if (s) return JSON.parse(s); } catch {} return INITIAL_CHAT_BROWSER; })(),
       file: (() => { try { const s = localStorage.getItem("chatRubyFile"); if (s) return JSON.parse(s); } catch {} return INITIAL_CHAT_FILE; })(),
     },
+    php: {
+      browser: (() => { try { const s = localStorage.getItem("chatPhpBrowser"); if (s) return JSON.parse(s); } catch {} return INITIAL_CHAT_BROWSER; })(),
+      file: (() => { try { const s = localStorage.getItem("chatPhpFile"); if (s) return JSON.parse(s); } catch {} return INITIAL_CHAT_FILE; })(),
+    },
+    perl: {
+      browser: (() => { try { const s = localStorage.getItem("chatPerlBrowser"); if (s) return JSON.parse(s); } catch {} return INITIAL_CHAT_BROWSER; })(),
+      file: (() => { try { const s = localStorage.getItem("chatPerlFile"); if (s) return JSON.parse(s); } catch {} return INITIAL_CHAT_FILE; })(),
+    },
+    rust: {
+      browser: (() => { try { const s = localStorage.getItem("chatRustBrowser"); if (s) return JSON.parse(s); } catch {} return INITIAL_CHAT_BROWSER; })(),
+      file: (() => { try { const s = localStorage.getItem("chatRustFile"); if (s) return JSON.parse(s); } catch {} return INITIAL_CHAT_FILE; })(),
+    },
+    go: {
+      browser: (() => { try { const s = localStorage.getItem("chatGoBrowser"); if (s) return JSON.parse(s); } catch {} return INITIAL_CHAT_BROWSER; })(),
+      file: (() => { try { const s = localStorage.getItem("chatGoFile"); if (s) return JSON.parse(s); } catch {} return INITIAL_CHAT_FILE; })(),
+    },
   }));
 
   const [chatModes, setChatModes] = useState<Record<LanguageId, Record<ExecMode, ChatMode>>>({
     python: { browser: "free", file: "free" },
     javascript: { browser: "free", file: "free" },
     ruby: { browser: "free", file: "free" },
+    php: { browser: "free", file: "free" },
+    perl: { browser: "free", file: "free" },
+    rust: { browser: "free", file: "free" },
+    go: { browser: "free", file: "free" },
   });
 
   const [outputs, setOutputs] = useState<Record<LanguageId, Record<ExecMode, string>>>({
     python: { browser: "", file: "" },
     javascript: { browser: "", file: "" },
     ruby: { browser: "", file: "" },
+    php: { browser: "", file: "" },
+    perl: { browser: "", file: "" },
+    rust: { browser: "", file: "" },
+    go: { browser: "", file: "" },
   });
 
   // 穴抜け問題
@@ -144,6 +184,16 @@ export default function App() {
     localStorage.setItem("codePythonFile", codes.python.file);
     localStorage.setItem("codeJsBrowser", codes.javascript.browser);
     localStorage.setItem("codeJsFile", codes.javascript.file);
+    localStorage.setItem("codeRubyBrowser", codes.ruby.browser);
+    localStorage.setItem("codeRubyFile", codes.ruby.file);
+    localStorage.setItem("codePhpBrowser", codes.php.browser);
+    localStorage.setItem("codePhpFile", codes.php.file);
+    localStorage.setItem("codePerlBrowser", codes.perl.browser);
+    localStorage.setItem("codePerlFile", codes.perl.file);
+    localStorage.setItem("codeRustBrowser", codes.rust.browser);
+    localStorage.setItem("codeRustFile", codes.rust.file);
+    localStorage.setItem("codeGoBrowser", codes.go.browser);
+    localStorage.setItem("codeGoFile", codes.go.file);
   }, [codes]);
 
   // チャット保存 & スクロール
@@ -152,6 +202,16 @@ export default function App() {
     localStorage.setItem("chatPythonFile", JSON.stringify(chats.python.file));
     localStorage.setItem("chatJsBrowser", JSON.stringify(chats.javascript.browser));
     localStorage.setItem("chatJsFile", JSON.stringify(chats.javascript.file));
+    localStorage.setItem("chatRubyBrowser", JSON.stringify(chats.ruby.browser));
+    localStorage.setItem("chatRubyFile", JSON.stringify(chats.ruby.file));
+    localStorage.setItem("chatPhpBrowser", JSON.stringify(chats.php.browser));
+    localStorage.setItem("chatPhpFile", JSON.stringify(chats.php.file));
+    localStorage.setItem("chatPerlBrowser", JSON.stringify(chats.perl.browser));
+    localStorage.setItem("chatPerlFile", JSON.stringify(chats.perl.file));
+    localStorage.setItem("chatRustBrowser", JSON.stringify(chats.rust.browser));
+    localStorage.setItem("chatRustFile", JSON.stringify(chats.rust.file));
+    localStorage.setItem("chatGoBrowser", JSON.stringify(chats.go.browser));
+    localStorage.setItem("chatGoFile", JSON.stringify(chats.go.file));
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chats]);
 
@@ -277,7 +337,8 @@ export default function App() {
   // ===== ダウンロード =====
 
   const downloadFile = (src: string) => {
-    const ext = language === "javascript" ? "js" : language === "ruby" ? "rb" : "py";
+    const extMap: Record<string, string> = { javascript: "js", ruby: "rb", php: "php", perl: "pl", rust: "rs", go: "go" };
+    const ext = extMap[language] ?? "py";
     const blob = new Blob([src], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -803,11 +864,15 @@ export default function App() {
                   downloadFile(codes[language][execMode]);
                   addChat({
                     from: "ai",
-                    text: language === "javascript"
-                      ? "ダウンロードしたよ！実行するには：\n① ターミナルを開く\n② `node program.js` と入力してEnterキーを押す"
-                      : language === "ruby"
-                      ? "ダウンロードしたよ！実行するには：\n① ターミナルを開く\n② `ruby program.rb` と入力してEnterキーを押す"
-                      : "ダウンロードしたよ！実行するには：\n① ターミナル（Windowsはコマンドプロンプト）を開く\n② `python program.py`（Macは `python3 program.py`）と入力してEnterキーを押す",
+                    text: ({
+                      javascript: "ダウンロードしたよ！実行するには：\n① ターミナルを開く\n② `node program.js` と入力してEnterキーを押す",
+                      ruby:       "ダウンロードしたよ！実行するには：\n① ターミナルを開く\n② `ruby program.rb` と入力してEnterキーを押す",
+                      php:        "ダウンロードしたよ！実行するには：\n① ターミナルを開く\n② `php program.php` と入力してEnterキーを押す",
+                      perl:       "ダウンロードしたよ！実行するには：\n① ターミナルを開く\n② `perl program.pl` と入力してEnterキーを押す",
+                      rust:       "ダウンロードしたよ！実行するには：\n① ターミナルを開く\n② `rustc program.rs -o program` でコンパイルして `./program` で実行しよう",
+                      go:         "ダウンロードしたよ！実行するには：\n① ターミナルを開く\n② `go run program.go` と入力してEnterキーを押す",
+                      python:     "ダウンロードしたよ！実行するには：\n① ターミナル（Windowsはコマンドプロンプト）を開く\n② `python program.py`（Macは `python3 program.py`）と入力してEnterキーを押す",
+                    } as Record<string, string>)[language] ?? "ダウンロードしたよ！ターミナルで実行してみよう！",
                   });
                 }}>
                   <span className="material-symbols-outlined">download</span>

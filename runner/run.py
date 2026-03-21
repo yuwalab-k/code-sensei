@@ -11,11 +11,10 @@ LANGUAGE_CONFIG = {
         "suffix": ".py",
         "cmd": ["python"],
     },
-    # 将来の拡張例（コメントアウト）
-    # "javascript": {
-    #     "suffix": ".js",
-    #     "cmd": ["node"],
-    # },
+    "javascript": {
+        "suffix": ".js",
+        "cmd": ["node"],
+    },
     # "go": {
     #     "suffix": ".go",
     #     "cmd": ["go", "run"],

@@ -2,6 +2,10 @@ import type { LanguageId, LanguageConfig } from "./types";
 import pythonConfig from "./python";
 import javascriptConfig from "./javascript";
 import rubyConfig from "./ruby";
+import phpConfig from "./php";
+import perlConfig from "./perl";
+import rustConfig from "./rust";
+import goConfig from "./go";
 
 export type { LanguageId, LanguageConfig, Feature, LanguageDef, OS } from "./types";
 
@@ -11,6 +15,10 @@ export const LANGUAGE_CONFIGS: Record<LanguageId, LanguageConfig> = {
   python: pythonConfig,
   javascript: javascriptConfig,
   ruby: rubyConfig,
+  php: phpConfig,
+  perl: perlConfig,
+  rust: rustConfig,
+  go: goConfig,
 };
 
 // 有効な言語リスト（言語選択UIで使用）
@@ -19,9 +27,4 @@ export const LANGUAGES = Object.values(LANGUAGE_CONFIGS)
   .map((c) => c.def);
 
 // 準備中の言語リスト（言語選択UIで「準備中」として表示）
-export const COMING_SOON = [
-  { label: "PHP",        icon: "public",        description: "ウェブサービスの裏側で動く言語" },
-  { label: "Perl",       icon: "auto_fix_high", description: "テキスト処理が得意な言語" },
-  { label: "Rust",       icon: "memory",        description: "安全で高速なシステム言語" },
-  { label: "Go",         icon: "rocket_launch", description: "速くて軽い！サーバー向けの言語" },
-];
+export const COMING_SOON: { label: string; icon: string; description: string }[] = [];

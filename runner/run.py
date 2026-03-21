@@ -15,6 +15,10 @@ LANGUAGE_CONFIG = {
         "suffix": ".js",
         "cmd": ["node"],
     },
+    "ruby": {
+        "suffix": ".rb",
+        "cmd": ["ruby"],
+    },
     # "go": {
     #     "suffix": ".go",
     #     "cmd": ["go", "run"],

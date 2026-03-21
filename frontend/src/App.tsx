@@ -73,6 +73,10 @@ export default function App() {
       browser: localStorage.getItem("codeJsBrowser") ?? LANGUAGE_CONFIGS.javascript.initialCode,
       file: localStorage.getItem("codeJsFile") ?? LANGUAGE_CONFIGS.javascript.initialCode,
     },
+    ruby: {
+      browser: localStorage.getItem("codeRubyBrowser") ?? LANGUAGE_CONFIGS.ruby.initialCode,
+      file: localStorage.getItem("codeRubyFile") ?? LANGUAGE_CONFIGS.ruby.initialCode,
+    },
   }));
 
   const [chats, setChats] = useState<Record<LanguageId, Record<ExecMode, ChatMessage[]>>>(() => ({
@@ -84,16 +88,22 @@ export default function App() {
       browser: (() => { try { const s = localStorage.getItem("chatJsBrowser"); if (s) return JSON.parse(s); } catch {} return INITIAL_CHAT_BROWSER; })(),
       file: (() => { try { const s = localStorage.getItem("chatJsFile"); if (s) return JSON.parse(s); } catch {} return INITIAL_CHAT_FILE; })(),
     },
+    ruby: {
+      browser: (() => { try { const s = localStorage.getItem("chatRubyBrowser"); if (s) return JSON.parse(s); } catch {} return INITIAL_CHAT_BROWSER; })(),
+      file: (() => { try { const s = localStorage.getItem("chatRubyFile"); if (s) return JSON.parse(s); } catch {} return INITIAL_CHAT_FILE; })(),
+    },
   }));
 
   const [chatModes, setChatModes] = useState<Record<LanguageId, Record<ExecMode, ChatMode>>>({
     python: { browser: "free", file: "free" },
     javascript: { browser: "free", file: "free" },
+    ruby: { browser: "free", file: "free" },
   });
 
   const [outputs, setOutputs] = useState<Record<LanguageId, Record<ExecMode, string>>>({
     python: { browser: "", file: "" },
     javascript: { browser: "", file: "" },
+    ruby: { browser: "", file: "" },
   });
 
   // 穴抜け問題
@@ -267,7 +277,7 @@ export default function App() {
   // ===== ダウンロード =====
 
   const downloadFile = (src: string) => {
-    const ext = language === "javascript" ? "js" : "py";
+    const ext = language === "javascript" ? "js" : language === "ruby" ? "rb" : "py";
     const blob = new Blob([src], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -795,6 +805,8 @@ export default function App() {
                     from: "ai",
                     text: language === "javascript"
                       ? "ダウンロードしたよ！実行するには：\n① ターミナルを開く\n② `node program.js` と入力してEnterキーを押す"
+                      : language === "ruby"
+                      ? "ダウンロードしたよ！実行するには：\n① ターミナルを開く\n② `ruby program.rb` と入力してEnterキーを押す"
                       : "ダウンロードしたよ！実行するには：\n① ターミナル（Windowsはコマンドプロンプト）を開く\n② `python program.py`（Macは `python3 program.py`）と入力してEnterキーを押す",
                   });
                 }}>

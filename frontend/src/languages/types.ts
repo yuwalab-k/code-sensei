@@ -1,4 +1,4 @@
-export type LanguageId = "python" | "javascript";
+export type LanguageId = "python" | "javascript" | "ruby";
 export type OS = "windows" | "mac" | "linux";
 
 export interface FeatureExample {

@@ -61,30 +61,29 @@ input()を使わずに以下のパターンで作ること：
 
 	"javascript": {
 		ID:   "javascript",
-		Name: "JavaScript (p5.js)",
-		Tips: `【p5.jsの特徴とよくあるミス】
-- setup() は最初に1回だけ動く（準備の場所）
-- draw() はずっと繰り返し動く（アニメーションの場所）
-- 変数は let か const で作る（例: let x = 0）
-- 座標は左上が(0,0)で、右に行くとxが増え、下に行くとyが増える
-- よく使う関数: circle(x,y,大きさ), rect(x,y,幅,高さ), fill(色), background(色)
-- キー操作: keyIsDown(LEFT_ARROW), keyIsDown(RIGHT_ARROW)
+		Name: "JavaScript",
+		Tips: `【JavaScriptの特徴とよくあるミス】
+- 変数は let か const で作る（例: let x = 10）
+- 表示は console.log() を使う。括弧を忘れずに
+- 文字（文字列）は " " か ' ' か ` + "`" + ` ` + "`" + ` で囲む
+- { } でブロックを作る。{ は行末に書く
 - よくあるエラー:
-  - is not defined → 変数名や関数名のスペルミス
-  - { } の対応がずれている
-  - setup や draw のスペルミス`,
-		BrowserRules: `【p5.jsのコードルール（ブラウザ実行モード）】
-- p5.js のスケッチとして動作するコードを書く
-- setup() と draw() を必ず定義する
-- ブラウザ上のキャンバスで動作する
-- 外部ライブラリの読み込みはしない（p5.js のみ使用可）
+  - is not defined → 変数名のスペルミス
+  - SyntaxError → { } や () の対応ミス
+  - TypeError → 使えない操作をしようとした`,
+		BrowserRules: `【JavaScriptのコードルール（ブラウザ実行モード）】
+- console.log() で結果を表示する
+- Node.js で実行するコードを書く
+- prompt() / alert() など対話的な関数は使わない
+- 外部ライブラリは使わない（標準の Math, Array, String のみ）
 - 30行以内のシンプルなコードにする
 - コメントは日本語で書く
-- 変数名はわかりやすい英語にする`,
-		FileRules: `【p5.jsのコードルール（ファイル実行モード）】
-- p5.js のスケッチとして動作するコードを書く
-- setup() と draw() を必ず定義する
-- 外部ライブラリの読み込みはしない（p5.js のみ使用可）
+- 変数名はわかりやすい英語にする
+- 小学生（9〜12歳）でも理解できる内容にする`,
+		FileRules: `【JavaScriptのコードルール（ファイル実行モード）】
+- console.log() で結果を表示する
+- Node.js で実行するコードを書く
+- 外部ライブラリは使わない（標準機能のみ）
 - 50行以内のコードにする
 - コメントは日本語で書く
 - 変数名はわかりやすい英語にする`,

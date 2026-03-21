@@ -9,6 +9,7 @@ const config: LanguageConfig = {
     description: "計算やデータ処理が得意！AIでも使われる人気の言語",
     tag: "はじめての人におすすめ",
     available: true,
+    usedFor: ["ウェブ開発", "AI・機械学習", "データ分析", "自動化・スクリプト"],
   },
   outputMode: "text",
   initialCode: "# AI先生に話しかけてみよう！\n# 例：「掛け算の問題を出してくれるプログラムを作って」\n",
@@ -105,6 +106,50 @@ const config: LanguageConfig = {
         { text: "ファイルから文章を読み込んで表示する", context: "電子書籍リーダーやゲームのシナリオ表示の仕組みと同じ。読み込んだ内容を加工することもできる！" },
         { text: "名前リストをファイルに書き出す", context: "運動会の参加者リストや、ゲームのランキングボードを保存する仕組みと同じだよ！" },
       ],
+    },
+  ],
+  frameworks: [
+    {
+      name: "Django",
+      logo: "devicon-django-plain colored",
+      description: "フルスタックウェブ開発の定番フレームワーク",
+      detail: "「ログイン機能・管理画面・データベース・セキュリティ対策が全部最初から入ってる」フルスタックフレームワーク。一からウェブサービスを作るなら Django が一番早い。Instagram・Pinterest・Disqus も最初は Django で作られた。一方で「Djangoのやり方」に沿う必要があるため自由度は低め。「とにかく速く本格的なサービスを作りたい」ときに選ぶ。",
+    },
+    {
+      name: "Flask",
+      logo: "devicon-flask-original colored",
+      description: "シンプルで軽量なウェブ API 開発向けフレームワーク",
+      detail: "最小限の機能だけを持つ軽量フレームワーク。「ちょっとした API を作りたい」「機械学習モデルをウェブで公開したい」ときに向いている。Django より学習コストが低く、コードの自由度も高い。ただし認証やデータベースなどは自分で追加する必要があるため、大規模サービスには向かない。「シンプルに始めたい・AIモデルをAPIとして公開したい」ときに選ぶ。",
+    },
+    {
+      name: "FastAPI",
+      logo: "devicon-fastapi-plain colored",
+      description: "高速な API サーバー開発フレームワーク",
+      detail: "Flask の書きやすさを残しつつ、速度を Node.js や Go レベルまで引き上げたフレームワーク。コードを書くだけで API ドキュメントが自動生成されるため、フロントエンドエンジニアとの連携がしやすい。近年 AI サービスのバックエンドとして急速に普及中。「API の速度を重視したい・ドキュメントを自動生成したい」なら FastAPI が現在のベストチョイス。",
+    },
+    {
+      name: "NumPy",
+      logo: "devicon-numpy-original colored",
+      description: "科学技術計算・数値処理の標準ライブラリ",
+      detail: "行列やベクトルの計算を C 言語並みの速度で処理できるライブラリ。pandas・TensorFlow・PyTorch など Python の数値計算ライブラリはほぼすべて NumPy の上に作られている。「データ分析・AI・物理シミュレーション・信号処理」など数値を扱う用途なら必ずお世話になる。Python で数学や科学の計算をするなら避けられない基礎ライブラリ。",
+    },
+    {
+      name: "pandas",
+      logo: "devicon-pandas-original colored",
+      description: "データ分析・データ処理の王道ライブラリ",
+      detail: "Excel のような表形式のデータを Python で自由に扱えるライブラリ。CSV の読み込み・集計・グラフ化・データのクレンジングが得意で、データサイエンティストの日常業務には欠かせない。「大量のデータを分析したい・Excelで限界を感じてきた」なら pandas が最初のステップ。NumPy と組み合わせて使うことが多い。",
+    },
+    {
+      name: "TensorFlow",
+      logo: "devicon-tensorflow-original colored",
+      description: "Google が作った AI・機械学習フレームワーク",
+      detail: "Google が開発した業界標準の機械学習フレームワーク。スマホ向け（TensorFlow Lite）やブラウザ向け（TensorFlow.js）も揃っていて、研究から本番環境まで一気通貫で使える。企業での AI 導入実績が多く「仕事で AI を使うプロジェクトに関わりたい」なら覚えておきたい。PyTorch に比べると本番デプロイのサポートが手厚い。",
+    },
+    {
+      name: "PyTorch",
+      logo: "devicon-pytorch-original colored",
+      description: "AI 研究・ディープラーニングで世界シェア No.1",
+      detail: "Meta が作った AI 研究向けフレームワーク。「書いたコードがそのまま直感的に動く」設計が研究者に大人気で、AI 論文の 70% 以上が PyTorch を使用。ChatGPT を作った OpenAI もPyTorch を使っている。TensorFlow と比べると研究・プロトタイプ開発向きで、「最新の AI 技術を試したい・研究がしたい」なら PyTorch が第一選択。",
     },
   ],
   installGuide: {

@@ -4,7 +4,7 @@ import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import "./App.css";
 import { LANGUAGE_CONFIGS, LANGUAGES, COMING_SOON } from "./languages";
-import type { LanguageId, Feature, LanguageDef } from "./languages";
+import type { LanguageId, Feature, LanguageDef, Framework } from "./languages";
 
 const API = "http://localhost:8081";
 
@@ -61,6 +61,8 @@ export default function App() {
   const [pendingDescription, setPendingDescription] = useState("");
   const [showFeatureModal, setShowFeatureModal] = useState(false);
   const [modalFeature, setModalFeature] = useState<Feature | null>(null);
+  const [showFrameworkModal, setShowFrameworkModal] = useState(false);
+  const [modalFramework, setModalFramework] = useState<Framework | null>(null);
   const [installOS, setInstallOS] = useState<OS>("windows");
 
   // 言語×モードごとに独立した状態
@@ -553,6 +555,11 @@ export default function App() {
                   <div className="lang-card-icon"><LangIcon def={lang} /></div>
                   <div className="lang-card-label">{lang.label}</div>
                   <div className="lang-card-desc">{lang.description}</div>
+                  {lang.usedFor && lang.usedFor.length > 0 && (
+                    <div className="lang-card-usefor">
+                      {lang.usedFor.map(u => <span key={u} className="lang-card-usefor-tag">{u}</span>)}
+                    </div>
+                  )}
                   <div className="lang-card-tag">{lang.tag}</div>
                   {lang.id === language && <div className="lang-card-check">✓ 使用中</div>}
                 </button>
@@ -630,6 +637,28 @@ export default function App() {
             </ul>
             {!modalFeature.ready && (
               <div className="feature-modal-soon">このカテゴリは現在準備中です</div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ===== フレームワーク説明モーダル ===== */}
+      {showFrameworkModal && modalFramework && (
+        <div className="modal-overlay" onClick={() => setShowFrameworkModal(false)}>
+          <div className="modal modal-feature" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <span className="modal-title">
+                {modalFramework.logo
+                  ? <i className={`${modalFramework.logo} framework-modal-logo`} />
+                  : <span className="material-symbols-outlined">extension</span>
+                }
+                {modalFramework.name}
+              </span>
+              <button className="modal-close" onClick={() => setShowFrameworkModal(false)}>✕</button>
+            </div>
+            <p className="feature-modal-detail framework-modal-desc">{modalFramework.description}</p>
+            {modalFramework.detail && (
+              <p className="feature-modal-detail">{modalFramework.detail}</p>
             )}
           </div>
         </div>
@@ -731,6 +760,28 @@ export default function App() {
           ))}
         </div>
       </div>
+
+      {/* ===== フレームワークバー ===== */}
+      {currentConfig.frameworks && currentConfig.frameworks.length > 0 && (
+        <div className="frameworks-bar">
+          <span className="frameworks-bar-label">フレームワーク</span>
+          <div className="frameworks-list">
+            {currentConfig.frameworks.map((fw) => (
+              <button
+                key={fw.name}
+                className="framework-chip"
+                onClick={() => { setModalFramework(fw); setShowFrameworkModal(true); }}
+              >
+                {fw.logo
+                  ? <i className={fw.logo} />
+                  : <span className="material-symbols-outlined">extension</span>
+                }
+                <span>{fw.name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ===== メインエリア ===== */}
       <div className="main">

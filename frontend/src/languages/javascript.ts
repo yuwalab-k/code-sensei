@@ -9,6 +9,7 @@ const config: LanguageConfig = {
     description: "Webを動かす言語！計算やデータ処理もできる",
     tag: "Pythonの次のステップに！",
     available: true,
+    usedFor: ["ウェブフロントエンド", "サーバーサイド", "モバイルアプリ"],
   },
   outputMode: "text",
   initialCode:
@@ -73,6 +74,38 @@ const config: LanguageConfig = {
         { text: "簡単なショップの在庫管理を作る", context: "商品・価格・在庫数をオブジェクトで管理。ECサイトのデータベース設計の考え方が身につくよ！" },
         { text: "クラスを使ってコインを実装する", context: "クラスとメソッドの基本。オブジェクト指向プログラミングの入り口で、大きなプログラムを作る力が身につく！" },
       ],
+    },
+  ],
+  frameworks: [
+    {
+      name: "React",
+      logo: "devicon-react-original colored",
+      description: "Meta 製の UI ライブラリ。世界一使われるフロントエンドフレームワーク",
+      detail: "「コンポーネント」という部品を組み合わせて画面を作る考え方を世界に広めた UI ライブラリ。フロントエンドエンジニアの求人で最も求められるスキル No.1 で、学んでおくと仕事の選択肢が広がる。Vue.js より自由度が高い分、設計の判断を自分でする必要がある。「フロントエンドをしっかり学びたい・就職を意識している」なら React が最初の選択肢になることが多い。",
+    },
+    {
+      name: "Vue.js",
+      logo: "devicon-vuejs-plain colored",
+      description: "読みやすいコードが書ける UI フレームワーク。日本でも人気",
+      detail: "HTML・CSS・JavaScript を分かりやすく整理した構造で書けるため、初心者にも読みやすい。日本国内での採用企業が特に多く、LINE・任天堂などでも使われている。React より規約が明確なため「何をどこに書けばよいか」が決まりやすい。「日本で働きたい・フロントエンドの入門として始めやすいものがいい」なら Vue.js が向いている。",
+    },
+    {
+      name: "Next.js",
+      logo: "devicon-nextjs-plain colored",
+      description: "React ベースのフルスタックウェブアプリフレームワーク",
+      detail: "React 単体では苦手な「SEO（検索エンジンに見つけてもらいやすくする）」と「APIサーバー機能」を補ったフレームワーク。フロントエンドとバックエンドを一つのプロジェクトで作れるため、個人開発やスタートアップで特に人気が高い。「React は分かってきた・フロントとバックを両方作りたい」という次のステップとして選ばれる。",
+    },
+    {
+      name: "Express",
+      logo: "devicon-express-original colored",
+      description: "Node.js で動く軽量ウェブフレームワーク",
+      detail: "JavaScript でバックエンド API を作るための最も歴史ある軽量フレームワーク。「最低限の機能しか持たない」設計のため、必要な部品を自分で組み合わせる自由度がある。「フロントは JavaScript で書いているから、バックエンドも同じ言語でまとめたい」というときに便利。ただし自由度が高い分、大規模になると設計力が問われる。",
+    },
+    {
+      name: "Vite",
+      logo: "devicon-vitejs-plain colored",
+      description: "爆速で動く次世代フロントエンドビルドツール",
+      detail: "React・Vue・Svelte などどんなフレームワークと組み合わせても使えるビルドツール（開発環境の仕組み）。従来の webpack より起動が 10〜100 倍速く、コードを変更するとほぼ瞬時に画面へ反映される。「フレームワークそのもの」ではなく「開発を快適にする道具」だが、今や新プロジェクトのほぼ標準。React や Vue を始めるなら Vite と組み合わせるのが現在のベストプラクティス。",
     },
   ],
 };

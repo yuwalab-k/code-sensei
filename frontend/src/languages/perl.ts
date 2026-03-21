@@ -9,6 +9,7 @@ const config: LanguageConfig = {
     description: "テキスト処理が得意な言語",
     tag: "文字や文章を自在に操りたい人に！",
     available: true,
+    usedFor: ["テキスト処理", "システム管理", "バイオインフォマティクス"],
   },
   outputMode: "text",
   initialCode: "# AI先生に話しかけてみよう！\n# 例：「掛け算クイズを作って」\nuse strict;\nuse warnings;\n",
@@ -72,6 +73,23 @@ const config: LanguageConfig = {
         { text: "リストを合計するサブルーチンを作る", context: "reduce の考え方。データを集約する処理の基礎が学べるよ！" },
         { text: "名前と年齢を受け取って自己紹介するサブルーチン", context: "引数と文字列処理の組み合わせ。実用的なサブルーチンの作り方が学べる！" },
       ],
+    },
+  ],
+  frameworks: [
+    {
+      name: "Mojolicious",
+      description: "リアルタイムウェブ開発もできる Perl の現代的フレームワーク",
+      detail: "今から Perl でウェブ開発を始めるなら最初に見るべきフレームワーク。外部ライブラリなしで動き、WebSocket によるリアルタイム通信にも対応している。ドキュメントが充実していて「現代的な Perl の書き方を知りたい」という人にも向いている。Perl フレームワークの中では最も活発にメンテナンスされている。",
+    },
+    {
+      name: "Dancer2",
+      description: "Sinatra にインスパイアされたシンプル軽量ウェブフレームワーク",
+      detail: "Ruby の Sinatra を参考に作られた、最小限のコードでウェブ API を作れるフレームワーク。「Mojolicious は高機能すぎる・シンプルな API だけ作りたい」というときに選ばれる。Perl らしい DSL スタイルで書けるためコードが読みやすく、既存の Perl スクリプトに Web UI を付け加えるような用途にも使いやすい。",
+    },
+    {
+      name: "Catalyst",
+      description: "大規模ウェブアプリ向けの老舗フレームワーク",
+      detail: "2004 年登場の老舗で、Rails 登場前の時代にウェブ開発を支えてきた歴史あるフレームワーク。大企業のシステムや複雑なウェブアプリで採用実績が多く、既存の大規模 Perl システムを引き継ぐ場面では今でも登場する。新規開発ではあまり選ばれなくなっているが、レガシーコードのメンテナンス案件では必要になることがある。",
     },
   ],
   installGuide: {

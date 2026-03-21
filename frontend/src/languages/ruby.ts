@@ -9,6 +9,7 @@ const config: LanguageConfig = {
     description: "読みやすくて書きやすい！日本人が作った言語",
     tag: "きれいなコードを書きたい人に！",
     available: true,
+    usedFor: ["ウェブ開発", "APIサーバー", "スクリプト"],
   },
   outputMode: "text",
   initialCode: "# AI先生に話しかけてみよう！\n# 例：「掛け算クイズを作って」\n",
@@ -72,6 +73,19 @@ const config: LanguageConfig = {
         { text: "RPGキャラクターのステータスを管理する", context: "attr_accessor を使うとゲームのキャラクターデータが簡単に作れる。Rubyのクラスの便利さが実感できるよ！" },
         { text: "電卓クラスを作る", context: "クラスにメソッドをまとめる実践練習。本格的なアプリ開発の基礎となるオブジェクト指向が身につく！" },
       ],
+    },
+  ],
+  frameworks: [
+    {
+      name: "Ruby on Rails",
+      logo: "devicon-rails-plain colored",
+      description: "「設定より規約」が哲学のウェブ開発フレームワーク",
+      detail: "「決まったルールに従えば、面倒な設定ゼロで爆速で開発できる」という哲学のフルスタックフレームワーク。GitHub・Shopify・Airbnb・Twitter の最初のバージョンも Rails で作られた。「アイデアを素早くウェブサービスにしたい・スタートアップで素早くプロトタイプを作りたい」なら Rails は今でも最強の選択肢。一方で大規模になると「Railsのお作法」に縛られる場面も出てくる。",
+    },
+    {
+      name: "Sinatra",
+      description: "シンプルで軽量なウェブ API フレームワーク",
+      detail: "Rails が「全部入り」なのに対して、Sinatra は「必要なものだけ」のミニマルなフレームワーク。コードが少なく学習コストが低いため、「小さなAPIを作りたい・Railsは大げさすぎる」というときに選ばれる。プロトタイプや社内ツールの API サーバーとしてよく使われる。Rails を覚えた後に「もっとシンプルに書きたい」と感じたときに出会うフレームワーク。",
     },
   ],
 };

@@ -6,10 +6,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
 )
 
-// ===== Types =====
+// ===== Request / Response types =====
 
 type ExecuteRequest struct {
 	Code     string `json:"code"`
@@ -63,21 +62,6 @@ type AIBlankRequest struct {
 
 type AIBlankResponse struct {
 	BlankedCode string `json:"blanked_code"`
-}
-
-// ===== Middleware =====
-
-func cors(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-		if r.Method == http.MethodOptions {
-			w.WriteHeader(http.StatusOK)
-			return
-		}
-		next(w, r)
-	}
 }
 
 // ===== Handlers =====
@@ -151,10 +135,10 @@ func aiGenerateHandler(w http.ResponseWriter, r *http.Request) {
 	if req.Language == "" {
 		req.Language = "python"
 	}
-
 	if req.ExecMode == "" {
 		req.ExecMode = "browser"
 	}
+
 	systemPrompt := buildGeneratePrompt(req.Language, req.ExecMode, req.BirthYear)
 	raw, err := callOllama(r.Context(), systemPrompt, req.Description)
 	if err != nil {
@@ -167,6 +151,7 @@ func aiGenerateHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("[generate] raw response (%d chars): %.300s\n", len(raw), raw)
 	code, explanation := extractCodeBlock(raw)
 	fmt.Printf("[generate] extracted code (%d chars), explanation (%d chars)\n", len(code), len(explanation))
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(AIGenerateResponse{Code: code, Explanation: explanation})
 }
@@ -182,17 +167,7 @@ func aiReviewHandler(w http.ResponseWriter, r *http.Request) {
 		req.Language = "python"
 	}
 
-	ageInst := buildAgeInstruction(req.BirthYear)
-	systemPrompt := strings.TrimSpace(`あなたはプログラミング先生「センセイ」です。
-以下のコードについて復習問題を3つ作ってください。
-` + ageInst + `
-
-【問題作成のルール】
-- コードの内容を理解しているか確認する質問
-- 答えにコードを含めない
-- 「Q1:」「Q2:」「Q3:」の形式で書く
-- 考えさせる質問にする（〇か×ではなく、説明させる）`)
-
+	systemPrompt := buildReviewPrompt(req.Language, req.BirthYear)
 	userMsg := fmt.Sprintf("このコードの復習問題を3つ作ってください。\n\n```%s\n%s\n```", req.Language, req.Code)
 
 	questions, err := callOllama(r.Context(), systemPrompt, userMsg)
@@ -216,18 +191,7 @@ func aiBlankHandler(w http.ResponseWriter, r *http.Request) {
 		req.Language = "python"
 	}
 
-	ageInstBlank := buildAgeInstruction(req.BirthYear)
-	systemPrompt := strings.TrimSpace(`あなたはプログラミング先生「センセイ」です。
-` + ageInstBlank + `
-以下のコードの重要な部分を「___」（アンダースコア3つ）に置き換えて、穴埋め問題を作ってください。
-
-【穴埋めのルール】
-- 3〜5箇所だけ「___」に置き換える
-- 変数名・数値・演算子・関数名・条件式の値など、コードの理解に関わる重要な部分を選ぶ
-- コメント行（#で始まる行）は変えない
-- コードの構造（インデント・行数）は絶対に変えない
-- コードブロック（` + "```" + req.Language + `\n...\n` + "```" + `）でコードのみを返す（説明は一切不要）`)
-
+	systemPrompt := buildBlankPrompt(req.Language, req.BirthYear)
 	userMsg := fmt.Sprintf("穴埋め問題を作ってください。\n\n```%s\n%s\n```", req.Language, req.Code)
 
 	raw, err := callOllama(r.Context(), systemPrompt, userMsg)

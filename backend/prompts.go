@@ -43,53 +43,13 @@ func buildAgeInstruction(birthYear int) string {
 	}
 }
 
-var langTips = map[string]string{
-	"python": `
-【Pythonの特徴とよくあるミス】
-- インデント（字下げ）がとても大切。ずれると「IndentationError」が出る
-- if や for や def の後には「:」（コロン）が必ず必要
-- 文字（文字列）は " " か ' ' で囲む
-- 表示は print() を使う。括弧を忘れずに
-- よくあるエラー:
-  - IndentationError → 字下げがおかしい
-  - SyntaxError → 記号（:や括弧）が足りない・多い
-  - NameError → 変数名のスペルミス
-  - TypeError → 数字と文字を足し算しようとした`,
-
-	"javascript": `
-【p5.jsの特徴とよくあるミス】
-- setup() は最初に1回だけ動く（準備の場所）
-- draw() はずっと繰り返し動く（アニメーションの場所）
-- 変数は let か const で作る（例: let x = 0）
-- 座標は左上が(0,0)で、右に行くとxが増え、下に行くとyが増える
-- よく使う関数: circle(x,y,大きさ), rect(x,y,幅,高さ), fill(色), background(色)
-- キー操作: keyIsDown(LEFT_ARROW), keyIsDown(RIGHT_ARROW)
-- よくあるエラー:
-  - is not defined → 変数名や関数名のスペルミス
-  - { } の対応がずれている
-  - setup や draw のスペルミス`,
-
-	"go": `
-【Goの特徴とよくあるミス】
-- 変数は := で作る（例: x := 10）
-- 表示は fmt.Println() を使う
-- 型（かた）が大切。数字と文字は混ぜられない
-- { } でブロックを作る。{ は行末に書く
-- よくあるエラー:
-  - undefined → 変数名のミス
-  - syntax error → { } や () の対応ミス`,
-}
-
-func langName(language string) string {
-	names := map[string]string{
-		"python":     "Python",
-		"javascript": "JavaScript (p5.js)",
-		"go":         "Go",
+// tipsForAge は年齢に応じて言語 Tips を返します。
+// 幼い子向け（age <= 9）は Tips に漢字が多いため省略します。
+func tipsForAge(language string, age int) string {
+	if age != 0 && age <= 9 {
+		return ""
 	}
-	if n, ok := names[language]; ok {
-		return n
-	}
-	return language
+	return getLang(language).Tips
 }
 
 func buildHintPrompt(language string, reviewMode bool, birthYear int) string {
@@ -109,73 +69,37 @@ func buildHintPrompt(language string, reviewMode bool, birthYear int) string {
 ` + ageInst)
 	}
 
-	// 幼い子向けは langTips（漢字まじり）を省いて言葉遣いを優先する
-	var tips string
-	if age == 0 || age > 9 {
-		tips = langTips[language]
+	lang := getLang(language)
+	tips := tipsForAge(language, age)
+	if tips != "" {
+		tips = tips + "\n\n"
 	}
 
-	prompt := `あなたはプログラミング先生「センセイ」です。
-今日の学習言語は「` + langName(language) + `」です。
-` + tips + `
-【返答ルール】
+	return strings.TrimSpace(`あなたはプログラミング先生「センセイ」です。
+今日の学習言語は「` + lang.Name + `」です。
+
+` + tips + `【返答ルール】
 - ヒントだけ出す。答えのコードは絶対に書かない
 - 1〜3文で短く答える
 - 最後に考えさせる問いかけをする
 - 間違えても責めず、励ます
 
-` + ageInst
-
-	return strings.TrimSpace(prompt)
+` + ageInst)
 }
 
 func buildGeneratePrompt(language, execMode string, birthYear int) string {
-	lang := langName(language)
+	lang := getLang(language)
 	ageInst := buildAgeInstruction(birthYear)
 	age := ageFromBirthYear(birthYear)
 
-	// 幼い子向けは langTips（漢字まじり）を省く
-	var tips string
-	if age == 0 || age > 9 {
-		tips = langTips[language]
+	tips := tipsForAge(language, age)
+	if tips != "" {
+		tips = tips + "\n\n"
 	}
 
-	var modeRules string
+	modeRules := lang.BrowserRules
 	if execMode == "file" {
-		modeRules = `【コードのルール（ファイル実行モード）】
-- ユーザーのパソコンで実行するコードを生成する
-- input() を使ってユーザーと対話してよい
-- 使えるライブラリ: random, math, os（読み取りのみ）, csv, json, datetime, collections
-- ファイルの書き込みはカレントディレクトリのみ（絶対パス禁止）
-- os.system(), subprocess など外部コマンドは絶対に使わない
-- pip install などパッケージのインストールは使わない
-- 50行以内のコードにする
-- コメントは日本語で書く
-- 変数名はわかりやすい英語にする
-- 小学生（9〜12歳）でも理解できる内容にする`
-	} else {
-		modeRules = `【実行環境の制約（ブラウザ実行モード）】
-このモードはコードを一度だけ実行してprint()の出力を表示するだけです。
-ユーザーとリアルタイムでやり取りする機能（入力待ち・ループ応答）は一切使えません。
-
-【コードの絶対ルール】
-- print() で結果を表示する
-- input() は絶対に使わない（入力待ちができないため、プログラムがフリーズする）
-- while True や無限ループは絶対に使わない
-- import できるのは random と math のみ
-- ファイルの読み書き（open()）はしない
-- 30行以内のシンプルなコードにする
-- コメントは日本語で書く
-- 変数名はわかりやすい英語にする
-- 小学生（9〜12歳）でも理解できる内容にする
-
-【クイズ・ゲームを作るときのルール】
-ユーザーが「掛け算クイズ」「数当てゲーム」など対話が必要そうなものを要望した場合、
-input()を使わずに以下のパターンで作ること：
-- 問題をランダムに複数生成してprint()で表示し、答えも一緒にprint()で表示する
-  例：「3 × 7 = ?  →  答えは 21」のように問題と答えをセットで表示する
-- または「問題だけ表示して、答えは自分でノートに書いてみよう！」と書いてから答えを最後にまとめて表示する
-- ゲームの「結果」は乱数で決めてprint()で表示する（例：じゃんけんなら両者の手と勝敗をprint()で出す）`
+		modeRules = lang.FileRules
 	}
 
 	responseFormat := `【返答の形式】必ず以下の形式で返答してください：
@@ -196,14 +120,42 @@ input()を使わずに以下のパターンで作ること：
 解説は短くしなくていいです。小学生が「なるほど！」となるくらい丁寧に、でも難しい言葉は使わずに書いてください。`
 
 	return strings.TrimSpace(`あなたはプログラミング先生「センセイ」です。
-ユーザーの要望に合った ` + lang + ` プログラムを作成してください。
+ユーザーの要望に合った ` + lang.Name + ` プログラムを作成してください。
 
 【最重要】必ず最初に ` + "```" + language + ` でコードブロックを書いてから、その後に解説を書くこと。コードブロックなしで説明だけ返すのは禁止。
-` + tips + `
 
-` + responseFormat + `
+` + tips + responseFormat + `
 
 ` + modeRules + `
+
+` + ageInst)
+}
+
+func buildReviewPrompt(language string, birthYear int) string {
+	ageInst := buildAgeInstruction(birthYear)
+	return strings.TrimSpace(`あなたはプログラミング先生「センセイ」です。
+以下のコードについて復習問題を3つ作ってください。
+
+【問題作成のルール】
+- コードの内容を理解しているか確認する質問
+- 答えにコードを含めない
+- 「Q1:」「Q2:」「Q3:」の形式で書く
+- 考えさせる質問にする（〇か×ではなく、説明させる）
+
+` + ageInst)
+}
+
+func buildBlankPrompt(language string, birthYear int) string {
+	ageInst := buildAgeInstruction(birthYear)
+	return strings.TrimSpace(`あなたはプログラミング先生「センセイ」です。
+以下のコードの重要な部分を「___」（アンダースコア3つ）に置き換えて、穴埋め問題を作ってください。
+
+【穴埋めのルール】
+- 3〜5箇所だけ「___」に置き換える
+- 変数名・数値・演算子・関数名・条件式の値など、コードの理解に関わる重要な部分を選ぶ
+- コメント行（#で始まる行）は変えない
+- コードの構造（インデント・行数）は絶対に変えない
+- コードブロック（` + "```" + language + `\n...\n` + "```" + `）でコードのみを返す（説明は一切不要）
 
 ` + ageInst)
 }
@@ -211,7 +163,6 @@ input()を使わずに以下のパターンで作ること：
 func extractCodeBlock(text string) (code, explanation string) {
 	const marker = "```"
 
-	// ``` があれば通常パース
 	start := strings.Index(text, marker)
 	if start != -1 {
 		afterMarker := text[start+3:]
@@ -230,7 +181,7 @@ func extractCodeBlock(text string) (code, explanation string) {
 		}
 	}
 
-	// ``` がない場合：Pythonらしい行が含まれていればコードとみなす
+	// ``` がない場合：コードらしい行が含まれていればコードとみなす（フォールバック）
 	lines := strings.Split(text, "\n")
 	var codeLines, otherLines []string
 	inCode := false
@@ -261,7 +212,6 @@ func extractCodeBlock(text string) (code, explanation string) {
 			strings.TrimSpace(strings.Join(otherLines, "\n"))
 	}
 
-	// 何も取れなかったら全文をコードとして返す
 	fmt.Printf("[extractCodeBlock] fallback: returning full text as code\n")
 	return strings.TrimSpace(text), ""
 }

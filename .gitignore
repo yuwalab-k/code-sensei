@@ -1,0 +1,7 @@
+# DB data
+db/*
+!db/.gitkeep
+db/*.sqlite
+
+# Node
+node_modules/

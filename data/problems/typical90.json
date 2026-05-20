@@ -1,0 +1,57 @@
+{
+  "contest": "典型90問",
+  "problems": [
+    {
+      "id": "typical90_a",
+      "problem": "001",
+      "title": "Yokan Party",
+      "atcoder_url": "https://atcoder.jp/contests/typical90/tasks/typical90_a",
+      "difficulty": 4,
+      "tags": [
+        "二分探索",
+        "貪欲"
+      ],
+      "statement": "左右の長さが `L` cm のようかんがあります。  \n`N` 個の切れ目が付けられており、左から `i` 番目の切れ目は左から `Ai` cm の位置にあります。\n\nあなたは `N` 個の切れ目のうち `K` 個を選び、ようかんを `K+1` 個のピースに分割したいです。\n\nこのとき、以下の値を **スコア** とします。\n\n\u003e `K+1` 個のピースのうち、最も短いものの長さ\n\nスコアが最大となるように分割する場合に得られるスコアを求めてください。",
+      "constraints": "- `1 ≤ K ≤ N ≤ 100000`\n- `0 \u003c A1 \u003c A2 \u003c ... \u003c AN \u003c L ≤ 10^9`\n- 入力はすべて整数",
+      "samples": [
+        {
+          "input": "3 34\n1\n8 13 26",
+          "output": "13",
+          "explanation": "左から 2 番目の切れ目で分割すると：\n\n- 13 cm\n- 21 cm\n\nとなり、最小値は `13`。\n\n---"
+        },
+        {
+          "input": "7 45\n2\n7 11 16 20 28 34 38",
+          "output": "12",
+          "explanation": ""
+        },
+        {
+          "input": "3 100\n1\n28 54 81",
+          "output": "46",
+          "explanation": ""
+        },
+        {
+          "input": "3 100\n2\n28 54 81",
+          "output": "26",
+          "explanation": ""
+        },
+        {
+          "input": "20 1000\n4\n51 69 102 127 233 295 350 388 417 466 469 523 553 587 720 739 801 855 926 954",
+          "output": "170",
+          "explanation": ""
+        }
+      ],
+      "explanation": "## 方針\n\nこの問題は：\n\n\u003e 「最小ピース長」を最大化する\n\n問題。\n\nこのタイプは典型的な：\n\n- 最大値の最小化\n- 最小値の最大化\n\nであり、**二分探索** を使う。\n\n---\n\n## 判定問題に変換\n\n「すべてのピース長を `x` 以上にできるか？」\n\nを考える。\n\n例えば：\n\n- `x = 10` → 可能\n- `x = 20` → 不可能\n\nなら、\n\n```text\n可能 可能 可能 不可能 不可能\n```\n\nのように単調性があるので二分探索できる。\n\n---\n\n## Greedy 判定\n\n左から順番に見て：\n\n- 前回切った位置から `x` 以上になったら切る\n\nを繰り返す。\n\nただし最後のピースも `x` 以上必要。\n\n---\n\n## なぜ Greedy でよい？\n\nできるだけ左で切るほど：\n\n- 後ろに余裕ができる\n- 次のピースを作りやすい\n\nため。\n\n---\n\n## 計算量\n\n二分探索は：\n\n```text\nO(log L)\n```\n\n各判定は：\n\n```text\nO(N)\n```\n\nなので全体：\n\n```text\nO(N log L)\n```\n\n---",
+      "solutions": {
+        "cpp": {
+          "code": "#include \u003cbits/stdc++.h\u003e\nusing namespace std;\nusing ll = long long;\n\nint main() {\n    int N, K;\n    ll L;\n\n    cin \u003e\u003e N \u003e\u003e L;\n    cin \u003e\u003e K;\n\n    vector\u003cll\u003e A(N);\n\n    for (int i = 0; i \u003c N; i++) {\n        cin \u003e\u003e A[i];\n    }\n\n    auto check = [\u0026](ll x) {\n        ll prev = 0;\n        int cnt = 0;\n\n        for (int i = 0; i \u003c N; i++) {\n            // 今切ったとき\n            // 前のピース \u003e= x\n            // 最後のピース \u003e= x\n            if (A[i] - prev \u003e= x \u0026\u0026 L - A[i] \u003e= x) {\n                cnt++;\n                prev = A[i];\n            }\n        }\n\n        return cnt \u003e= K;\n    };\n\n    ll low = 0;\n    ll high = L + 1;\n\n    while (high - low \u003e 1) {\n        ll mid = (low + high) / 2;\n\n        if (check(mid)) {\n            low = mid;\n        } else {\n            high = mid;\n        }\n    }\n\n    cout \u003c\u003c low \u003c\u003c endl;\n}",
+          "steps": null
+        },
+        "python": {
+          "code": "N, L = map(int, input().split())\nK = int(input())\nA = list(map(int, input().split()))\n\ndef check(x):\n    prev = 0\n    cnt = 0\n\n    for a in A:\n        if a - prev \u003e= x and L - a \u003e= x:\n            cnt += 1\n            prev = a\n\n    return cnt \u003e= K\n\nlow = 0\nhigh = L + 1\n\nwhile high - low \u003e 1:\n    mid = (low + high) // 2\n\n    if check(mid):\n        low = mid\n    else:\n        high = mid\n\nprint(low)",
+          "steps": null
+        }
+      },
+      "added_at": "2026-05-20"
+    }
+  ]
+}

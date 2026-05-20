@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>問題一覧 | 競プロ教材</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="header">
+  <div class="header-inner">
+    
+    <a class="header-logo" href="">&#127891; 競プロ教材</a>
+    <span class="header-sub">小学生向け AtCoder 解説集</span>
+  </div>
+</header>
+
+<main class="list-view">
+  <div class="filters">
+    <div class="search-wrap">
+      <span class="search-icon">&#128269;</span>
+      <input class="search-input" id="search" placeholder="タイトル・タグで検索..." autocomplete="off">
+    </div>
+    <div class="diff-filters" id="dfilters"><button class="diff-btn active" data-diff="">すべて</button><button class="diff-btn" data-diff="4" style="--dc:#f44336">D問題レベル</button></div>
+  </div>
+  <div class="problem-grid" id="grid">
+<a class="problem-card" href="problems/typical90_a.html"
+   data-diff="4"
+   data-title="yokan party"
+   data-tags="二分探索 貪欲"
+   data-contest="典型90問">
+  <div class="card-top">
+    <span class="card-contest">典型90問 001</span>
+    <span class="diff-badge" style="background:#f44336">D問題レベル</span>
+  </div>
+  <div class="card-title">Yokan Party</div>
+  <div class="card-tags"><span class="tag">二分探索</span><span class="tag">貪欲</span></div>
+</a></div>
+  <div class="empty" id="empty" hidden>問題が見つかりませんでした</div>
+</main>
+<script>
+(function(){
+  var grid=document.getElementById('grid'),search=document.getElementById('search'),
+      empty=document.getElementById('empty'),cards=Array.from(grid.querySelectorAll('.problem-card')),curD='';
+  function filter(){
+    var q=search.value.toLowerCase(),v=0;
+    cards.forEach(function(c){
+      var ok=(!curD||c.dataset.diff===curD)&&(!q||c.dataset.title.includes(q)||c.dataset.tags.includes(q)||c.dataset.contest.includes(q));
+      c.hidden=!ok; if(ok)v++;
+    });
+    empty.hidden=v>0;
+  }
+  search.addEventListener('input',filter);
+  document.getElementById('dfilters').addEventListener('click',function(e){
+    var b=e.target.closest('.diff-btn'); if(!b)return;
+    curD=b.dataset.diff;
+    document.querySelectorAll('.diff-btn').forEach(function(x){x.classList.remove('active');});
+    b.classList.add('active'); filter();
+  });
+})();
+</script>
+</body>
+</html>

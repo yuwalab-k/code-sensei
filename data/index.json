@@ -1,0 +1,14 @@
+[
+  {
+    "id": "typical90_a",
+    "contest": "典型90問",
+    "problem": "001",
+    "title": "Yokan Party",
+    "difficulty": 4,
+    "tags": [
+      "二分探索",
+      "貪欲"
+    ],
+    "file": "typical90"
+  }
+]

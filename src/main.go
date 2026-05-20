@@ -48,9 +48,11 @@ type Problem struct {
 	Tags        []string             `json:"tags"`
 	Statement   string               `json:"statement"`
 	Constraints string               `json:"constraints"`
-	Samples     []Sample             `json:"samples"`
-	Explanation string               `json:"explanation"`
-	Solutions   map[string]*Solution `json:"solutions"`
+	Samples          []Sample             `json:"samples"`
+	StatementNote    string               `json:"statement_note"`
+	EasyExplanation  string               `json:"easy_explanation"`
+	Explanation      string               `json:"explanation"`
+	Solutions        map[string]*Solution `json:"solutions"`
 	AddedAt     string               `json:"added_at"`
 }
 
@@ -122,13 +124,40 @@ var (
 	reH2    = regexp.MustCompile(`(?m)^(## [^\n]+)`)
 	reH3exp = regexp.MustCompile(`(?s)### 解説\n(.*?)(?:\n###|\n##|\n#|\z)`)
 	reCode  = regexp.MustCompile("(?s)```[^\n]*\n(.*?)```")
+	reFence = regexp.MustCompile("(?m)^```")
 	reHr    = regexp.MustCompile(`(?m)^---\s*$`)
 	reOL    = regexp.MustCompile(`(?m)^\d+[.。]\s+(.+)$`)
 	reH1top = regexp.MustCompile(`(?m)^# (.+)$`)
 )
 
+// コードフェンス（``` ... ```）の範囲を返す。この範囲内の # はセクション区切りではない
+func fenceRanges(text string) [][2]int {
+	locs := reFence.FindAllStringIndex(text, -1)
+	var ranges [][2]int
+	for i := 0; i+1 < len(locs); i += 2 {
+		ranges = append(ranges, [2]int{locs[i][0], locs[i+1][1]})
+	}
+	return ranges
+}
+
+func inFence(pos int, ranges [][2]int) bool {
+	for _, r := range ranges {
+		if pos >= r[0] && pos < r[1] {
+			return true
+		}
+	}
+	return false
+}
+
 func splitByH1(text string) []struct{ title, body string } {
-	locs := reH1.FindAllStringIndex(text, -1)
+	fences := fenceRanges(text)
+	allLocs := reH1.FindAllStringIndex(text, -1)
+	var locs [][]int
+	for _, loc := range allLocs {
+		if !inFence(loc[0], fences) {
+			locs = append(locs, loc)
+		}
+	}
 	var out []struct{ title, body string }
 	for i, loc := range locs {
 		title := strings.TrimPrefix(text[loc[0]:loc[1]], "# ")
@@ -236,25 +265,51 @@ func convertFile(mdPath string) (Problem, string, string) {
 		samples = append(samples, Sample{firstCode(inText), firstCode(outText), exp})
 	}
 
-	// explanation: h1 sections from '解説' until code sections
+	// explanations: collect easy and standard separately, stop at code sections
 	isCode := func(t string) bool {
-		return strings.Contains(t, "Python") || strings.Contains(t, "C++") || strings.Contains(t, "C＋＋")
+		for _, lang := range langDefs {
+			for _, kw := range lang.matches {
+				if strings.Contains(t, kw) && strings.Contains(t, "解答") {
+					return true
+				}
+			}
+		}
+		return false
 	}
-	var expParts []string
-	inExp := false
+	var stmtNoteParts, easyParts, expParts []string
+	mode := "" // "stmt" | "easy" | "standard" | ""
 	for _, s := range h1s {
-		if s.title == "解説" {
-			inExp = true
-		}
 		if isCode(s.title) {
-			inExp = false
+			mode = ""
+			continue
 		}
-		if !inExp {
+		if s.title == "問題の解説" {
+			mode = "stmt"
+			if s.body != "" {
+				stmtNoteParts = append(stmtNoteParts, s.body)
+			}
+			continue
+		}
+		if s.title == "やさしい解説" {
+			mode = "easy"
+			if s.body != "" {
+				easyParts = append(easyParts, s.body)
+			}
 			continue
 		}
 		if s.title == "解説" {
-			expParts = append(expParts, s.body)
-		} else {
+			mode = "standard"
+			if s.body != "" {
+				expParts = append(expParts, s.body)
+			}
+			continue
+		}
+		switch mode {
+		case "stmt":
+			stmtNoteParts = append(stmtNoteParts, "## "+s.title+"\n\n"+s.body)
+		case "easy":
+			easyParts = append(easyParts, "## "+s.title+"\n\n"+s.body)
+		case "standard":
 			expParts = append(expParts, "## "+s.title+"\n\n"+s.body)
 		}
 	}
@@ -262,11 +317,16 @@ func convertFile(mdPath string) (Problem, string, string) {
 	// solutions
 	sols := make(map[string]*Solution)
 	for _, s := range h1s {
-		if strings.Contains(s.title, "Python") && strings.Contains(s.title, "解答") {
-			sols["python"] = &Solution{firstCode(s.body), orderedList(s.body)}
+		if !strings.Contains(s.title, "解答") {
+			continue
 		}
-		if (strings.Contains(s.title, "C++") || strings.Contains(s.title, "C＋＋")) && strings.Contains(s.title, "解答") {
-			sols["cpp"] = &Solution{firstCode(s.body), orderedList(s.body)}
+		for _, lang := range langDefs {
+			for _, kw := range lang.matches {
+				if strings.Contains(s.title, kw) {
+					sols[lang.key] = &Solution{firstCode(s.body), orderedList(s.body)}
+					break
+				}
+			}
 		}
 	}
 
@@ -279,8 +339,10 @@ func convertFile(mdPath string) (Problem, string, string) {
 		Tags:        fm.tags,
 		Statement:   stripHr(h2["問題文"]),
 		Constraints: stripHr(h2["制約"]),
-		Samples:     samples,
-		Explanation: strings.TrimSpace(strings.Join(expParts, "\n\n")),
+		Samples:         samples,
+		StatementNote:   strings.TrimSpace(strings.Join(stmtNoteParts, "\n\n")),
+		EasyExplanation: strings.TrimSpace(strings.Join(easyParts, "\n\n")),
+		Explanation:     strings.TrimSpace(strings.Join(expParts, "\n\n")),
 		Solutions:   sols,
 		AddedAt:     fm.str("added_at", time.Now().Format("2006-01-02")),
 	}
@@ -353,6 +415,22 @@ func cmdConvert() {
 var diffLabel = map[int]string{1: "A問題レベル", 2: "B問題レベル", 3: "C問題レベル", 4: "D問題レベル"}
 var diffColor = map[int]string{1: "#4caf50", 2: "#2196f3", 3: "#ff9800", 4: "#f44336"}
 
+type langDef struct {
+	key     string
+	label   string
+	matches []string
+}
+
+var langDefs = []langDef{
+	{"python", "Python", []string{"Python"}},
+	{"cpp", "C++", []string{"C++", "C＋＋"}},
+	{"typescript", "TypeScript", []string{"TypeScript", "TS"}},
+	{"ruby", "Ruby", []string{"Ruby"}},
+	{"php", "PHP", []string{"PHP"}},
+	{"rust", "Rust", []string{"Rust"}},
+	{"perl", "Perl", []string{"Perl"}},
+}
+
 func e(s string) string { return html.EscapeString(s) }
 
 func badge(d int) string {
@@ -421,14 +499,32 @@ a{color:inherit;text-decoration:none}
 .atcoder-link:hover{background:#e3f2fd}
 .detail-section{margin-bottom:28px}
 .section-title{font-size:1rem;font-weight:700;margin-bottom:10px;color:#333}
-.statement-box{background:#fff;border:1.5px solid #e0e0e0;border-radius:8px;padding:14px;line-height:1.75;white-space:pre-wrap;font-size:.93rem}
-.constraints-box{background:#f3f4f6;border-radius:6px;padding:10px 14px;font-size:.85rem;margin-top:10px;line-height:1.7;white-space:pre-wrap}
+.statement-box{background:#fff;border:1.5px solid #e0e0e0;border-radius:8px;padding:14px;line-height:1.75;font-size:.93rem}
+.statement-box p{margin-bottom:.6em}
+.statement-box ul,.statement-box ol{padding-left:1.6em;margin:.4em 0 .6em}
+.statement-box li{margin-bottom:.2em}
+.statement-box code{background:#f0f0f0;padding:1px 5px;border-radius:3px;font-size:.88em}
+.constraints-box{background:#f3f4f6;border-radius:6px;padding:10px 14px;font-size:.85rem;margin-top:10px;line-height:1.7}
+.statement-note{background:#e3f2fd;border-left:4px solid #1565c0;border-radius:6px;padding:12px 14px;font-size:.88rem;margin-top:12px;line-height:1.75}
+.statement-note p{margin-bottom:.5em}
+.statement-note strong{color:#1565c0}
+.statement-note ul,.statement-note ol{padding-left:1.6em;margin:.4em 0 .6em}
+.statement-note hr{display:none}
+.statement-note-badge{display:inline-block;background:#1565c0;color:#fff;font-size:.72rem;font-weight:700;border-radius:4px;padding:1px 7px;margin-bottom:8px;letter-spacing:.03em}
+.constraints-box ul,.constraints-box ol{padding-left:1.4em}
+.constraints-box code{background:#e8e8e8;padding:1px 4px;border-radius:3px;font-size:.85em}
 .sample-block{background:#fff;border:1.5px solid #e0e0e0;border-radius:8px;padding:12px;margin-bottom:12px}
-.sample-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sample-row{display:flex;flex-direction:column;gap:10px}
 .sample-label{font-size:.75rem;font-weight:600;color:#555;margin-bottom:4px}
-.sample-pre{background:#f5f6fa;border-radius:6px;padding:8px 10px;font-size:.85rem;font-family:monospace;overflow-x:auto;white-space:pre}
-.sample-explanation{margin-top:10px;font-size:.85rem;color:#555;line-height:1.6;border-top:1px solid #eee;padding-top:8px}
-.explanation-box{background:#fffde7;border-left:4px solid #f9a825;border-radius:6px;padding:14px 16px;line-height:1.75;font-size:.93rem}
+.sample-pre{background:#f5f6fa;border-radius:6px;padding:8px 10px;font-size:.85rem;font-family:monospace;overflow-x:auto;white-space:pre;word-break:break-all}
+.sample-explanation{margin-top:10px;font-size:.85rem;color:#444;line-height:1.7;border-top:1px solid #e0e0e0;padding-top:10px}
+.sample-explanation::before{content:"📖 解説";display:block;font-weight:700;font-size:.78rem;color:#1565c0;margin-bottom:6px}
+.sample-explanation p{margin-bottom:.5em}
+.sample-explanation ul,.sample-explanation ol{padding-left:1.5em;margin:.3em 0 .5em}
+.sample-explanation hr{display:none}
+.sample-explanation code{background:#f0f0f0;padding:1px 5px;border-radius:3px;font-size:.88em}
+.explanation-box{background:#e8f5e9;border-left:4px solid #43a047;border-radius:6px;padding:14px 16px;line-height:1.75;font-size:.93rem}
+.easy-box{background:#fffde7;border-left:4px solid #f9a825}
 .explanation-box h2{font-size:1rem;margin:14px 0 6px}
 .explanation-box h3{font-size:.9rem;margin:10px 0 4px}
 .explanation-box p{margin-bottom:8px}
@@ -440,10 +536,11 @@ a{color:inherit;text-decoration:none}
 .lang-tab.active{background:#1565c0;border-color:#1565c0;color:#fff}
 .code-panel{display:none}
 .code-panel.active{display:block}
-.code-block{background:#1e1e2e;color:#cdd6f4;border-radius:0 8px 8px 8px;padding:14px;font-size:.82rem;font-family:monospace;overflow-x:auto;white-space:pre;line-height:1.6}
+pre.code-block{background:#1e1e2e;color:#cdd6f4;border-radius:0 8px 8px 8px;padding:14px;font-size:.82rem;font-family:monospace;overflow-x:auto;white-space:pre;line-height:1.6}
+pre.code-block code{background:none;padding:0;border-radius:0;font-size:inherit;font-family:inherit}
 .solution-steps{padding-left:1.5em;margin-top:12px;font-size:.88rem;line-height:1.7;color:#444}
 .empty{text-align:center;color:#999;padding:40px;font-size:.95rem}
-@media(max-width:480px){.sample-row{grid-template-columns:1fr}.problem-grid{grid-template-columns:1fr}.detail-title{font-size:1.15rem}}`
+@media(max-width:600px){.problem-grid{grid-template-columns:1fr}.detail-title{font-size:1.15rem}}`
 }
 
 // root: "" for index.html, "../" for problems/*.html
@@ -462,7 +559,12 @@ func shell(title, root, back, backLabel, sub, body string) string {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>%s | 競プロ教材</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css">
 <link rel="stylesheet" href="%sstyle.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],ignoredTags:['script','noscript','style','pre','code']})"></script>
 </head>
 <body>
 <header class="header">
@@ -473,6 +575,8 @@ func shell(title, root, back, backLabel, sub, body string) string {
   </div>
 </header>
 %s
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-core.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/autoloader/prism-autoloader.min.js"></script>
 </body>
 </html>`, e(title), root, backEl, root, subEl, body)
 }
@@ -568,7 +672,7 @@ func buildProblem(p Problem, contest string, force bool) {
 	for i, s := range p.Samples {
 		exp := ""
 		if s.Explanation != "" {
-			exp = fmt.Sprintf(`<div class="sample-explanation">%s</div>`, e(s.Explanation))
+			exp = fmt.Sprintf(`<div class="sample-explanation">%s</div>`, mdToHTML(s.Explanation))
 		}
 		fmt.Fprintf(&sampBuf, `
 <div class="sample-block">
@@ -584,13 +688,29 @@ func buildProblem(p Problem, contest string, force bool) {
 		atcLink = fmt.Sprintf(`<a class="atcoder-link" href="%s" target="_blank" rel="noopener">&#128279; AtCoderで見る</a>`, e(p.AtcoderURL))
 	}
 
+	easySection := ""
+	if p.EasyExplanation != "" {
+		easySection = fmt.Sprintf(`
+<section class="detail-section">
+  <h2 class="section-title">&#128640; わかりやすく解説</h2>
+  <div class="explanation-box easy-box">%s</div>
+</section>`, mdToHTML(p.EasyExplanation))
+	}
+
 	expSection := ""
 	if p.Explanation != "" {
 		expSection = fmt.Sprintf(`
 <section class="detail-section">
-  <h2 class="section-title">&#128161; 解説</h2>
+  <h2 class="section-title">&#128218; くわしい解説</h2>
   <div class="explanation-box">%s</div>
 </section>`, mdToHTML(p.Explanation))
+	}
+
+	stmtNoteSection := ""
+	if p.StatementNote != "" {
+		stmtNoteSection = fmt.Sprintf(
+			`<div class="statement-note"><span class="statement-note-badge">&#128221; 入力例1を使った説明</span>%s</div>`,
+			mdToHTML(p.StatementNote))
 	}
 
 	codeSection := buildCodeSection(p)
@@ -604,6 +724,7 @@ func buildProblem(p Problem, contest string, force bool) {
     <h2 class="section-title">&#128196; 問題文</h2>
     <div class="statement-box">%s</div>
     %s
+    %s
   </section>
   <section class="detail-section">
     <h2 class="section-title">&#10067; 入力・出力の例</h2>
@@ -611,12 +732,15 @@ func buildProblem(p Problem, contest string, force bool) {
   </section>
   %s
   %s
+  %s
 </main>`,
 		e(contest), e(p.Problem), e(p.Title),
 		badge(p.Difficulty), tagSpans(p.Tags), atcLink,
-		e(p.Statement),
+		mdToHTML(p.Statement),
 		constraintsBlock(p.Constraints),
+		stmtNoteSection,
 		sampBuf.String(),
+		easySection,
 		expSection,
 		codeSection,
 	)
@@ -629,22 +753,28 @@ func constraintsBlock(s string) string {
 	if s == "" {
 		return ""
 	}
-	return fmt.Sprintf(`<div class="constraints-box"><strong>制約</strong><br>%s</div>`, e(s))
+	return fmt.Sprintf(`<div class="constraints-box"><strong>制約</strong>%s</div>`, mdToHTML(s))
 }
 
 func buildCodeSection(p Problem) string {
-	py, cpp := p.Solutions["python"], p.Solutions["cpp"]
-	if py == nil && cpp == nil {
+	if len(p.Solutions) == 0 {
 		return ""
 	}
 	var tabs, panels strings.Builder
-	if py != nil {
-		tabs.WriteString(`<button class="lang-tab active" data-lang="python">Python</button>`)
-		panels.WriteString(codePanel("python", true, py))
-	}
-	if cpp != nil {
-		tabs.WriteString(`<button class="lang-tab" data-lang="cpp">C++</button>`)
-		panels.WriteString(codePanel("cpp", py == nil, cpp))
+	first := true
+	for _, lang := range langDefs {
+		sol, ok := p.Solutions[lang.key]
+		if !ok || sol == nil {
+			continue
+		}
+		active := first
+		first = false
+		if active {
+			fmt.Fprintf(&tabs, `<button class="lang-tab active" data-lang="%s">%s</button>`, lang.key, lang.label)
+		} else {
+			fmt.Fprintf(&tabs, `<button class="lang-tab" data-lang="%s">%s</button>`, lang.key, lang.label)
+		}
+		panels.WriteString(codePanel(lang.key, active, sol))
 	}
 	return fmt.Sprintf(`
 <section class="detail-section">
@@ -676,8 +806,8 @@ func codePanel(lang string, active bool, sol *Solution) string {
 		}
 		steps = fmt.Sprintf(`<ol class="solution-steps">%s</ol>`, sb.String())
 	}
-	return fmt.Sprintf(`<div class="%s" id="panel-%s"><pre class="code-block">%s</pre>%s</div>`,
-		cls, lang, e(sol.Code), steps)
+	return fmt.Sprintf(`<div class="%s" id="panel-%s"><pre class="code-block language-%s"><code class="language-%s">%s</code></pre>%s</div>`,
+		cls, lang, lang, lang, e(sol.Code), steps)
 }
 
 // ── helpers ───────────────────────────────────────────────────────────────────
@@ -750,13 +880,13 @@ func main() {
 	}
 
 	cmd := "all"
-	if len(os.Args) > 1 {
-		cmd = os.Args[1]
-	}
 	force := false
-	for _, a := range os.Args[2:] {
-		if a == "-f" || a == "--force" {
+	for _, a := range os.Args[1:] {
+		switch a {
+		case "-f", "--force":
 			force = true
+		case "convert", "build", "serve":
+			cmd = a
 		}
 	}
 	switch cmd {

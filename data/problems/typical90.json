@@ -11,43 +11,136 @@
         "二分探索",
         "貪欲"
       ],
-      "statement": "左右の長さが `L` cm のようかんがあります。  \n`N` 個の切れ目が付けられており、左から `i` 番目の切れ目は左から `Ai` cm の位置にあります。\n\nあなたは `N` 個の切れ目のうち `K` 個を選び、ようかんを `K+1` 個のピースに分割したいです。\n\nこのとき、以下の値を **スコア** とします。\n\n\u003e `K+1` 個のピースのうち、最も短いものの長さ\n\nスコアが最大となるように分割する場合に得られるスコアを求めてください。",
-      "constraints": "- `1 ≤ K ≤ N ≤ 100000`\n- `0 \u003c A1 \u003c A2 \u003c ... \u003c AN \u003c L ≤ 10^9`\n- 入力はすべて整数",
+      "statement": "左右の長さが $L$ cm のようかんがあります。  \n$N$ 個の切れ目が付けられており、左から $i$ 番目の切れ目は左から $A_i$ cm の位置にあります。\n\nあなたは $N$ 個の切れ目のうち $K$ 個を選び、ようかんを $K+1$ 個のピースに分割したいです。\n\nこのとき、以下の値を **スコア** とします。\n\n\u003e $K+1$ 個のピースのうち、最も短いものの長さ\n\nスコアが最大となるように分割する場合に得られるスコアを求めてください。",
+      "constraints": "- $1 \\leq K \\leq N \\leq 100000$\n- $0 \u003c A_1 \u003c A_2 \u003c \\cdots \u003c A_N \u003c L \\leq 10^9$\n- 入力はすべて整数",
       "samples": [
         {
           "input": "3 34\n1\n8 13 26",
           "output": "13",
-          "explanation": "左から 2 番目の切れ目で分割すると：\n\n- 13 cm\n- 21 cm\n\nとなり、最小値は `13`。\n\n---"
+          "explanation": "**この入力の意味：** 34cm のようかんに切れ目が **3か所**（8cm・13cm・26cm）あって、その中から **1か所** を選んで切る。\n\n全部の切り方を比べると：\n\n- 8cm で切る → ピースは **8cm** と 26cm → いちばん短いのは **8cm**\n- **13cm で切る** → ピースは **13cm** と 21cm → いちばん短いのは **13cm** ← これが最大！\n- 26cm で切る → ピースは **8cm** と 26cm → いちばん短いのは **8cm**\n\nいちばん短いピースが最も長くなる切り方は 13cm → 答えは **13**。\n\n---"
         },
         {
           "input": "7 45\n2\n7 11 16 20 28 34 38",
           "output": "12",
-          "explanation": ""
+          "explanation": "**この入力の意味：** 45cm のようかんに切れ目が **7か所**（7・11・16・20・28・34・38cm）あって、その中から **2か所** 選んで3つに切る。\n\n16cm と 28cm で切ると：\n\n- 0〜16cm → **16cm**\n- 16〜28cm → **12cm**\n- 28〜45cm → **17cm**\n\nいちばん短いのは **12cm** → 答えは **12**。\n\n---"
         },
         {
           "input": "3 100\n1\n28 54 81",
           "output": "46",
-          "explanation": ""
+          "explanation": "**この入力の意味：** 100cm のようかんに切れ目が **3か所**（28cm・54cm・81cm）あって、**1か所** 選んで2つに切る。\n\n全部の切り方：\n\n- 28cm で切る → **28cm** と 72cm → 最小 **28cm**\n- **54cm で切る** → **46cm** と 46cm → 最小 **46cm** ← これが最大！\n- 81cm で切る → 19cm と **81cm** → 最小 **19cm**\n\n真ん中に近い 54cm で切ると両方が均等になる → 答えは **46**。\n\n---"
         },
         {
           "input": "3 100\n2\n28 54 81",
           "output": "26",
-          "explanation": ""
+          "explanation": "**この入力の意味：** 100cm のようかんに切れ目が **3か所**（28cm・54cm・81cm）あって、**2か所** 選んで3つに切る。\n\n28cm と 54cm で切ると：\n\n- 0〜28cm → **28cm**\n- 28〜54cm → **26cm**\n- 54〜100cm → **46cm**\n\nいちばん短いのは **26cm** → 答えは **26**。\n\n---"
         },
         {
           "input": "20 1000\n4\n51 69 102 127 233 295 350 388 417 466 469 523 553 587 720 739 801 855 926 954",
           "output": "170",
-          "explanation": ""
+          "explanation": "**この入力の意味：** 1000cm のようかんに切れ目が **20か所** あって、その中から **4か所** 選んで5つに切る。\n\n組み合わせがとても多いので全部試すのは大変。プログラムで最良の切り方を探す。\n\n最もうまく切ったとき、いちばん短いピースは **170cm** → 答えは **170**。\n\n---"
         }
       ],
-      "explanation": "## 方針\n\nこの問題は：\n\n\u003e 「最小ピース長」を最大化する\n\n問題。\n\nこのタイプは典型的な：\n\n- 最大値の最小化\n- 最小値の最大化\n\nであり、**二分探索** を使う。\n\n---\n\n## 判定問題に変換\n\n「すべてのピース長を `x` 以上にできるか？」\n\nを考える。\n\n例えば：\n\n- `x = 10` → 可能\n- `x = 20` → 不可能\n\nなら、\n\n```text\n可能 可能 可能 不可能 不可能\n```\n\nのように単調性があるので二分探索できる。\n\n---\n\n## Greedy 判定\n\n左から順番に見て：\n\n- 前回切った位置から `x` 以上になったら切る\n\nを繰り返す。\n\nただし最後のピースも `x` 以上必要。\n\n---\n\n## なぜ Greedy でよい？\n\nできるだけ左で切るほど：\n\n- 後ろに余裕ができる\n- 次のピースを作りやすい\n\nため。\n\n---\n\n## 計算量\n\n二分探索は：\n\n```text\nO(log L)\n```\n\n各判定は：\n\n```text\nO(N)\n```\n\nなので全体：\n\n```text\nO(N log L)\n```\n\n---",
+      "statement_note": "## この問題で何をするの？\n\n34cm のようかんがあって、切れ目が 3 か所（8cm・13cm・26cm）に入っています。\n\nこの中から **1 か所だけ** 選んで切ります。すると 2 つのピースになります。\n\n- 8cm で切る → 8cm と 26cm → 短い方は **8cm**\n- 13cm で切る → 13cm と 21cm → 短い方は **13cm**\n- 26cm で切る → 26cm と 8cm → 短い方は **8cm**\n\n「短い方のピース」ができるだけ長くなるように切りたい。  \nいちばん長くなるのは **13cm で切ったとき（答え：13）**。\n\n## 入力の読み方\n\n```text\n3 34     ← 「切れ目が 3 か所」「ようかんは 34cm」\n1        ← 「1 か所だけ選んで切る」\n8 13 26  ← 切れ目の場所（左の端から何 cm か）\n```\n\n## 出力の読み方\n\n「いちばん短いピース」の長さを 1 つ出力する。この例では `13`。\n\n---",
+      "easy_explanation": "## イメージ\n\nようかんを何個かのピースに切るとき、「いちばん短いピース」をできるだけ長くしたい。\n\nたとえば `x = 13 cm` のとき：「全部のピースを 13 cm 以上にできる？」という **YES/NO の質問** に変える。\n\nこの YES/NO の境目を **二分探索** で素早く見つける。\n\n## どうやって切るか\n\n左から歩いていって「もう `x` cm 歩いた！」と思ったら切る。でも最後の残りも `x` cm 以上なければダメ。\n\nできるだけ **左で切るほど後ろに余裕ができる** から、このやり方（貪欲法）が正しい。",
+      "explanation": "## 方針\n\n「最小ピース長」を最大化したい → **答えを決めて判定する** 方針に変える。\n\n「全ピースを `x` cm 以上にできるか？」という判定が **できる/できない** の境目を二分探索で求める。\n\n---\n\n## 判定問題に変換\n\n「すべてのピース長を `x` 以上にできるか？」\n\nを考える。\n\n例えば：\n\n- `x = 10` → 可能\n- `x = 20` → 不可能\n\nなら、\n\n```text\n可能 可能 可能 不可能 不可能\n```\n\nのように単調性があるので二分探索できる。\n\n---\n\n## Greedy 判定\n\n左から順番に見て：\n\n- 前回切った位置から `x` 以上になったら切る\n\nを繰り返す。\n\nただし最後のピースも `x` 以上必要。\n\n---\n\n## なぜ Greedy でよい？\n\nできるだけ左で切るほど：\n\n- 後ろに余裕ができる\n- 次のピースを作りやすい\n\nため。\n\n---\n\n## 計算量\n\n二分探索は：\n\n```text\nO(log L)\n```\n\n各判定は：\n\n```text\nO(N)\n```\n\nなので全体：\n\n```text\nO(N log L)\n```\n\n---",
       "solutions": {
         "cpp": {
-          "code": "#include \u003cbits/stdc++.h\u003e\nusing namespace std;\nusing ll = long long;\n\nint main() {\n    int N, K;\n    ll L;\n\n    cin \u003e\u003e N \u003e\u003e L;\n    cin \u003e\u003e K;\n\n    vector\u003cll\u003e A(N);\n\n    for (int i = 0; i \u003c N; i++) {\n        cin \u003e\u003e A[i];\n    }\n\n    auto check = [\u0026](ll x) {\n        ll prev = 0;\n        int cnt = 0;\n\n        for (int i = 0; i \u003c N; i++) {\n            // 今切ったとき\n            // 前のピース \u003e= x\n            // 最後のピース \u003e= x\n            if (A[i] - prev \u003e= x \u0026\u0026 L - A[i] \u003e= x) {\n                cnt++;\n                prev = A[i];\n            }\n        }\n\n        return cnt \u003e= K;\n    };\n\n    ll low = 0;\n    ll high = L + 1;\n\n    while (high - low \u003e 1) {\n        ll mid = (low + high) / 2;\n\n        if (check(mid)) {\n            low = mid;\n        } else {\n            high = mid;\n        }\n    }\n\n    cout \u003c\u003c low \u003c\u003c endl;\n}",
+          "code": "#include \u003cbits/stdc++.h\u003e\nusing namespace std;\nusing ll = long long;  // long long を ll と短く書けるようにする（大きな数に対応）\n\nint main() {\n    int N, K;\n    ll L;\n\n    cin \u003e\u003e N \u003e\u003e L;  // 切れ目の数 N と ようかんの長さ L を読み込む\n    cin \u003e\u003e K;       // 選ぶ切れ目の数 K を読み込む\n\n    vector\u003cll\u003e A(N);  // 切れ目の位置を N 個分用意する\n\n    for (int i = 0; i \u003c N; i++) {\n        cin \u003e\u003e A[i];  // 各切れ目の位置を読み込む\n    }\n\n    // 「全ピースを x cm 以上にできるか？」を判定する関数\n    // できれば true、できなければ false を返す\n    auto check = [\u0026](ll x) {\n        ll prev = 0;  // 直前に切った位置（最初は左端 = 0）\n        int cnt = 0;  // 実際に切った回数\n\n        for (int i = 0; i \u003c N; i++) {\n            // A[i] - prev \u003e= x : 今切るとこのピースが x 以上になる\n            // L - A[i] \u003e= x   : 最後のピース（右端まで）も x 以上になる\n            if (A[i] - prev \u003e= x \u0026\u0026 L - A[i] \u003e= x) {\n                cnt++;        // 切る\n                prev = A[i];  // 切った位置を更新\n            }\n        }\n\n        return cnt \u003e= K;  // K 回以上切れれば OK\n    };\n\n    ll low = 0;      // low は「この値なら確実にできる」（答えの候補）\n    ll high = L + 1; // high は「この値ではできない」\n\n    // 二分探索：low と high の差が 1 になるまで繰り返す\n    while (high - low \u003e 1) {\n        ll mid = (low + high) / 2;  // 真ん中の値を試す\n\n        if (check(mid)) {\n            low = mid;   // mid でできた → もっと大きくできるかも\n        } else {\n            high = mid;  // mid ではできない → 小さくする\n        }\n    }\n\n    cout \u003c\u003c low \u003c\u003c endl;  // low が答え（最大スコア）\n}",
+          "steps": null
+        },
+        "perl": {
+          "code": "use strict;    # 変数宣言を強制（バグを防ぐ）\nuse warnings;  # 警告を有効化（バグを見つけやすくする）\n\n# 1行目：空白で分割して N と L に代入\nmy ($N, $L) = split ' ', \u003cSTDIN\u003e;\nmy $K = int(\u003cSTDIN\u003e);        # 2行目：K（int で整数に変換）\nmy @A = split ' ', \u003cSTDIN\u003e;  # 3行目：切れ目リスト（@ は配列の印）\n\n# 「全ピースを x cm 以上にできるか？」を判定するサブルーチン\nsub check {\n    my ($x) = @_;           # 引数 x を受け取る（Perl の引数は @_ 経由）\n    my ($prev, $cnt) = (0, 0);  # 直前に切った位置と切った回数を 0 で初期化\n    for my $a (@A) {\n        # このピース($a - $prev)が x 以上 かつ 残り($L - $a)が x 以上なら切る\n        if ($a - $prev \u003e= $x \u0026\u0026 $L - $a \u003e= $x) {\n            $cnt++;\n            $prev = $a;\n        }\n    }\n    return $cnt \u003e= $K;  # K 回以上切れれば 1（true）を返す\n}\n\nmy ($low, $high) = (0, $L + 1);  # 二分探索の範囲を初期化\nwhile ($high - $low \u003e 1) {\n    my $mid = int(($low + $high) / 2);  # int で整数除算\n    if (check($mid)) { $low = $mid; }   # できた → low を上げる\n    else             { $high = $mid; }  # できない → high を下げる\n}\nprint \"$low\\n\";  # 答えを出力",
+          "steps": null
+        },
+        "php": {
+          "code": "\u003c?php\n// 1行目を読んで空白で分割し、整数に変換して N と L に代入\n[$N, $L] = array_map('intval', explode(' ', trim(fgets(STDIN))));\n$K = (int)trim(fgets(STDIN));                                    // 2行目：K\n$A = array_map('intval', explode(' ', trim(fgets(STDIN))));      // 3行目：切れ目リスト\n\n// 「全ピースを x cm 以上にできるか？」を判定する関数\n// PHP は関数内から外の変数を直接使えないので $A, $L, $K を引数で渡す\nfunction check($A, $L, $K, $x) {\n    $prev = 0;  // 直前に切った位置\n    $cnt = 0;   // 切った回数\n    foreach ($A as $a) {\n        // このピース($a - $prev)が x 以上 かつ 残り($L - $a)が x 以上なら切る\n        if ($a - $prev \u003e= $x \u0026\u0026 $L - $a \u003e= $x) {\n            $cnt++;\n            $prev = $a;\n        }\n    }\n    return $cnt \u003e= $K;  // K 回以上切れれば true\n}\n\n$low = 0;       // できる側の境界\n$high = $L + 1; // できない側の境界\nwhile ($high - $low \u003e 1) {\n    $mid = intdiv($low + $high, 2);  // intdiv で整数除算（切り捨て）\n    if (check($A, $L, $K, $mid)) $low = $mid;   // できた → low を上げる\n    else $high = $mid;                           // できない → high を下げる\n}\necho $low . \"\\n\";  // 答えを出力",
           "steps": null
         },
         "python": {
-          "code": "N, L = map(int, input().split())\nK = int(input())\nA = list(map(int, input().split()))\n\ndef check(x):\n    prev = 0\n    cnt = 0\n\n    for a in A:\n        if a - prev \u003e= x and L - a \u003e= x:\n            cnt += 1\n            prev = a\n\n    return cnt \u003e= K\n\nlow = 0\nhigh = L + 1\n\nwhile high - low \u003e 1:\n    mid = (low + high) // 2\n\n    if check(mid):\n        low = mid\n    else:\n        high = mid\n\nprint(low)",
+          "code": "N, L = map(int, input().split())  # 切れ目の数 N、ようかんの長さ L を読み込む\nK = int(input())                  # 選ぶ切れ目の数 K を読み込む\nA = list(map(int, input().split()))  # 各切れ目の位置をリストで読み込む\n\n# 「全ピースを x cm 以上にできるか？」を判定する関数\ndef check(x):\n    prev = 0  # 直前に切った位置（最初は左端 = 0）\n    cnt = 0   # 実際に切った回数\n\n    for a in A:\n        # a - prev \u003e= x : 今切るとこのピースが x 以上\n        # L - a \u003e= x   : 残り（右端まで）も x 以上\n        if a - prev \u003e= x and L - a \u003e= x:\n            cnt += 1  # 切る\n            prev = a  # 切った位置を更新\n\n    return cnt \u003e= K  # K 回以上切れれば OK\n\nlow = 0      # low は「この値なら確実にできる」\nhigh = L + 1 # high は「この値ではできない」\n\n# 二分探索：low と high の差が 1 になるまで繰り返す\nwhile high - low \u003e 1:\n    mid = (low + high) // 2  # 真ん中の値を試す（// は整数除算）\n\n    if check(mid):\n        low = mid   # mid でできた → もっと大きくできるかも\n    else:\n        high = mid  # mid ではできない → 小さくする\n\nprint(low)  # low が答え（最大スコア）",
+          "steps": null
+        },
+        "ruby": {
+          "code": "N, L = gets.split.map(\u0026:to_i)  # 1行目：N と L（文字列 → 整数に変換）\nK = gets.to_i                  # 2行目：K\nA = gets.split.map(\u0026:to_i)     # 3行目：切れ目の位置リスト\n\n# 「全ピースを x cm 以上にできるか？」を判定するラムダ（無名関数）\ncheck = -\u003e(x) {\n  prev = 0  # 直前に切った位置\n  cnt = 0   # 切った回数\n  A.each do |a|\n    # このピース(a - prev)が x 以上 かつ 残り(L - a)が x 以上なら切る\n    if a - prev \u003e= x \u0026\u0026 L - a \u003e= x\n      cnt += 1\n      prev = a\n    end\n  end\n  cnt \u003e= K  # Ruby では最後の式が return 値になる\n}\n\nlow = 0      # low：できる側の境界\nhigh = L + 1 # high：できない側の境界\nwhile high - low \u003e 1\n  mid = (low + high) / 2  # 真ん中を試す\n  if check.call(mid)      # ラムダは .call() で呼び出す\n    low = mid   # できた → low を上げる\n  else\n    high = mid  # できない → high を下げる\n  end\nend\nputs low  # 答えを出力",
+          "steps": null
+        },
+        "rust": {
+          "code": "use std::io::{self, BufRead};  // 標準入力を読むためにインポート\n\n// 「全ピースを x cm 以上にできるか？」を判定する関数\n// \u0026[i64] はスライス（配列の参照）、-\u003e bool は返り値の型\nfn check(a: \u0026[i64], l: i64, k: usize, x: i64) -\u003e bool {\n    let mut prev = 0i64;    // 直前に切った位置（i64 型で初期化）\n    let mut cnt = 0usize;   // 切った回数（usize は配列添字などに使う符号なし整数）\n    for \u0026ai in a {          // a の各要素を ai として取り出す（\u0026 でコピー）\n        // このピース(ai - prev)が x 以上 かつ 残り(l - ai)が x 以上なら切る\n        if ai - prev \u003e= x \u0026\u0026 l - ai \u003e= x {\n            cnt += 1;\n            prev = ai;\n        }\n    }\n    cnt \u003e= k  // Rust では最後の式がセミコロンなしだと return 値になる\n}\n\nfn main() {\n    let stdin = io::stdin();\n    let mut lines = stdin.lock().lines();  // 標準入力を行単位で読む\n\n    // 1行目：空白区切りで N と L を読み込む\n    // unwrap() はエラーがないと仮定して値を取り出す（競プロでは通常 OK）\n    let line1: Vec\u003ci64\u003e = lines.next().unwrap().unwrap()\n        .split_whitespace().map(|s| s.parse().unwrap()).collect();\n    let (_n, l) = (line1[0] as usize, line1[1]);  // N は使わないので _ を付ける\n\n    // 2行目：K を読み込む\n    let k: usize = lines.next().unwrap().unwrap().trim().parse().unwrap();\n\n    // 3行目：切れ目の位置リストを読み込む\n    let a: Vec\u003ci64\u003e = lines.next().unwrap().unwrap()\n        .split_whitespace().map(|s| s.parse().unwrap()).collect();\n\n    let mut low = 0i64;   // できる側の境界\n    let mut high = l + 1; // できない側の境界\n    while high - low \u003e 1 {\n        let mid = (low + high) / 2;  // 真ん中を試す\n        // Rust の if は式なので、結果を直接代入できる\n        if check(\u0026a, l, k, mid) { low = mid; } else { high = mid; }\n    }\n    println!(\"{}\", low);  // 答えを出力\n}",
+          "steps": null
+        },
+        "typescript": {
+          "code": "import * as readline from 'readline';\n\n// 標準入力を1行ずつ受け取る（AtCoder の Node.js 典型パターン）\nconst rl = readline.createInterface({ input: process.stdin });\nconst lines: string[] = [];\nrl.on('line', (line) =\u003e lines.push(line.trim()));  // 1行読むたびに配列に追加\nrl.on('close', () =\u003e {\n  // 全行読み終わったら処理開始\n  const [N, L] = lines[0].split(' ').map(Number);  // 1行目：N と L\n  const K = Number(lines[1]);                       // 2行目：K\n  const A = lines[2].split(' ').map(Number);        // 3行目：切れ目の位置リスト\n\n  // 「全ピースを x cm 以上にできるか？」を判定する関数\n  // number 型の x を受け取り、boolean（true/false）を返す\n  const check = (x: number): boolean =\u003e {\n    let prev = 0, cnt = 0;  // prev：直前に切った位置、cnt：切った回数\n    for (const a of A) {\n      // このピース(a - prev)が x 以上 かつ 残り(L - a)が x 以上なら切る\n      if (a - prev \u003e= x \u0026\u0026 L - a \u003e= x) {\n        cnt++;\n        prev = a;\n      }\n    }\n    return cnt \u003e= K;  // K 回以上切れれば OK\n  };\n\n  let low = 0, high = L + 1;  // 二分探索の範囲を初期化\n  while (high - low \u003e 1) {\n    const mid = Math.floor((low + high) / 2);  // 整数で真ん中を計算\n    if (check(mid)) low = mid;   // できた → low を上げる\n    else high = mid;             // できない → high を下げる\n  }\n  console.log(low);  // 答えを出力\n});",
+          "steps": null
+        }
+      },
+      "added_at": "2026-05-20"
+    },
+    {
+      "id": "typical90_b",
+      "problem": "002",
+      "title": "Encyclopedia of Parentheses",
+      "atcoder_url": "https://atcoder.jp/contests/typical90/tasks/typical90_b",
+      "difficulty": 3,
+      "tags": [
+        "再帰",
+        "バックトラッキング",
+        "全探索",
+        "括弧列"
+      ],
+      "statement": "長さ $N$ の正しいカッコ列をすべて、辞書順に出力してください。\n\nただし、正しいカッコ列は次のように定義されています：\n\n- `()` は正しいカッコ列である\n- $S$ が正しいカッコ列であるとき、`(` + $S$ + `)` は正しいカッコ列である\n- $S$, $T$ が正しいカッコ列であるとき、$S$ + $T$ は正しいカッコ列である\n- それ以外の文字列はすべて、正しいカッコ列でない\n\nまた、`(` の方が `)` よりも辞書順で早いものとします。",
+      "constraints": "- $1 \\leq N \\leq 20$\n- $N$ は整数",
+      "samples": [
+        {
+          "input": "2",
+          "output": "()",
+          "explanation": "**この入力の意味：** 長さ **2** の正しいカッコ列を全部出力する。\n\n長さ2のカッコ列は `()` と `)(` の2種類しかない。\n\n- `()` → `(` が先に来て `)` で閉じている → **正しい** ✓\n- `)(` → `)` が先に来ている → **正しくない** ✗\n\n答えは `()` の1つだけ。\n\n---"
+        },
+        {
+          "input": "3",
+          "output": "",
+          "explanation": "**この入力の意味：** 長さ **3** の正しいカッコ列を全部出力する。\n\n正しいカッコ列は必ず `(` と `)` が同じ数だけ必要。長さが奇数のときは必ず片方が余るので、正しいカッコ列は **1つも存在しない**。何も出力しない。\n\n---"
+        },
+        {
+          "input": "4",
+          "output": "(())\n()()",
+          "explanation": "**この入力の意味：** 長さ **4** の正しいカッコ列を全部出力する。\n\n長さ4では `(` が2個・`)` が2個。正しい並べ方は2通り：\n\n- `(())` → 外側のカッコが内側を包んでいる ✓\n- `()()` → 2つのカッコが横に並んでいる ✓\n\n辞書順では `(` \u003c `)` なので `(())` が先。\n\n---"
+        },
+        {
+          "input": "10",
+          "output": "((((()))))\n(((()())))\n(((())()))\n(((()))())\n(((())))()\n((()(())))\n((()()()))\n((()())())\n((()()))()\n((())(()))\n((())()())\n((())())()\n((()))(())\n((()))()()\n(()((())))\n(()(()()))\n(()(())())\n(()(()))()\n(()()(()))\n(()()()())\n(()()())()\n(()())(())\n(()())()()\n(())((()))\n(())(()())\n(())(())()\n(())()(())\n(())()()()\n()(((())))\n()((()()))\n()((())())\n()((()))()\n()(()(()))\n()(()()())\n()(()())()\n()(())(())\n()(())()()\n()()((()))\n()()(()())\n()()(())()\n()()()(())\n()()()()()",
+          "explanation": "**この入力の意味：** 長さ **10** の正しいカッコ列を全部出力する。\n\n`(` が5個・`)` が5個の並べ方で正しいものをすべて列挙する。全部で **42通り** ある。\n\n---"
+        }
+      ],
+      "statement_note": "## この問題で何をするの？\n\n`(` と `)` の2種類の文字だけを使って、長さ **4** の文字列を作るとします（入力例3の場合）。\n\nちゃんと対応しているカッコ列、つまり：\n\n- 左から読んで、いつでも `(` の数 ≥ `)` の数\n- 最後に `(` と `)` の数がぴったり同じ\n\nになっているものだけを、アルファベット順（辞書順）にすべて出力する。\n\n## 入力の読み方\n\n```text\n4  ← 作りたいカッコ列の長さ\n```\n\n## 出力の読み方\n\n条件を満たすカッコ列を1行に1つずつ出力する。この例では `(())` と `()()` の2つ。\n\n---",
+      "easy_explanation": "## イメージ\n\nカッコを1文字ずつ左から決めていく。\n\n- `(` を追加できるのは、まだ `(` を増やす余裕があるとき\n- `)` を追加できるのは、閉じていない `(` がまだ残っているとき\n\nこのルールで全パターンを試すと、自動的に辞書順になる（`(` \u003c `)` なので `(` を先に試す）。\n\n## どう解くか\n\n1. 今まで置いた `(` の数を `l`、`)` の数を `r` として管理する\n2. 文字列の長さが $N$ になったら出力して終わり\n3. `l \u003c N/2` なら `(` を追加して再帰\n4. `r \u003c l` なら `)` を追加して再帰\n\n---",
+      "explanation": "## 方針\n\n**バックトラッキング（再帰的全探索）** で解く。\n\n左から1文字ずつ選んで進み、条件を満たせなくなったら戻る。\n\n「`(` と `)` の残り枚数」を管理しながら深さ優先探索すると、辞書順に出力できる。\n\n---\n\n## なぜ辞書順になるか\n\n再帰で `(` を先に試し、その後 `)` を試すため、`(` \u003c `)` の順番が自然に保たれる。\n\n---\n\n## よくあるミス\n\n## 1. N が奇数のとき出力してしまう\n\n正しいカッコ列の長さは必ず偶数。`N % 2 != 0` のときは何も出力しない。\n\n---\n\n## 2. `)` を置ける条件を間違える\n\n`r \u003c N/2` ではなく `r \u003c l`（閉じていない `(` がある）が正しい条件。\n\n---\n\n## 学びポイント\n\n- **バックトラッキング** の基本パターン\n- 「制約を満たしながら全列挙」する典型問題\n- 辞書順出力は「小さい選択肢から先に試す」だけで自然に実現できる\n\n---",
+      "solutions": {
+        "cpp": {
+          "code": "#include \u003cbits/stdc++.h\u003e\nusing namespace std;\n\nint N;  // カッコ列の長さ（グローバル変数として共有）\n\n// s: 今まで作った文字列\n// l: 置いた '(' の数\n// r: 置いた ')' の数\nvoid solve(string s, int l, int r) {\n    if ((int)s.size() == N) {  // 長さが N になったら出力\n        cout \u003c\u003c s \u003c\u003c '\\n';\n        return;\n    }\n    if (l \u003c N / 2)  // まだ '(' を置ける（合計 N/2 個まで）\n        solve(s + '(', l + 1, r);\n    if (r \u003c l)      // 閉じていない '(' があるので ')' を置ける\n        solve(s + ')', l, r + 1);\n}\n\nint main() {\n    cin \u003e\u003e N;\n    if (N % 2 == 0)  // 奇数のときは正しいカッコ列が存在しない\n        solve(\"\", 0, 0);\n}",
+          "steps": null
+        },
+        "perl": {
+          "code": "use strict;\nuse warnings;\n\nmy $N = int(\u003cSTDIN\u003e);  # カッコ列の長さを読み込む\n\n# s: 今まで作った文字列、l: '(' の数、r: ')' の数\nsub solve {\n    my ($s, $l, $r) = @_;\n    if (length($s) == $N) {  # 長さが N になったら出力\n        print \"$s\\n\";\n        return;\n    }\n    solve($s . '(', $l + 1, $r) if $l \u003c $N / 2;  # まだ '(' を置ける\n    solve($s . ')', $l, $r + 1) if $r \u003c $l;       # 閉じていない '(' がある\n}\n\nsolve('', 0, 0) if $N % 2 == 0;  # 奇数のときは何もしない",
+          "steps": null
+        },
+        "php": {
+          "code": "\u003c?php\n$N = (int)trim(fgets(STDIN));  // カッコ列の長さを読み込む\n\n// s: 今まで作った文字列、l: '(' の数、r: ')' の数\nfunction solve($s, $l, $r, $N) {\n    if (strlen($s) == $N) {   // 長さが N になったら出力\n        echo $s . \"\\n\";\n        return;\n    }\n    if ($l \u003c $N / 2)          // まだ '(' を置ける（合計 N/2 個まで）\n        solve($s . '(', $l + 1, $r, $N);\n    if ($r \u003c $l)              // 閉じていない '(' があるので ')' を置ける\n        solve($s . ')', $l, $r + 1, $N);\n}\n\nif ($N % 2 == 0)              // 奇数のときは正しいカッコ列が存在しない\n    solve('', 0, 0, $N);",
+          "steps": null
+        },
+        "python": {
+          "code": "N = int(input())  # カッコ列の長さを読み込む\n\n# s: 今まで作った文字列\n# l: 置いた '(' の数\n# r: 置いた ')' の数\ndef solve(s, l, r):\n    if len(s) == N:      # 長さが N になったら出力\n        print(s)\n        return\n    if l \u003c N // 2:       # まだ '(' を置ける（合計 N/2 個まで）\n        solve(s + '(', l + 1, r)\n    if r \u003c l:            # 閉じていない '(' があるので ')' を置ける\n        solve(s + ')', l, r + 1)\n\nif N % 2 == 0:           # 奇数のときは正しいカッコ列が存在しない\n    solve('', 0, 0)",
+          "steps": null
+        },
+        "ruby": {
+          "code": "N = gets.to_i  # カッコ列の長さを読み込む\n\n# s: 今まで作った文字列、l: '(' の数、r: ')' の数、n: 目標の長さ\ndef solve(s, l, r, n)\n  if s.length == n   # 長さが n になったら出力\n    puts s\n    return\n  end\n  solve(s + '(', l + 1, r, n) if l \u003c n / 2  # まだ '(' を置ける\n  solve(s + ')', l, r + 1, n) if r \u003c l       # 閉じていない '(' がある\nend\n\nsolve('', 0, 0, N) if N % 2 == 0  # 奇数のときは何もしない",
+          "steps": null
+        },
+        "rust": {
+          "code": "use std::io;\n\n// s: 今まで作った文字列（String を借用して変更・戻しを繰り返す）\n// l: 置いた '(' の数、r: 置いた ')' の数、n: 目標の長さ\nfn solve(s: \u0026mut String, l: usize, r: usize, n: usize) {\n    if s.len() == n {          // 長さが n になったら出力\n        println!(\"{}\", s);\n        return;\n    }\n    if l \u003c n / 2 {             // まだ '(' を置ける\n        s.push('(');           // 文字を追加\n        solve(s, l + 1, r, n);\n        s.pop();               // 再帰から戻ったら元に戻す（バックトラック）\n    }\n    if r \u003c l {                 // 閉じていない '(' があるので ')' を置ける\n        s.push(')');\n        solve(s, l, r + 1, n);\n        s.pop();               // 同様にバックトラック\n    }\n}\n\nfn main() {\n    let mut input = String::new();\n    io::stdin().read_line(\u0026mut input).unwrap();\n    let n: usize = input.trim().parse().unwrap();  // N を読み込む\n    if n % 2 == 0 {            // 奇数のときは何もしない\n        let mut s = String::new();\n        solve(\u0026mut s, 0, 0, n);\n    }\n}",
+          "steps": null
+        },
+        "typescript": {
+          "code": "import * as readline from 'readline';\n\nconst rl = readline.createInterface({ input: process.stdin });\nrl.on('line', (line) =\u003e {\n    const N = parseInt(line.trim());  // カッコ列の長さを読み込む\n    const results: string[] = [];    // 結果を一旦配列にためる\n\n    // s: 今まで作った文字列、l: '(' の数、r: ')' の数\n    function solve(s: string, l: number, r: number): void {\n        if (s.length === N) {   // 長さが N になったら結果に追加\n            results.push(s);\n            return;\n        }\n        if (l \u003c N / 2)          // まだ '(' を置ける\n            solve(s + '(', l + 1, r);\n        if (r \u003c l)              // 閉じていない '(' があるので ')' を置ける\n            solve(s + ')', l, r + 1);\n    }\n\n    if (N % 2 === 0)            // 奇数のときは何もしない\n        solve('', 0, 0);\n    if (results.length \u003e 0)\n        console.log(results.join('\\n'));\n    rl.close();\n});",
           "steps": null
         }
       },

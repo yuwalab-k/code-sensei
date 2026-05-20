@@ -10,5 +10,19 @@
       "貪欲"
     ],
     "file": "typical90"
+  },
+  {
+    "id": "typical90_b",
+    "contest": "典型90問",
+    "problem": "002",
+    "title": "Encyclopedia of Parentheses",
+    "difficulty": 3,
+    "tags": [
+      "再帰",
+      "バックトラッキング",
+      "全探索",
+      "括弧列"
+    ],
+    "file": "typical90"
   }
 ]

@@ -4,7 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>問題一覧 | 競プロ教材</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],ignoredTags:['script','noscript','style','pre','code']})"></script>
 </head>
 <body>
 <header class="header">
@@ -21,7 +26,7 @@
       <span class="search-icon">&#128269;</span>
       <input class="search-input" id="search" placeholder="タイトル・タグで検索..." autocomplete="off">
     </div>
-    <div class="diff-filters" id="dfilters"><button class="diff-btn active" data-diff="">すべて</button><button class="diff-btn" data-diff="4" style="--dc:#f44336">D問題レベル</button></div>
+    <div class="diff-filters" id="dfilters"><button class="diff-btn active" data-diff="">すべて</button><button class="diff-btn" data-diff="3" style="--dc:#ff9800">C問題レベル</button><button class="diff-btn" data-diff="4" style="--dc:#f44336">D問題レベル</button></div>
   </div>
   <div class="problem-grid" id="grid">
 <a class="problem-card" href="problems/typical90_a.html"
@@ -35,6 +40,18 @@
   </div>
   <div class="card-title">Yokan Party</div>
   <div class="card-tags"><span class="tag">二分探索</span><span class="tag">貪欲</span></div>
+</a>
+<a class="problem-card" href="problems/typical90_b.html"
+   data-diff="3"
+   data-title="encyclopedia of parentheses"
+   data-tags="再帰 バックトラッキング 全探索 括弧列"
+   data-contest="典型90問">
+  <div class="card-top">
+    <span class="card-contest">典型90問 002</span>
+    <span class="diff-badge" style="background:#ff9800">C問題レベル</span>
+  </div>
+  <div class="card-title">Encyclopedia of Parentheses</div>
+  <div class="card-tags"><span class="tag">再帰</span><span class="tag">バックトラッキング</span><span class="tag">全探索</span><span class="tag">括弧列</span></div>
 </a></div>
   <div class="empty" id="empty" hidden>問題が見つかりませんでした</div>
 </main>
@@ -59,5 +76,7 @@
   });
 })();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-core.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/autoloader/prism-autoloader.min.js"></script>
 </body>
 </html>

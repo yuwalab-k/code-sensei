@@ -543,6 +543,30 @@ pre.code-block code{background:none;padding:0;border-radius:0;font-size:inherit;
 @media(max-width:600px){.problem-grid{grid-template-columns:1fr}.detail-title{font-size:1.15rem}}`
 }
 
+func pwGateScript() string {
+	return `<script>(function(){` +
+		`var H="__VIEW_PASSWORD__";` +
+		`if(H.indexOf('__')===0)return;` +
+		`if(sessionStorage.getItem('cps')===H)return;` +
+		`var o=document.createElement('div');` +
+		`o.style='position:fixed;inset:0;background:#1565c0;display:flex;align-items:center;justify-content:center;z-index:9999';` +
+		`o.innerHTML='<div style="background:#fff;border-radius:12px;padding:32px;max-width:320px;width:90%;text-align:center">` +
+		`<div style="font-size:1.4rem;font-weight:700;margin-bottom:8px">&#127891; 競プロ教材</div>` +
+		`<div style="color:#666;font-size:.85rem;margin-bottom:20px">パスワードを入力してください</div>` +
+		`<input type="password" id="pwi" style="width:100%;border:1.5px solid #ccc;border-radius:8px;padding:10px;font-size:1rem;margin-bottom:10px;box-sizing:border-box" placeholder="パスワード">` +
+		`<div id="pwe" style="color:#f44336;font-size:.8rem;height:1.2em;margin-bottom:8px"></div>` +
+		`<button id="pwb" style="background:#1565c0;color:#fff;border:none;border-radius:8px;padding:10px 32px;font-size:1rem;cursor:pointer;width:100%">入る</button>` +
+		`</div>';` +
+		`document.body.appendChild(o);` +
+		`function chk(){` +
+		`var v=document.getElementById('pwi').value;` +
+		`if(v===H){sessionStorage.setItem('cps',H);o.remove();}` +
+		`else document.getElementById('pwe').textContent='パスワードが違います';}` +
+		`document.getElementById('pwb').addEventListener('click',chk);` +
+		`document.getElementById('pwi').addEventListener('keydown',function(e){if(e.key==='Enter')chk();});` +
+		`})();</script>`
+}
+
 // root: "" for index.html, "../" for problems/*.html
 func shell(title, root, back, backLabel, sub, body string) string {
 	backEl := ""
@@ -558,6 +582,7 @@ func shell(title, root, back, backLabel, sub, body string) string {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
 <title>%s | 競プロ教材</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css">
 <link rel="stylesheet" href="%sstyle.css">
@@ -567,6 +592,7 @@ func shell(title, root, back, backLabel, sub, body string) string {
   onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],ignoredTags:['script','noscript','style','pre','code']})"></script>
 </head>
 <body>
+%s
 <header class="header">
   <div class="header-inner">
     %s
@@ -578,7 +604,7 @@ func shell(title, root, back, backLabel, sub, body string) string {
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-core.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/autoloader/prism-autoloader.min.js"></script>
 </body>
-</html>`, e(title), root, backEl, root, subEl, body)
+</html>`, e(title), root, pwGateScript(), backEl, root, subEl, body)
 }
 
 func buildIndex(index []IndexEntry) {

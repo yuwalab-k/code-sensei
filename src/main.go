@@ -603,6 +603,7 @@ func shell(title, root, back, backLabel, sub, body string) string {
 %s
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-core.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/autoloader/prism-autoloader.min.js"></script>
+<footer style="text-align:center;padding:24px 16px;color:#999;font-size:.78rem;border-top:1px solid #eee;margin-top:40px">本サイトは個人学習目的のみで使用し、商用利用・公開配布はしていません。</footer>
 </body>
 </html>`, e(title), root, pwGateScript(), backEl, root, subEl, body)
 }
@@ -851,6 +852,7 @@ pre.code-print code{background:none;padding:0;font-size:inherit}
 %s
 %s
 <button class="print-btn" onclick="window.print()">&#128424; 印刷</button>
+<footer style="text-align:center;padding:24px 16px;color:#999;font-size:.78rem;border-top:1px solid #eee;margin-top:40px">本サイトは個人学習目的のみで使用し、商用利用・公開配布はしていません。</footer>
 </body>
 </html>`, e(title), pwGateScript(), body)
 }

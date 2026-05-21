@@ -24,5 +24,19 @@
       "括弧列"
     ],
     "file": "typical90"
+  },
+  {
+    "id": "typical90_c",
+    "contest": "典型90問",
+    "problem": "003",
+    "title": "Longest Circular Road",
+    "difficulty": 4,
+    "tags": [
+      "木",
+      "木の直径",
+      "BFS",
+      "グラフ"
+    ],
+    "file": "typical90"
   }
 ]

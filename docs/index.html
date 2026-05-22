@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>問題一覧 | 競プロ教材</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
@@ -13,11 +15,11 @@
   onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],ignoredTags:['script','noscript','style','pre','code']})"></script>
 </head>
 <body>
-<script>(function(){var H="__VIEW_PASSWORD__";if(H.indexOf('__')===0)return;if(sessionStorage.getItem('cps')===H)return;var o=document.createElement('div');o.style='position:fixed;inset:0;background:#1565c0;display:flex;align-items:center;justify-content:center;z-index:9999';o.innerHTML='<div style="background:#fff;border-radius:12px;padding:32px;max-width:320px;width:90%;text-align:center"><div style="font-size:1.4rem;font-weight:700;margin-bottom:8px">&#127891; 競プロ教材</div><div style="color:#666;font-size:.85rem;margin-bottom:20px">パスワードを入力してください</div><input type="password" id="pwi" style="width:100%;border:1.5px solid #ccc;border-radius:8px;padding:10px;font-size:1rem;margin-bottom:10px;box-sizing:border-box" placeholder="パスワード"><div id="pwe" style="color:#f44336;font-size:.8rem;height:1.2em;margin-bottom:8px"></div><button id="pwb" style="background:#1565c0;color:#fff;border:none;border-radius:8px;padding:10px 32px;font-size:1rem;cursor:pointer;width:100%">入る</button></div>';document.body.appendChild(o);function chk(){var v=document.getElementById('pwi').value;if(v===H){sessionStorage.setItem('cps',H);o.remove();}else document.getElementById('pwe').textContent='パスワードが違います';}document.getElementById('pwb').addEventListener('click',chk);document.getElementById('pwi').addEventListener('keydown',function(e){if(e.key==='Enter')chk();});})();</script>
+<script>(function(){var H="__VIEW_PASSWORD__";if(H.indexOf('__')===0)return;if(sessionStorage.getItem('cps')===H)return;var o=document.createElement('div');o.style='position:fixed;inset:0;background:#1565c0;display:flex;align-items:center;justify-content:center;z-index:9999';o.innerHTML='<div style="background:#fff;border-radius:12px;padding:32px;max-width:320px;width:90%;text-align:center"><div style="font-size:1.4rem;font-weight:700;margin-bottom:8px">競プロ教材</div><div style="color:#666;font-size:.85rem;margin-bottom:20px">パスワードを入力してください</div><input type="password" id="pwi" style="width:100%;border:1.5px solid #ccc;border-radius:8px;padding:10px;font-size:1rem;margin-bottom:10px;box-sizing:border-box" placeholder="パスワード"><div id="pwe" style="color:#f44336;font-size:.8rem;height:1.2em;margin-bottom:8px"></div><button id="pwb" style="background:#1565c0;color:#fff;border:none;border-radius:8px;padding:10px 32px;font-size:1rem;cursor:pointer;width:100%">入る</button></div>';document.body.appendChild(o);function chk(){var v=document.getElementById('pwi').value;if(v===H){sessionStorage.setItem('cps',H);o.remove();}else document.getElementById('pwe').textContent='パスワードが違います';}document.getElementById('pwb').addEventListener('click',chk);document.getElementById('pwi').addEventListener('keydown',function(e){if(e.key==='Enter')chk();});})();</script>
 <header class="header">
   <div class="header-inner">
     
-    <a class="header-logo" href="">&#127891; 競プロ教材</a>
+    <a class="header-logo" href=""><span class="mi">school</span> 競プロ教材</a>
     <span class="header-sub">小学生向け AtCoder 解説集</span>
   </div>
 </header>
@@ -25,10 +27,13 @@
 <main class="list-view">
   <div class="filters">
     <div class="search-wrap">
-      <span class="search-icon">&#128269;</span>
+      <span class="search-icon"><span class="mi">search</span></span>
       <input class="search-input" id="search" placeholder="タイトル・タグで検索..." autocomplete="off">
     </div>
-    <div class="diff-filters" id="dfilters"><button class="diff-btn active" data-diff="">すべて</button><button class="diff-btn" data-diff="3" style="--dc:#ff9800">C問題レベル</button><button class="diff-btn" data-diff="4" style="--dc:#f44336">D問題レベル</button></div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="diff-filters" id="dfilters" style="flex:1"><button class="diff-btn active" data-diff="">すべて</button><button class="diff-btn" data-diff="2" style="--dc:#2196f3">B問題レベル</button><button class="diff-btn" data-diff="3" style="--dc:#ff9800">C問題レベル</button><button class="diff-btn" data-diff="4" style="--dc:#f44336">D問題レベル</button></div>
+      <a class="glossary-top-link" href="glossary/index.html"><span class="mi">menu_book</span> 用語集</a>
+    </div>
   </div>
   <div class="problem-grid" id="grid">
 <a class="problem-card" href="problems/typical90_a.html"
@@ -66,8 +71,20 @@
   </div>
   <div class="card-title">Longest Circular Road</div>
   <div class="card-tags"><span class="tag">木</span><span class="tag">木の直径</span><span class="tag">BFS</span><span class="tag">グラフ</span></div>
+</a>
+<a class="problem-card" href="problems/typical90_d.html"
+   data-diff="2"
+   data-title="cross sum"
+   data-tags="累積和 配列"
+   data-contest="典型90問">
+  <div class="card-top">
+    <span class="card-contest">典型90問 004</span>
+    <span class="diff-badge" style="background:#2196f3">B問題レベル</span>
+  </div>
+  <div class="card-title">Cross Sum</div>
+  <div class="card-tags"><span class="tag">累積和</span><span class="tag">配列</span></div>
 </a></div>
-  <div class="empty" id="empty" hidden>問題が見つかりませんでした</div>
+  <div class="empty" id="empty" style="display:none">問題が見つかりませんでした</div>
 </main>
 <script>
 (function(){
@@ -77,9 +94,9 @@
     var q=search.value.toLowerCase(),v=0;
     cards.forEach(function(c){
       var ok=(!curD||c.dataset.diff===curD)&&(!q||c.dataset.title.includes(q)||c.dataset.tags.includes(q)||c.dataset.contest.includes(q));
-      c.hidden=!ok; if(ok)v++;
+      c.style.display=ok?'':'none'; if(ok)v++;
     });
-    empty.hidden=v>0;
+    empty.style.display=v>0?'none':'';
   }
   search.addEventListener('input',filter);
   document.getElementById('dfilters').addEventListener('click',function(e){

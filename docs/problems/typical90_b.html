@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Encyclopedia of Parentheses | 競プロ教材</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css">
 <link rel="stylesheet" href="../style.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
@@ -13,11 +15,11 @@
   onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],ignoredTags:['script','noscript','style','pre','code']})"></script>
 </head>
 <body>
-<script>(function(){var H="__VIEW_PASSWORD__";if(H.indexOf('__')===0)return;if(sessionStorage.getItem('cps')===H)return;var o=document.createElement('div');o.style='position:fixed;inset:0;background:#1565c0;display:flex;align-items:center;justify-content:center;z-index:9999';o.innerHTML='<div style="background:#fff;border-radius:12px;padding:32px;max-width:320px;width:90%;text-align:center"><div style="font-size:1.4rem;font-weight:700;margin-bottom:8px">&#127891; 競プロ教材</div><div style="color:#666;font-size:.85rem;margin-bottom:20px">パスワードを入力してください</div><input type="password" id="pwi" style="width:100%;border:1.5px solid #ccc;border-radius:8px;padding:10px;font-size:1rem;margin-bottom:10px;box-sizing:border-box" placeholder="パスワード"><div id="pwe" style="color:#f44336;font-size:.8rem;height:1.2em;margin-bottom:8px"></div><button id="pwb" style="background:#1565c0;color:#fff;border:none;border-radius:8px;padding:10px 32px;font-size:1rem;cursor:pointer;width:100%">入る</button></div>';document.body.appendChild(o);function chk(){var v=document.getElementById('pwi').value;if(v===H){sessionStorage.setItem('cps',H);o.remove();}else document.getElementById('pwe').textContent='パスワードが違います';}document.getElementById('pwb').addEventListener('click',chk);document.getElementById('pwi').addEventListener('keydown',function(e){if(e.key==='Enter')chk();});})();</script>
+<script>(function(){var H="__VIEW_PASSWORD__";if(H.indexOf('__')===0)return;if(sessionStorage.getItem('cps')===H)return;var o=document.createElement('div');o.style='position:fixed;inset:0;background:#1565c0;display:flex;align-items:center;justify-content:center;z-index:9999';o.innerHTML='<div style="background:#fff;border-radius:12px;padding:32px;max-width:320px;width:90%;text-align:center"><div style="font-size:1.4rem;font-weight:700;margin-bottom:8px">競プロ教材</div><div style="color:#666;font-size:.85rem;margin-bottom:20px">パスワードを入力してください</div><input type="password" id="pwi" style="width:100%;border:1.5px solid #ccc;border-radius:8px;padding:10px;font-size:1rem;margin-bottom:10px;box-sizing:border-box" placeholder="パスワード"><div id="pwe" style="color:#f44336;font-size:.8rem;height:1.2em;margin-bottom:8px"></div><button id="pwb" style="background:#1565c0;color:#fff;border:none;border-radius:8px;padding:10px 32px;font-size:1rem;cursor:pointer;width:100%">入る</button></div>';document.body.appendChild(o);function chk(){var v=document.getElementById('pwi').value;if(v===H){sessionStorage.setItem('cps',H);o.remove();}else document.getElementById('pwe').textContent='パスワードが違います';}document.getElementById('pwb').addEventListener('click',chk);document.getElementById('pwi').addEventListener('keydown',function(e){if(e.key==='Enter')chk();});})();</script>
 <header class="header">
   <div class="header-inner">
-    <a class="back-btn" href="../">&#8592; もどる</a>
-    <a class="header-logo" href="../">&#127891; 競プロ教材</a>
+    <a class="back-btn" href="../"><span class="mi">arrow_back</span> もどる</a>
+    <a class="header-logo" href="../"><span class="mi">school</span> 競プロ教材</a>
     
   </div>
 </header>
@@ -25,9 +27,10 @@
 <main class="detail-view">
   <div class="detail-contest">典型90問 002</div>
   <h1 class="detail-title">Encyclopedia of Parentheses</h1>
-  <div class="detail-meta"><span class="diff-badge" style="background:#ff9800">C問題レベル</span> <span class="tag">再帰</span><span class="tag">バックトラッキング</span><span class="tag">全探索</span><span class="tag">括弧列</span> <a class="atcoder-link" href="https://atcoder.jp/contests/typical90/tasks/typical90_b" target="_blank" rel="noopener">&#128279; AtCoderで見る</a></div>
+  <div class="detail-meta"><span class="diff-badge" style="background:#ff9800">C問題レベル</span> <span class="tag">再帰</span><span class="tag">バックトラッキング</span><span class="tag">全探索</span><span class="tag">括弧列</span> <a class="atcoder-link" href="https://atcoder.jp/contests/typical90/tasks/typical90_b" target="_blank" rel="noopener"><span class="mi">open_in_new</span> AtCoderで見る</a> <a class="print-link" href="../print/typical90_b.html" target="_blank"><span class="mi">print</span> 印刷用</a></div>
+  <div class="glossary-refs"><span style="font-size:.8rem;color:#666"><span class="mi">psychology</span> 使う考え方：</span><a class="glossary-ref-link" href="../glossary/recursion.html"><span class="mi">book_2</span> 再帰・バックトラッキング</a></div>
   <section class="detail-section">
-    <h2 class="section-title">&#128196; 問題文</h2>
+    <h2 class="section-title"><span class="mi">description</span> 問題文</h2>
     <div class="statement-box"><p>長さ $N$ の正しいカッコ列をすべて、辞書順に出力してください。</p>
 <p>ただし、正しいカッコ列は次のように定義されています：</p>
 <ul>
@@ -43,7 +46,7 @@
 <li>$N$ は整数</li>
 </ul>
 </div>
-    <div class="statement-note"><span class="statement-note-badge">&#128221; 入力例1を使った説明</span><h2>この問題で何をするの？</h2>
+    <div class="statement-note"><span class="statement-note-badge"><span class="mi">info</span> 入力例1を使った説明</span><h2>この問題で何をするの？</h2>
 <p><code>(</code> と <code>)</code> の2種類の文字だけを使って、長さ <strong>4</strong> の文字列を作るとします（入力例3の場合）。</p>
 <p>ちゃんと対応しているカッコ列、つまり：</p>
 <ul>
@@ -58,15 +61,21 @@
 <p>条件を満たすカッコ列を1行に1つずつ出力する。この例では <code>(())</code> と <code>()()</code> の2つ。</p>
 <hr>
 </div>
+    <div class="constraints-note"><span class="constraints-note-badge"><span class="mi">help</span> 制約の読み方</span><ul>
+<li><code>1 ≤ N ≤ 8</code>：Nは最大<strong>8</strong>。括弧の長さは最大 2×8=<strong>16文字</strong>。</li>
+<li>Nが小さいので、2^16=<strong>65536通り</strong>の全探索でも間に合う。ただし再帰で丁寧に生成する方法のほうがスマート。</li>
+<li>Nが大きくなると全探索は指数爆発するので、再帰（バックトラッキング）の考え方を覚えよう。</li>
+</ul>
+</div>
   </section>
   <section class="detail-section">
-    <h2 class="section-title">&#10067; 入力・出力の例</h2>
+    <h2 class="section-title"><span class="mi">quiz</span> 入力・出力の例</h2>
     
 <div class="sample-block">
   <div class="sample-row">
     <div class="sample-col"><div class="sample-label">入力 1</div><pre class="sample-pre">2</pre></div>
     <div class="sample-col"><div class="sample-label">出力 1</div><pre class="sample-pre">()</pre></div>
-  </div><div class="sample-explanation"><p><strong>この入力の意味：</strong> 長さ <strong>2</strong> の正しいカッコ列を全部出力する。</p>
+  </div><div class="sample-explanation"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 長さ <strong>2</strong> の正しいカッコ列を全部出力する。</p>
 <p>長さ2のカッコ列は <code>()</code> と <code>)(</code> の2種類しかない。</p>
 <ul>
 <li><code>()</code> → <code>(</code> が先に来て <code>)</code> で閉じている → <strong>正しい</strong> ✓</li>
@@ -80,7 +89,7 @@
   <div class="sample-row">
     <div class="sample-col"><div class="sample-label">入力 2</div><pre class="sample-pre">3</pre></div>
     <div class="sample-col"><div class="sample-label">出力 2</div><pre class="sample-pre"></pre></div>
-  </div><div class="sample-explanation"><p><strong>この入力の意味：</strong> 長さ <strong>3</strong> の正しいカッコ列を全部出力する。</p>
+  </div><div class="sample-explanation"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 長さ <strong>3</strong> の正しいカッコ列を全部出力する。</p>
 <p>正しいカッコ列は必ず <code>(</code> と <code>)</code> が同じ数だけ必要。長さが奇数のときは必ず片方が余るので、正しいカッコ列は <strong>1つも存在しない</strong>。何も出力しない。</p>
 <hr>
 </div>
@@ -90,7 +99,7 @@
     <div class="sample-col"><div class="sample-label">入力 3</div><pre class="sample-pre">4</pre></div>
     <div class="sample-col"><div class="sample-label">出力 3</div><pre class="sample-pre">(())
 ()()</pre></div>
-  </div><div class="sample-explanation"><p><strong>この入力の意味：</strong> 長さ <strong>4</strong> の正しいカッコ列を全部出力する。</p>
+  </div><div class="sample-explanation"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 長さ <strong>4</strong> の正しいカッコ列を全部出力する。</p>
 <p>長さ4では <code>(</code> が2個・<code>)</code> が2個。正しい並べ方は2通り：</p>
 <ul>
 <li><code>(())</code> → 外側のカッコが内側を包んでいる ✓</li>
@@ -145,7 +154,7 @@
 ()()(())()
 ()()()(())
 ()()()()()</pre></div>
-  </div><div class="sample-explanation"><p><strong>この入力の意味：</strong> 長さ <strong>10</strong> の正しいカッコ列を全部出力する。</p>
+  </div><div class="sample-explanation"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 長さ <strong>10</strong> の正しいカッコ列を全部出力する。</p>
 <p><code>(</code> が5個・<code>)</code> が5個の並べ方で正しいものをすべて列挙する。全部で <strong>42通り</strong> ある。</p>
 <hr>
 </div>
@@ -153,7 +162,7 @@
   </section>
   
 <section class="detail-section">
-  <h2 class="section-title">&#128640; わかりやすく解説</h2>
+  <h2 class="section-title"><span class="mi">lightbulb</span> わかりやすく解説</h2>
   <div class="explanation-box easy-box"><h2>イメージ</h2>
 <p>カッコを1文字ずつ左から決めていく。</p>
 <ul>
@@ -173,7 +182,7 @@
 </section>
   
 <section class="detail-section">
-  <h2 class="section-title">&#128218; くわしい解説</h2>
+  <h2 class="section-title"><span class="mi">menu_book</span> くわしい解説</h2>
   <div class="explanation-box"><h2>方針</h2>
 <p><strong>バックトラッキング（再帰的全探索）</strong> で解く。</p>
 <p>左から1文字ずつ選んで進み、条件を満たせなくなったら戻る。</p>
@@ -200,7 +209,7 @@
 </section>
   
 <section class="detail-section">
-  <h2 class="section-title">&#128187; 解答コード</h2>
+  <h2 class="section-title"><span class="mi">code</span> 解答コード</h2>
   <div class="lang-tabs" id="ltabs"><button class="lang-tab active" data-lang="python">Python</button><button class="lang-tab" data-lang="cpp">C++</button><button class="lang-tab" data-lang="typescript">TypeScript</button><button class="lang-tab" data-lang="ruby">Ruby</button><button class="lang-tab" data-lang="php">PHP</button><button class="lang-tab" data-lang="rust">Rust</button><button class="lang-tab" data-lang="perl">Perl</button></div>
   <div class="code-panel active" id="panel-python"><pre class="code-block language-python"><code class="language-python">N = int(input())  # カッコ列の長さを読み込む
 
@@ -338,6 +347,37 @@ sub solve {
 }
 
 solve(&#39;&#39;, 0, 0) if $N % 2 == 0;  # 奇数のときは何もしない</code></pre></div>
+  
+<div class="bad-solutions">
+  <div class="bad-solutions-title"><span class="mi">sentiment_dissatisfied</span> 悪い例（結果は合ってるけど…）</div>
+  <div class="bad-lang-tabs" id="bltabs"><button class="bad-lang-tab active" data-lang="bad-python">Python</button></div>
+  <div class="bad-code-panel active" id="panel-bad-python"><div class="bad-solution-label"><span class="mi">warning</span> O(2^(2N)×N) 全探索 — 全パターン生成して後から判定</div><pre class="code-block-bad language-python"><code class="language-python">from itertools import product
+N = int(input())
+for n in range(1, N + 1):
+    # 2^(2n) 通りの文字列をすべて生成してから判定
+    # n=8 のとき 2^16 = 65536 通り → ギリギリ間に合うが無駄が多い
+    # 再帰で「最初から正しい括弧列だけ」を作れば余分な生成がない
+    for bits in product(&#39;()&#39;, repeat=2*n):
+        s = &#39;&#39;.join(bits)
+        d = 0
+        ok = True
+        for c in s:
+            d += 1 if c == &#39;(&#39; else -1
+            if d &lt; 0:  # 途中でマイナスになったら無効
+                ok = False
+                break
+        if ok and d == 0:  # 最後に0になれば有効
+            print(s)</code></pre></div>
+</div>
+<script>
+document.getElementById('bltabs').addEventListener('click',function(e){
+  var b=e.target.closest('.bad-lang-tab'); if(!b)return;
+  document.querySelectorAll('.bad-lang-tab').forEach(function(x){x.classList.remove('active');});
+  document.querySelectorAll('.bad-code-panel').forEach(function(x){x.classList.remove('active');});
+  b.classList.add('active');
+  var p=document.getElementById('panel-'+b.dataset.lang); if(p)p.classList.add('active');
+});
+</script>
 </section>
 <script>
 document.getElementById('ltabs').addEventListener('click',function(e){

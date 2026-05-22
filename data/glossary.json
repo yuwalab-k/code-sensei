@@ -1,0 +1,126 @@
+[
+  {
+    "id": "big_o",
+    "name": "計算量・O記法",
+    "short": "プログラムの「速さ」を大まかに表す方法",
+    "description": "プログラムが何回計算するかを、入力の大きさ（N）を使って表します。「O」は「だいたい〜回くらい」という意味です。\n\n競プロでは「1秒間に約**1億回**の計算ができる」と考えます。\n\n| 記法 | Nが2倍になると… | 例 |\n|------|-----------------|----|\n| O(N) | 計算回数も2倍 | 配列を1回なめる |\n| O(N²) | 計算回数は4倍 | 全ペアを調べる |\n| O(N log N) | ほんの少し増える | ソート |\n| O(log N) | ほとんど変わらない | 二分探索 |\n\nN = 100,000 のとき：\n- O(N²) = **100億回** → 約100秒 → TLE（時間超過）\n- O(N) = **10万回** → 0.001秒 → 余裕で間に合う",
+    "without_label": "O(N²)：全ペアを調べる",
+    "without_code": "# N=100000 のとき100億回ループ → TLE\nfor i in range(N):\n    for j in range(N):  # ← ここが問題。二重ループ\n        if A[i] + A[j] == target:\n            print(i, j)",
+    "with_label": "O(N)：辞書を使って1回のループで解く",
+    "with_code": "# N=100000 のとき10万回ループ → 余裕\nseen = set()\nfor i in range(N):\n    if target - A[i] in seen:  # 辞書の検索は O(1)\n        print(\"found\")\n    seen.add(A[i])",
+    "when_to_use": "答えを考えるとき、まず「この方法は何回計算するか？」を確認しよう。制約（N ≤ 100,000 など）を見て、どの計算量なら間に合うか判断する。",
+    "problems": []
+  },
+  {
+    "id": "binary_search",
+    "name": "二分探索",
+    "short": "真ん中を見て、答えが左右どちらにあるかで範囲を半分に絞る探し方",
+    "description": "1〜100の数当てゲームで考えよう。\n\n- **全部試す**：「1？2？3？…」→ 最悪100回かかる\n- **二分探索**：「50より大きい？」→ 「はい」→「75より大きい？」→ … → **最悪7回**で当てられる！\n\n毎回「真ん中」を確認して半分に絞るので、N個の中から探すのに **O(log N)** 回で済みます。\n\nlog₂(10億) ≈ **30** なので、10億通りでもたった30回で答えが出ます。",
+    "without_label": "全部試す O(L) → TLE",
+    "without_code": "ans = 0\n# L が最大10^9 → 10億回ループ → 絶対TLE\nfor x in range(1, L + 1):\n    if ok(x):      # 条件を満たすか確認\n        ans = x\nprint(ans)",
+    "with_label": "二分探索 O(log L) → 余裕で間に合う",
+    "with_code": "low, high = 0, L + 1\n# log2(10^9) ≈ 30 → たった30回ループ\nwhile high - low > 1:\n    mid = (low + high) // 2  # 真ん中を見る\n    if ok(mid):\n        low = mid   # 真ん中でOK → もっと大きくできるかも\n    else:\n        high = mid  # 真ん中でNG → 小さくする\nprint(low)",
+    "when_to_use": "「答えがxのとき条件を満たすか？」という判定ができて、「xが大きいほど難しくなる（または簡単になる）」という**単調性**があるとき。最小値の最大化・最大値の最小化問題によく登場する。",
+    "problems": [
+      "typical90_a"
+    ]
+  },
+  {
+    "id": "greedy",
+    "name": "貪欲法（グリーディ）",
+    "short": "「今この瞬間で一番よさそうな選択」を選び続ける方法",
+    "description": "全部の組み合わせを試さずに、「その場で最善」を選ぶだけ。\n\n**例**：500円で買えるだけお菓子を買いたい。\n- 全組み合わせを試す → 組み合わせが多すぎて大変\n- 貪欲に「高いものから順に選ぶ」→ 最適な答えになる（この場合は）\n\nただし**すべての問題で使えるわけではない**。「本当にその選択で最善になるか？」を必ず確認する必要がある。",
+    "without_label": "全組み合わせを試す → 指数的に遅い",
+    "without_code": "from itertools import combinations\n# N個からK個選ぶ全パターンを試す\n# C(N, K) 通り → N=100000, K=50000 では天文学的な数\nfor sel in combinations(range(N), K):\n    score = check(sel)\n    ans = max(ans, score)",
+    "with_label": "貪欲に「左から順に条件を満たしたら切る」→ O(N)",
+    "with_code": "prev = 0\ncuts = 0\nfor a in A:\n    # 今切ると「このピース」と「残り」が両方x以上になる？\n    if a - prev >= x and L - a >= x:\n        cuts += 1   # 切る！（できるだけ早く切ると後が楽になる）\n        prev = a\nreturn cuts >= K",
+    "when_to_use": "「早めに決めるほど後が楽になる」「一番大きい（小さい）ものから選ぶと最適」というパターンのとき。判定問題と組み合わせることが多い。",
+    "problems": [
+      "typical90_a"
+    ]
+  },
+  {
+    "id": "recursion",
+    "name": "再帰・バックトラッキング",
+    "short": "関数が自分自身を呼び出して、問題を少しずつ小さくしていく方法",
+    "description": "**再帰の考え方**：「大きな問題を、同じ形の小さな問題に分ける」\n\n例：「n段の階段の登り方は何通り？」\n→ 「1段ずつ登る場合（n-1段の問題）」＋「2段まとめて登る場合（n-2段の問題）」\n→ どちらも**同じ問題の小さいバージョン**！\n\n**バックトラッキング**：「試してダメだったら戻る」探し方。\n迷路を解くときに「行き止まりだったら1つ前に戻る」のと同じ。",
+    "without_label": "全文字列を生成してから判定 → O(2^(2N) × N)",
+    "without_code": "from itertools import product\nfor n in range(1, N + 1):\n    # 2^(2n) 通りの文字列を全部作ってから「正しいか」チェック\n    # n=8 のとき 2^16 = 65536通り → まだ動くが無駄だらけ\n    for bits in product('()', repeat=2*n):\n        s = ''.join(bits)\n        if is_valid(s):  # 作ってから判定\n            print(s)",
+    "with_label": "再帰で「正しい括弧列だけ」を構築 → O(カタラン数)",
+    "with_code": "def solve(s, left, right, n):\n    if left == 0 and right == 0:\n        print(s)  # 完成！\n        return\n    if left > 0:           # まだ「(」を追加できる\n        solve(s + '(', left - 1, right, n)\n    if right > left:       # 「)」を追加できる（open > close のとき）\n        solve(s + ')', left, right - 1, n)\n\nfor n in range(1, N + 1):\n    solve('', n, n, n)  # n個の「(」とn個の「)」を使う",
+    "when_to_use": "「選択肢を1つずつ選んで、条件を満たす組み合わせを全て列挙したい」とき。N が小さい（N ≤ 20 くらい）ときに有効。",
+    "problems": [
+      "typical90_b"
+    ]
+  },
+  {
+    "id": "graph_tree",
+    "name": "グラフ・木",
+    "short": "「点（ノード）」と「線（辺）」でつながりを表すデータ構造",
+    "description": "**グラフ**：点と線でつながりを表したもの。\n- 例：路線図（駅＝点、線路＝辺）、SNSの友達関係\n\n**木（tree）**：グラフの中でも特別なもの。\n- 輪っか（サイクル）がない\n- 全部の点がつながっている\n- N個の点があるとき、辺はちょうど**N-1本**\n- どの2点の間にも道が**ちょうど1本**だけ\n\n**隣接リスト**：各点に「どの点とつながっているか」をリストで持つ。\n\n```python\ng = [[] for _ in range(N + 1)]  # g[i] = iとつながっている点のリスト\ng[1].append(2)  # 1と2がつながっている\ng[2].append(1)\n```",
+    "without_label": "隣接行列（N×Nの表）→ メモリがN²かかる",
+    "without_code": "# N=100000 のとき 100000×100000 = 100億のメモリ → アウト\nadj = [[0]*N for _ in range(N)]\nadj[0][1] = 1\nadj[1][0] = 1",
+    "with_label": "隣接リスト → メモリがO(N + 辺の数)で済む",
+    "with_code": "# N=100000 でも辺がN-1本なら O(N) のメモリ\ng = [[] for _ in range(N + 1)]\nfor _ in range(N - 1):\n    a, b = map(int, input().split())\n    g[a].append(b)\n    g[b].append(a)",
+    "when_to_use": "都市間の道路、友達のつながり、階層構造（親子関係）を扱うとき。",
+    "problems": [
+      "typical90_c"
+    ]
+  },
+  {
+    "id": "bfs",
+    "name": "BFS（幅優先探索）",
+    "short": "出発点から近い順に広がっていく探し方",
+    "description": "石を池に投げたときの**波紋**のように、出発点から近い順に調べていく。\n\n**キュー（queue）**を使うのがポイント。\n1. 出発点をキューに入れる\n2. キューから取り出して、その隣をキューに追加\n3. キューが空になるまで繰り返す\n\n最短距離を求めるのに使える。グラフ上の全点への距離を O(N + 辺の数) で計算できる。",
+    "without_label": "全頂点からBFS → O(N²)",
+    "without_code": "ans = 0\n# 全頂点を出発点にしてBFS → N × O(N) = O(N²) → TLE\nfor i in range(1, N + 1):\n    dist = bfs(i)                # 毎回O(N)かかる\n    ans = max(ans, max(dist[1:]))",
+    "with_label": "BFSを2回だけ → O(N)",
+    "with_code": "from collections import deque\n\ndef bfs(start):\n    dist = [-1] * (N + 1)\n    dist[start] = 0\n    q = deque([start])\n    while q:\n        v = q.popleft()\n        for u in g[v]:\n            if dist[u] < 0:      # まだ訪れていない\n                dist[u] = dist[v] + 1\n                q.append(u)\n    return dist\n\n# 1回目：適当な点(1番)からBFS\nd1 = bfs(1)\nu = d1.index(max(d1))  # 最も遠い点u\n# 2回目：uからBFS\nd2 = bfs(u)\nprint(max(d2) + 1)     # 直径 + 新しい辺1本",
+    "when_to_use": "グラフ上での最短距離・最短経路を求めるとき。木の直径を求めるときも2回のBFSを使う。",
+    "problems": [
+      "typical90_c"
+    ]
+  },
+  {
+    "id": "tree_diameter",
+    "name": "木の直径",
+    "short": "木の中で一番遠い2つの点の間の距離",
+    "description": "木の**直径（diameter）**とは、木に含まれるすべての2点ペアの中で、距離が最も長いもの。\n\n**求め方（BFSを2回するだけ！）**\n1. 適当な点sからBFSして、一番遠い点**u**を見つける\n2. **u**からBFSして、一番遠い点**v**を見つける\n3. **u〜v間の距離**が木の直径\n\nなぜ2回で正しく求まるのかは数学的に証明できる。競プロでは「このアルゴリズムで正しい」と覚えておけばOK。",
+    "without_label": "全ペアの距離を計算 → O(N²)",
+    "without_code": "ans = 0\n# 全頂点を出発点にして最遠点を探す\n# N=100000 のとき O(N²) = 100億回 → TLE\nfor i in range(1, N + 1):\n    d = bfs(i)\n    ans = max(ans, max(d[1:]))",
+    "with_label": "BFS 2回で O(N)",
+    "with_code": "# 1回目：点1（どこでもいい）からBFS\nd1 = bfs(1)\nu = d1.index(max(d1[1:]), 1)  # 最遠点u\n\n# 2回目：uからBFS\nd2 = bfs(u)\ndiameter = max(d2[1:])         # 直径\n\n# この問題では直径の道に辺を1本追加するので +1\nprint(diameter + 1)",
+    "when_to_use": "木構造で「最も遠い2点間の距離」を求めるとき。",
+    "problems": [
+      "typical90_c"
+    ]
+  },
+  {
+    "id": "precomputation",
+    "name": "前計算（累積和）",
+    "short": "同じ計算を何度もしないよう、先にまとめて計算しておく方法",
+    "description": "「クラス全員の点数の合計は？」を先生に何度も聞かれるとき：\n- **毎回足す**：1回あたり N 回の計算 × Q回 = **N×Q 回**\n- **先に計算しておく**：最初に1回 N 回の計算 → あとは答えを返すだけ = **N + Q 回**\n\nN = Q = 100,000 のとき：\n- 毎回計算 → **100億回** → TLE\n- 前計算 → **20万回** → 余裕\n\n**累積和（prefix sum）**はその応用で、「区間の合計」を O(1) で答えられるようにする。",
+    "without_label": "毎回合計を計算する → O(HW(H+W))",
+    "without_code": "for i in range(H):\n    for j in range(W):\n        # 毎回この行を全部足す → O(W)\n        row_sum = sum(A[i])\n        # 毎回この列を全部足す → O(H)\n        col_sum = sum(A[k][j] for k in range(H))\n        # 合計 O(H+W) × HW マス = O(HW(H+W)) → TLE\n        print(row_sum + col_sum - A[i][j])",
+    "with_label": "先に行・列の合計を計算 → O(HW)",
+    "with_code": "# 前計算：O(HW) で行の合計・列の合計を求める\nrow = [sum(A[i]) for i in range(H)]           # 各行の合計\ncol = [sum(A[i][j] for i in range(H))         # 各列の合計\n       for j in range(W)]\n\n# 各マスの答えを O(1) で計算\nfor i in range(H):\n    print(' '.join(\n        str(row[i] + col[j] - A[i][j])  # A[i][j]は2回足されるので1回引く\n        for j in range(W)\n    ))",
+    "when_to_use": "「同じ部分の計算が何度も出てくる」とき。区間の合計・最大値・最小値など、クエリに何度も答える問題でよく使う。",
+    "problems": [
+      "typical90_d"
+    ]
+  },
+  {
+    "id": "check_function",
+    "name": "判定問題・チェック関数",
+    "short": "「答えがxのとき条件を満たせるか？」をYes/Noで答える関数に変換する考え方",
+    "description": "**難しい問題をシンプルな質問に変換する**\n\n「最小のピースが最大になる切り方を求めよ」は難しい。でもこう変換すると：\n\n> 「各ピースを**x cm以上**にしてK回切ることはできるか？」\n\nこれはYes/Noで答えられる。「できる」「できない」だけ考えればいい。\n\nこの**Yes/Noで答える小問題**のことを「**判定問題**」、判定する関数を「**チェック関数（ok関数）**」と呼ぶ。\n\n---\n\n**なぜ役に立つの？**\n\n- xが小さい → 切りやすい（ほぼ必ず「できる」）\n- xが大きい → 切りにくい（「できない」になる）\n\nこの「xが増えると難しくなる」という性質があれば、**二分探索**で最大のxを探せる！\n\nチェック関数の中では、**貪欲法**（左から条件を満たしたらすぐ切る）を使うと速く判定できる。\n\n**まとめ：**\n```\n難しい問題\n  ↓ 変換\n判定問題 ok(x)「x以上にできるか？」\n  ↓ 使う\n二分探索で最大のxを探す\n  ↓ ok(x)の中では\n貪欲法で高速に判定\n```",
+    "without_label": "「どこで切ればいいか」を全通り試す → C(N,K)通りで天文学的に遅い",
+    "without_code": "from itertools import combinations\n\nA = [切れ目の位置リスト]  # 例: [8, 13, 26]\nans = 0\n\n# N個の切れ目からK個選ぶ全パターンを試す\n# N=100000, K=3 でも C(100000,3) ≈ 1.6億通り → TLE\nfor cuts in combinations(A, K):\n    prev = 0\n    pieces = []\n    for c in sorted(cuts):\n        pieces.append(c - prev)\n        prev = c\n    pieces.append(L - prev)\n    ans = max(ans, min(pieces))  # 最小ピースを最大化\n\nprint(ans)",
+    "with_label": "「x以上にできるか？」判定に変換 → 二分探索＋貪欲でO(N log L)",
+    "with_code": "def ok(x):  # 「各ピースをx以上にしてK回切れるか？」をYes/Noで答える\n    cuts = 0\n    prev = 0\n    for a in A:\n        # 貪欲：条件を満たす最初の場所でさっさと切る\n        if a - prev >= x and L - a >= x:\n            cuts += 1\n            prev = a\n    return cuts >= K  # K回切れたら「できる」\n\n# あとは二分探索でok(x)=Trueになる最大のxを探すだけ\nlow, high = 0, L + 1\nwhile high - low > 1:\n    mid = (low + high) // 2\n    if ok(mid):      # midでできる → もっと大きくできるかも\n        low = mid\n    else:            # midではできない → 小さくする\n        high = mid\nprint(low)",
+    "when_to_use": "「最大値の最小化」「最小値の最大化」という問題のとき。「直接答えを求める」のが難しくても、「xのとき条件を満たすか？」という判定問題に変換できれば、二分探索と組み合わせて解ける。",
+    "problems": [
+      "typical90_a"
+    ]
+  }
+]

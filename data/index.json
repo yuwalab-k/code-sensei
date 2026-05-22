@@ -38,5 +38,17 @@
       "グラフ"
     ],
     "file": "typical90"
+  },
+  {
+    "id": "typical90_d",
+    "contest": "典型90問",
+    "problem": "004",
+    "title": "Cross Sum",
+    "difficulty": 2,
+    "tags": [
+      "累積和",
+      "配列"
+    ],
+    "file": "typical90"
   }
 ]

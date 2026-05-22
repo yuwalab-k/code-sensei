@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>木の直径 | 競プロ教材</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],ignoredTags:['script','noscript','style','pre','code']})"></script>
+</head>
+<body>
+<script>(function(){var H="__VIEW_PASSWORD__";if(H.indexOf('__')===0)return;if(sessionStorage.getItem('cps')===H)return;var o=document.createElement('div');o.style='position:fixed;inset:0;background:#1565c0;display:flex;align-items:center;justify-content:center;z-index:9999';o.innerHTML='<div style="background:#fff;border-radius:12px;padding:32px;max-width:320px;width:90%;text-align:center"><div style="font-size:1.4rem;font-weight:700;margin-bottom:8px">競プロ教材</div><div style="color:#666;font-size:.85rem;margin-bottom:20px">パスワードを入力してください</div><input type="password" id="pwi" style="width:100%;border:1.5px solid #ccc;border-radius:8px;padding:10px;font-size:1rem;margin-bottom:10px;box-sizing:border-box" placeholder="パスワード"><div id="pwe" style="color:#f44336;font-size:.8rem;height:1.2em;margin-bottom:8px"></div><button id="pwb" style="background:#1565c0;color:#fff;border:none;border-radius:8px;padding:10px 32px;font-size:1rem;cursor:pointer;width:100%">入る</button></div>';document.body.appendChild(o);function chk(){var v=document.getElementById('pwi').value;if(v===H){sessionStorage.setItem('cps',H);o.remove();}else document.getElementById('pwe').textContent='パスワードが違います';}document.getElementById('pwb').addEventListener('click',chk);document.getElementById('pwi').addEventListener('keydown',function(e){if(e.key==='Enter')chk();});})();</script>
+<header class="header">
+  <div class="header-inner">
+    <a class="back-btn" href="index.html"><span class="mi">arrow_back</span> 用語集</a>
+    <a class="header-logo" href="../"><span class="mi">school</span> 競プロ教材</a>
+    
+  </div>
+</header>
+
+<main class="detail-view">
+  <h1 class="detail-title"><span class="mi">book_2</span> 木の直径</h1>
+  <div class="detail-meta" style="margin-bottom:16px"><a class="print-link" href="../print/glossary_tree_diameter.html" target="_blank"><span class="mi">print</span> 印刷用</a></div>
+  <p class="glossary-short" style="margin-bottom:24px">木の中で一番遠い2つの点の間の距離</p>
+  <section class="detail-section">
+    <h2 class="section-title"><span class="mi">auto_stories</span> 解説</h2>
+    <div class="glossary-desc statement-box"><p>木の**直径（diameter）**とは、木に含まれるすべての2点ペアの中で、距離が最も長いもの。</p>
+<p><strong>求め方（BFSを2回するだけ！）</strong></p>
+<ol>
+<li>適当な点sからBFSして、一番遠い点<strong>u</strong>を見つける</li>
+<li><strong>u</strong>からBFSして、一番遠い点<strong>v</strong>を見つける</li>
+<li><strong>u〜v間の距離</strong>が木の直径</li>
+</ol>
+<p>なぜ2回で正しく求まるのかは数学的に証明できる。競プロでは「このアルゴリズムで正しい」と覚えておけばOK。</p>
+</div>
+  </section>
+  <section class="detail-section">
+    <h2 class="section-title"><span class="mi">compare</span> 使わない場合 vs 使う場合</h2>
+    <div class="code-compare">
+      <div class="code-compare-col bad-col">
+        <div class="code-compare-label"><span class="mi">close</span> 全ペアの距離を計算 → O(N²)</div>
+        <pre class="code-compare-pre"><code>ans = 0
+# 全頂点を出発点にして最遠点を探す
+# N=100000 のとき O(N²) = 100億回 → TLE
+for i in range(1, N + 1):
+    d = bfs(i)
+    ans = max(ans, max(d[1:]))</code></pre>
+      </div>
+      <div class="code-compare-col good-col">
+        <div class="code-compare-label"><span class="mi">check</span> BFS 2回で O(N)</div>
+        <pre class="code-compare-pre"><code># 1回目：点1（どこでもいい）からBFS
+d1 = bfs(1)
+u = d1.index(max(d1[1:]), 1)  # 最遠点u
+
+# 2回目：uからBFS
+d2 = bfs(u)
+diameter = max(d2[1:])         # 直径
+
+# この問題では直径の道に辺を1本追加するので +1
+print(diameter + 1)</code></pre>
+      </div>
+    </div>
+  </section>
+  <section class="detail-section">
+    <h2 class="section-title"><span class="mi">help_outline</span> いつ使う？</h2>
+    <div class="glossary-when">木構造で「最も遠い2点間の距離」を求めるとき。</div>
+  </section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-core.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/autoloader/prism-autoloader.min.js"></script>
+<footer style="text-align:center;padding:24px 16px;color:#999;font-size:.78rem;border-top:1px solid #eee;margin-top:40px">本サイトは個人学習目的のみで使用し、商用利用・公開配布はしていません。</footer>
+</body>
+</html>

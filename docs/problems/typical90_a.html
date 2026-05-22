@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Yokan Party | 競プロ教材</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css">
 <link rel="stylesheet" href="../style.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
@@ -13,11 +15,11 @@
   onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],ignoredTags:['script','noscript','style','pre','code']})"></script>
 </head>
 <body>
-<script>(function(){var H="__VIEW_PASSWORD__";if(H.indexOf('__')===0)return;if(sessionStorage.getItem('cps')===H)return;var o=document.createElement('div');o.style='position:fixed;inset:0;background:#1565c0;display:flex;align-items:center;justify-content:center;z-index:9999';o.innerHTML='<div style="background:#fff;border-radius:12px;padding:32px;max-width:320px;width:90%;text-align:center"><div style="font-size:1.4rem;font-weight:700;margin-bottom:8px">&#127891; 競プロ教材</div><div style="color:#666;font-size:.85rem;margin-bottom:20px">パスワードを入力してください</div><input type="password" id="pwi" style="width:100%;border:1.5px solid #ccc;border-radius:8px;padding:10px;font-size:1rem;margin-bottom:10px;box-sizing:border-box" placeholder="パスワード"><div id="pwe" style="color:#f44336;font-size:.8rem;height:1.2em;margin-bottom:8px"></div><button id="pwb" style="background:#1565c0;color:#fff;border:none;border-radius:8px;padding:10px 32px;font-size:1rem;cursor:pointer;width:100%">入る</button></div>';document.body.appendChild(o);function chk(){var v=document.getElementById('pwi').value;if(v===H){sessionStorage.setItem('cps',H);o.remove();}else document.getElementById('pwe').textContent='パスワードが違います';}document.getElementById('pwb').addEventListener('click',chk);document.getElementById('pwi').addEventListener('keydown',function(e){if(e.key==='Enter')chk();});})();</script>
+<script>(function(){var H="__VIEW_PASSWORD__";if(H.indexOf('__')===0)return;if(sessionStorage.getItem('cps')===H)return;var o=document.createElement('div');o.style='position:fixed;inset:0;background:#1565c0;display:flex;align-items:center;justify-content:center;z-index:9999';o.innerHTML='<div style="background:#fff;border-radius:12px;padding:32px;max-width:320px;width:90%;text-align:center"><div style="font-size:1.4rem;font-weight:700;margin-bottom:8px">競プロ教材</div><div style="color:#666;font-size:.85rem;margin-bottom:20px">パスワードを入力してください</div><input type="password" id="pwi" style="width:100%;border:1.5px solid #ccc;border-radius:8px;padding:10px;font-size:1rem;margin-bottom:10px;box-sizing:border-box" placeholder="パスワード"><div id="pwe" style="color:#f44336;font-size:.8rem;height:1.2em;margin-bottom:8px"></div><button id="pwb" style="background:#1565c0;color:#fff;border:none;border-radius:8px;padding:10px 32px;font-size:1rem;cursor:pointer;width:100%">入る</button></div>';document.body.appendChild(o);function chk(){var v=document.getElementById('pwi').value;if(v===H){sessionStorage.setItem('cps',H);o.remove();}else document.getElementById('pwe').textContent='パスワードが違います';}document.getElementById('pwb').addEventListener('click',chk);document.getElementById('pwi').addEventListener('keydown',function(e){if(e.key==='Enter')chk();});})();</script>
 <header class="header">
   <div class="header-inner">
-    <a class="back-btn" href="../">&#8592; もどる</a>
-    <a class="header-logo" href="../">&#127891; 競プロ教材</a>
+    <a class="back-btn" href="../"><span class="mi">arrow_back</span> もどる</a>
+    <a class="header-logo" href="../"><span class="mi">school</span> 競プロ教材</a>
     
   </div>
 </header>
@@ -25,9 +27,10 @@
 <main class="detail-view">
   <div class="detail-contest">典型90問 001</div>
   <h1 class="detail-title">Yokan Party</h1>
-  <div class="detail-meta"><span class="diff-badge" style="background:#f44336">D問題レベル</span> <span class="tag">二分探索</span><span class="tag">貪欲</span> <a class="atcoder-link" href="https://atcoder.jp/contests/typical90/tasks/typical90_a" target="_blank" rel="noopener">&#128279; AtCoderで見る</a></div>
+  <div class="detail-meta"><span class="diff-badge" style="background:#f44336">D問題レベル</span> <span class="tag">二分探索</span><span class="tag">貪欲</span> <a class="atcoder-link" href="https://atcoder.jp/contests/typical90/tasks/typical90_a" target="_blank" rel="noopener"><span class="mi">open_in_new</span> AtCoderで見る</a> <a class="print-link" href="../print/typical90_a.html" target="_blank"><span class="mi">print</span> 印刷用</a></div>
+  <div class="glossary-refs"><span style="font-size:.8rem;color:#666"><span class="mi">psychology</span> 使う考え方：</span><a class="glossary-ref-link" href="../glossary/binary_search.html"><span class="mi">book_2</span> 二分探索</a><a class="glossary-ref-link" href="../glossary/greedy.html"><span class="mi">book_2</span> 貪欲法（グリーディ）</a><a class="glossary-ref-link" href="../glossary/check_function.html"><span class="mi">book_2</span> 判定問題・チェック関数</a></div>
   <section class="detail-section">
-    <h2 class="section-title">&#128196; 問題文</h2>
+    <h2 class="section-title"><span class="mi">description</span> 問題文</h2>
     <div class="statement-box"><p>左右の長さが $L$ cm のようかんがあります。<br>
 $N$ 個の切れ目が付けられており、左から $i$ 番目の切れ目は左から $A_i$ cm の位置にあります。</p>
 <p>あなたは $N$ 個の切れ目のうち $K$ 個を選び、ようかんを $K+1$ 個のピースに分割したいです。</p>
@@ -43,7 +46,7 @@ $N$ 個の切れ目が付けられており、左から $i$ 番目の切れ目�
 <li>入力はすべて整数</li>
 </ul>
 </div>
-    <div class="statement-note"><span class="statement-note-badge">&#128221; 入力例1を使った説明</span><h2>この問題で何をするの？</h2>
+    <div class="statement-note"><span class="statement-note-badge"><span class="mi">info</span> 入力例1を使った説明</span><h2>この問題で何をするの？</h2>
 <p>34cm のようかんがあって、切れ目が 3 か所（8cm・13cm・26cm）に入っています。</p>
 <p>この中から <strong>1 か所だけ</strong> 選んで切ります。すると 2 つのピースになります。</p>
 <ul>
@@ -62,9 +65,15 @@ $N$ 個の切れ目が付けられており、左から $i$ 番目の切れ目�
 <p>「いちばん短いピース」の長さを 1 つ出力する。この例では <code>13</code>。</p>
 <hr>
 </div>
+    <div class="constraints-note"><span class="constraints-note-badge"><span class="mi">help</span> 制約の読み方</span><ul>
+<li><code>1 ≤ K ≤ N ≤ 100000</code>：切れ目は最大<strong>10万個</strong>。選ぶ数 K もそれ以下。</li>
+<li><code>L ≤ 10^9</code>：ようかんの長さは最大<strong>10億 cm</strong>。Pythonはそのまま使えるが、C++では <code>int</code>（約21億まで）でも大丈夫。ただし掛け算が入る場合は <code>long long</code> を使おう。</li>
+<li>制約が大きいから <strong>全部試す方法（O(L×N)）は間に合わない</strong>。二分探索で O(N log L) にする必要がある。</li>
+</ul>
+</div>
   </section>
   <section class="detail-section">
-    <h2 class="section-title">&#10067; 入力・出力の例</h2>
+    <h2 class="section-title"><span class="mi">quiz</span> 入力・出力の例</h2>
     
 <div class="sample-block">
   <div class="sample-row">
@@ -72,7 +81,7 @@ $N$ 個の切れ目が付けられており、左から $i$ 番目の切れ目�
 1
 8 13 26</pre></div>
     <div class="sample-col"><div class="sample-label">出力 1</div><pre class="sample-pre">13</pre></div>
-  </div><div class="sample-explanation"><p><strong>この入力の意味：</strong> 34cm のようかんに切れ目が <strong>3か所</strong>（8cm・13cm・26cm）あって、その中から <strong>1か所</strong> を選んで切る。</p>
+  </div><div class="sample-explanation"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 34cm のようかんに切れ目が <strong>3か所</strong>（8cm・13cm・26cm）あって、その中から <strong>1か所</strong> を選んで切る。</p>
 <p>全部の切り方を比べると：</p>
 <ul>
 <li>8cm で切る → ピースは <strong>8cm</strong> と 26cm → いちばん短いのは <strong>8cm</strong></li>
@@ -89,7 +98,7 @@ $N$ 個の切れ目が付けられており、左から $i$ 番目の切れ目�
 2
 7 11 16 20 28 34 38</pre></div>
     <div class="sample-col"><div class="sample-label">出力 2</div><pre class="sample-pre">12</pre></div>
-  </div><div class="sample-explanation"><p><strong>この入力の意味：</strong> 45cm のようかんに切れ目が <strong>7か所</strong>（7・11・16・20・28・34・38cm）あって、その中から <strong>2か所</strong> 選んで3つに切る。</p>
+  </div><div class="sample-explanation"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 45cm のようかんに切れ目が <strong>7か所</strong>（7・11・16・20・28・34・38cm）あって、その中から <strong>2か所</strong> 選んで3つに切る。</p>
 <p>16cm と 28cm で切ると：</p>
 <ul>
 <li>0〜16cm → <strong>16cm</strong></li>
@@ -106,7 +115,7 @@ $N$ 個の切れ目が付けられており、左から $i$ 番目の切れ目�
 1
 28 54 81</pre></div>
     <div class="sample-col"><div class="sample-label">出力 3</div><pre class="sample-pre">46</pre></div>
-  </div><div class="sample-explanation"><p><strong>この入力の意味：</strong> 100cm のようかんに切れ目が <strong>3か所</strong>（28cm・54cm・81cm）あって、<strong>1か所</strong> 選んで2つに切る。</p>
+  </div><div class="sample-explanation"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 100cm のようかんに切れ目が <strong>3か所</strong>（28cm・54cm・81cm）あって、<strong>1か所</strong> 選んで2つに切る。</p>
 <p>全部の切り方：</p>
 <ul>
 <li>28cm で切る → <strong>28cm</strong> と 72cm → 最小 <strong>28cm</strong></li>
@@ -123,7 +132,7 @@ $N$ 個の切れ目が付けられており、左から $i$ 番目の切れ目�
 2
 28 54 81</pre></div>
     <div class="sample-col"><div class="sample-label">出力 4</div><pre class="sample-pre">26</pre></div>
-  </div><div class="sample-explanation"><p><strong>この入力の意味：</strong> 100cm のようかんに切れ目が <strong>3か所</strong>（28cm・54cm・81cm）あって、<strong>2か所</strong> 選んで3つに切る。</p>
+  </div><div class="sample-explanation"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 100cm のようかんに切れ目が <strong>3か所</strong>（28cm・54cm・81cm）あって、<strong>2か所</strong> 選んで3つに切る。</p>
 <p>28cm と 54cm で切ると：</p>
 <ul>
 <li>0〜28cm → <strong>28cm</strong></li>
@@ -140,7 +149,7 @@ $N$ 個の切れ目が付けられており、左から $i$ 番目の切れ目�
 4
 51 69 102 127 233 295 350 388 417 466 469 523 553 587 720 739 801 855 926 954</pre></div>
     <div class="sample-col"><div class="sample-label">出力 5</div><pre class="sample-pre">170</pre></div>
-  </div><div class="sample-explanation"><p><strong>この入力の意味：</strong> 1000cm のようかんに切れ目が <strong>20か所</strong> あって、その中から <strong>4か所</strong> 選んで5つに切る。</p>
+  </div><div class="sample-explanation"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 1000cm のようかんに切れ目が <strong>20か所</strong> あって、その中から <strong>4か所</strong> 選んで5つに切る。</p>
 <p>組み合わせがとても多いので全部試すのは大変。プログラムで最良の切り方を探す。</p>
 <p>最もうまく切ったとき、いちばん短いピースは <strong>170cm</strong> → 答えは <strong>170</strong>。</p>
 <hr>
@@ -149,7 +158,7 @@ $N$ 個の切れ目が付けられており、左から $i$ 番目の切れ目�
   </section>
   
 <section class="detail-section">
-  <h2 class="section-title">&#128640; わかりやすく解説</h2>
+  <h2 class="section-title"><span class="mi">lightbulb</span> わかりやすく解説</h2>
   <div class="explanation-box easy-box"><h2>イメージ</h2>
 <p>ようかんを何個かのピースに切るとき、「いちばん短いピース」をできるだけ長くしたい。</p>
 <p>たとえば <code>x = 13 cm</code> のとき：「全部のピースを 13 cm 以上にできる？」という <strong>YES/NO の質問</strong> に変える。</p>
@@ -161,7 +170,7 @@ $N$ 個の切れ目が付けられており、左から $i$ 番目の切れ目�
 </section>
   
 <section class="detail-section">
-  <h2 class="section-title">&#128218; くわしい解説</h2>
+  <h2 class="section-title"><span class="mi">menu_book</span> くわしい解説</h2>
   <div class="explanation-box"><h2>方針</h2>
 <p>「最小ピース長」を最大化したい → <strong>答えを決めて判定する</strong> 方針に変える。</p>
 <p>「全ピースを <code>x</code> cm 以上にできるか？」という判定が <strong>できる/できない</strong> の境目を二分探索で求める。</p>
@@ -179,7 +188,7 @@ $N$ 個の切れ目が付けられており、左から $i$ 番目の切れ目�
 </code></pre>
 <p>のように単調性があるので二分探索できる。</p>
 <hr>
-<h2>Greedy 判定</h2>
+<h2>貪欲（Greedy）判定</h2>
 <p>左から順番に見て：</p>
 <ul>
 <li>前回切った位置から <code>x</code> 以上になったら切る</li>
@@ -187,7 +196,7 @@ $N$ 個の切れ目が付けられており、左から $i$ 番目の切れ目�
 <p>を繰り返す。</p>
 <p>ただし最後のピースも <code>x</code> 以上必要。</p>
 <hr>
-<h2>なぜ Greedy でよい？</h2>
+<h2>なぜ貪欲（Greedy）でよい？</h2>
 <p>できるだけ左で切るほど：</p>
 <ul>
 <li>後ろに余裕ができる</li>
@@ -210,7 +219,7 @@ $N$ 個の切れ目が付けられており、左から $i$ 番目の切れ目�
 </section>
   
 <section class="detail-section">
-  <h2 class="section-title">&#128187; 解答コード</h2>
+  <h2 class="section-title"><span class="mi">code</span> 解答コード</h2>
   <div class="lang-tabs" id="ltabs"><button class="lang-tab active" data-lang="python">Python</button><button class="lang-tab" data-lang="cpp">C++</button><button class="lang-tab" data-lang="typescript">TypeScript</button><button class="lang-tab" data-lang="ruby">Ruby</button><button class="lang-tab" data-lang="php">PHP</button><button class="lang-tab" data-lang="rust">Rust</button><button class="lang-tab" data-lang="perl">Perl</button></div>
   <div class="code-panel active" id="panel-python"><pre class="code-block language-python"><code class="language-python">N, L = map(int, input().split())  # 切れ目の数 N、ようかんの長さ L を読み込む
 K = int(input())                  # 選ぶ切れ目の数 K を読み込む
@@ -452,6 +461,40 @@ while ($high - $low &gt; 1) {
     else             { $high = $mid; }  # できない → high を下げる
 }
 print &#34;$low\n&#34;;  # 答えを出力</code></pre></div>
+  
+<div class="bad-solutions">
+  <div class="bad-solutions-title"><span class="mi">sentiment_dissatisfied</span> 悪い例（結果は合ってるけど…）</div>
+  <div class="bad-lang-tabs" id="bltabs"><button class="bad-lang-tab active" data-lang="bad-python">Python</button></div>
+  <div class="bad-code-panel active" id="panel-bad-python"><div class="bad-solution-label"><span class="mi">warning</span> O(L×N) 線形探索 — 二分探索を使わず1からLまで全部試す</div><pre class="code-block-bad language-python"><code class="language-python">N, L = map(int, input().split())
+K = int(input())
+A = list(map(int, input().split()))
+
+def can_cut(min_len):
+    prev = 0
+    cuts = 0
+    for a in A:
+        if a - prev &gt;= min_len and L - a &gt;= min_len:
+            cuts += 1
+            prev = a
+    return cuts &gt;= K
+
+ans = 0
+# L が最大10^9なのに1から全部試している → TLE
+# 二分探索を使えば O(N log L) で済む
+for x in range(1, L + 1):
+    if can_cut(x):
+        ans = x
+print(ans)</code></pre></div>
+</div>
+<script>
+document.getElementById('bltabs').addEventListener('click',function(e){
+  var b=e.target.closest('.bad-lang-tab'); if(!b)return;
+  document.querySelectorAll('.bad-lang-tab').forEach(function(x){x.classList.remove('active');});
+  document.querySelectorAll('.bad-code-panel').forEach(function(x){x.classList.remove('active');});
+  b.classList.add('active');
+  var p=document.getElementById('panel-'+b.dataset.lang); if(p)p.classList.add('active');
+});
+</script>
 </section>
 <script>
 document.getElementById('ltabs').addEventListener('click',function(e){

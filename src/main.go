@@ -9,9 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
-	"time"
 
 	"github.com/yuin/goldmark"
 )
@@ -46,14 +44,16 @@ type Problem struct {
 	AtcoderURL  string               `json:"atcoder_url"`
 	Difficulty  int                  `json:"difficulty"`
 	Tags        []string             `json:"tags"`
-	Statement   string               `json:"statement"`
-	Constraints string               `json:"constraints"`
-	Samples          []Sample             `json:"samples"`
+	Statement       string               `json:"statement"`
+	Constraints     string               `json:"constraints"`
+	ConstraintsNote string               `json:"constraints_note"`
+	Samples         []Sample             `json:"samples"`
 	StatementNote    string               `json:"statement_note"`
 	EasyExplanation  string               `json:"easy_explanation"`
 	Explanation      string               `json:"explanation"`
-	Solutions        map[string]*Solution `json:"solutions"`
-	AddedAt     string               `json:"added_at"`
+	Solutions        map[string]*Solution    `json:"solutions"`
+	BadSolutions     map[string]*BadSolution `json:"bad_solutions"`
+	AddedAt          string                  `json:"added_at"`
 }
 
 type ContestFile struct {
@@ -61,353 +61,22 @@ type ContestFile struct {
 	Problems []Problem `json:"problems"`
 }
 
-// ── frontmatter parser ────────────────────────────────────────────────────────
-
-type fmData struct {
-	vals map[string]string
-	tags []string
+type BadSolution struct {
+	Code  string `json:"code"`
+	Label string `json:"label"`
 }
 
-func parseFM(text string) (fmData, string) {
-	d := fmData{vals: make(map[string]string)}
-	if !strings.HasPrefix(text, "---\n") {
-		return d, text
-	}
-	end := strings.Index(text[4:], "\n---\n")
-	if end < 0 {
-		return d, text
-	}
-	yaml := text[4 : end+4]
-	body := text[end+9:]
-	for _, line := range strings.Split(yaml, "\n") {
-		i := strings.Index(line, ":")
-		if i < 0 {
-			continue
-		}
-		k, v := strings.TrimSpace(line[:i]), strings.TrimSpace(line[i+1:])
-		if strings.HasPrefix(v, "[") && strings.HasSuffix(v, "]") {
-			for _, t := range strings.Split(v[1:len(v)-1], ",") {
-				t = strings.Trim(strings.TrimSpace(t), `"'`)
-				if t != "" {
-					d.tags = append(d.tags, t)
-				}
-			}
-		} else {
-			d.vals[k] = strings.Trim(v, `"'`)
-		}
-	}
-	return d, body
-}
-
-func (d fmData) str(k, def string) string {
-	if v, ok := d.vals[k]; ok && v != "" {
-		return v
-	}
-	return def
-}
-
-func (d fmData) num(k string, def int) int {
-	var n int
-	if v, ok := d.vals[k]; ok {
-		fmt.Sscanf(v, "%d", &n)
-	}
-	if n == 0 {
-		return def
-	}
-	return n
-}
-
-// ── markdown section helpers ──────────────────────────────────────────────────
-
-var (
-	reH1    = regexp.MustCompile(`(?m)^(# [^\n]+)`)
-	reH2    = regexp.MustCompile(`(?m)^(## [^\n]+)`)
-	reH3exp = regexp.MustCompile(`(?s)### 解説\n(.*?)(?:\n###|\n##|\n#|\z)`)
-	reCode  = regexp.MustCompile("(?s)```[^\n]*\n(.*?)```")
-	reFence = regexp.MustCompile("(?m)^```")
-	reHr    = regexp.MustCompile(`(?m)^---\s*$`)
-	reOL    = regexp.MustCompile(`(?m)^\d+[.。]\s+(.+)$`)
-	reH1top = regexp.MustCompile(`(?m)^# (.+)$`)
-)
-
-// コードフェンス（``` ... ```）の範囲を返す。この範囲内の # はセクション区切りではない
-func fenceRanges(text string) [][2]int {
-	locs := reFence.FindAllStringIndex(text, -1)
-	var ranges [][2]int
-	for i := 0; i+1 < len(locs); i += 2 {
-		ranges = append(ranges, [2]int{locs[i][0], locs[i+1][1]})
-	}
-	return ranges
-}
-
-func inFence(pos int, ranges [][2]int) bool {
-	for _, r := range ranges {
-		if pos >= r[0] && pos < r[1] {
-			return true
-		}
-	}
-	return false
-}
-
-func splitByH1(text string) []struct{ title, body string } {
-	fences := fenceRanges(text)
-	allLocs := reH1.FindAllStringIndex(text, -1)
-	var locs [][]int
-	for _, loc := range allLocs {
-		if !inFence(loc[0], fences) {
-			locs = append(locs, loc)
-		}
-	}
-	var out []struct{ title, body string }
-	for i, loc := range locs {
-		title := strings.TrimPrefix(text[loc[0]:loc[1]], "# ")
-		end := len(text)
-		if i+1 < len(locs) {
-			end = locs[i+1][0]
-		}
-		out = append(out, struct{ title, body string }{title, strings.TrimSpace(text[loc[1]:end])})
-	}
-	return out
-}
-
-func splitByH2(text string) map[string]string {
-	locs := reH2.FindAllStringIndex(text, -1)
-	out := make(map[string]string)
-	for i, loc := range locs {
-		title := strings.TrimPrefix(text[loc[0]:loc[1]], "## ")
-		end := len(text)
-		if i+1 < len(locs) {
-			end = locs[i+1][0]
-		}
-		out[title] = strings.TrimSpace(text[loc[1]:end])
-	}
-	return out
-}
-
-func firstCode(text string) string {
-	if m := reCode.FindStringSubmatch(text); m != nil {
-		return strings.TrimSpace(m[1])
-	}
-	return ""
-}
-
-func orderedList(text string) []string {
-	var out []string
-	for _, m := range reOL.FindAllStringSubmatch(text, -1) {
-		out = append(out, strings.TrimSpace(m[1]))
-	}
-	return out
-}
-
-func stripHr(s string) string { return strings.TrimSpace(reHr.ReplaceAllString(s, "")) }
-
-// ── convert: md → JSON ───────────────────────────────────────────────────────
-
-func convertFile(mdPath string) (Problem, string, string) {
-	raw, err := os.ReadFile(mdPath)
-	if err != nil {
-		log.Fatalf("read %s: %v", mdPath, err)
-	}
-	filename := strings.TrimSuffix(filepath.Base(mdPath), ".md")
-	fm, body := parseFM(string(raw))
-
-	id := fm.str("id", filename)
-	fileKey := fm.str("file", filename[:max(strings.LastIndex(filename, "_"), 0)])
-
-	h1s := splitByH1(body)
-	h2 := splitByH2(body)
-
-	// title / problem number from first h1
-	title, prob := fm.str("title", ""), fm.str("problem", "")
-	if len(h1s) > 0 {
-		ft := h1s[0].title
-		reParsed := regexp.MustCompile(`^(\S+)\s*[-–]\s*(.+?)(?:（.+?）)?$`)
-		if m := reParsed.FindStringSubmatch(ft); m != nil {
-			if prob == "" {
-				prob = m[1]
-			}
-			if title == "" {
-				title = strings.TrimSpace(m[2])
-			}
-		} else if title == "" {
-			title = regexp.MustCompile(`（.+?）`).ReplaceAllString(ft, "")
-			title = strings.TrimSpace(title)
-		}
-	}
-
-	// samples
-	var samples []Sample
-	for i := 1; i <= 30; i++ {
-		inKey := fmt.Sprintf("入力例%d", i)
-		if _, ok := h2[inKey]; !ok {
-			inKey = fmt.Sprintf("入力例 %d", i)
-		}
-		inText, ok := h2[inKey]
-		if !ok {
-			break
-		}
-		outKey := fmt.Sprintf("出力例%d", i)
-		if _, ok := h2[outKey]; !ok {
-			outKey = fmt.Sprintf("出力例 %d", i)
-		}
-		outText := h2[outKey]
-
-		exp := ""
-		if m := reH3exp.FindStringSubmatch(outText); m != nil {
-			exp = strings.TrimSpace(m[1])
-		} else {
-			exp = reCode.ReplaceAllString(outText, "")
-			exp = reHr.ReplaceAllString(exp, "")
-			exp = reH1top.ReplaceAllString(exp, "")
-			exp = strings.TrimSpace(exp)
-		}
-
-		samples = append(samples, Sample{firstCode(inText), firstCode(outText), exp})
-	}
-
-	// explanations: collect easy and standard separately, stop at code sections
-	isCode := func(t string) bool {
-		for _, lang := range langDefs {
-			for _, kw := range lang.matches {
-				if strings.Contains(t, kw) && strings.Contains(t, "解答") {
-					return true
-				}
-			}
-		}
-		return false
-	}
-	var stmtNoteParts, easyParts, expParts []string
-	mode := "" // "stmt" | "easy" | "standard" | ""
-	for _, s := range h1s {
-		if isCode(s.title) {
-			mode = ""
-			continue
-		}
-		if s.title == "問題の解説" {
-			mode = "stmt"
-			if s.body != "" {
-				stmtNoteParts = append(stmtNoteParts, s.body)
-			}
-			continue
-		}
-		if s.title == "やさしい解説" {
-			mode = "easy"
-			if s.body != "" {
-				easyParts = append(easyParts, s.body)
-			}
-			continue
-		}
-		if s.title == "解説" {
-			mode = "standard"
-			if s.body != "" {
-				expParts = append(expParts, s.body)
-			}
-			continue
-		}
-		switch mode {
-		case "stmt":
-			stmtNoteParts = append(stmtNoteParts, "## "+s.title+"\n\n"+s.body)
-		case "easy":
-			easyParts = append(easyParts, "## "+s.title+"\n\n"+s.body)
-		case "standard":
-			expParts = append(expParts, "## "+s.title+"\n\n"+s.body)
-		}
-	}
-
-	// solutions
-	sols := make(map[string]*Solution)
-	for _, s := range h1s {
-		if !strings.Contains(s.title, "解答") {
-			continue
-		}
-		for _, lang := range langDefs {
-			for _, kw := range lang.matches {
-				if strings.Contains(s.title, kw) {
-					sols[lang.key] = &Solution{firstCode(s.body), orderedList(s.body)}
-					break
-				}
-			}
-		}
-	}
-
-	p := Problem{
-		ID:          id,
-		Problem:     prob,
-		Title:       title,
-		AtcoderURL:  fm.str("atcoder_url", ""),
-		Difficulty:  fm.num("difficulty", 1),
-		Tags:        fm.tags,
-		Statement:   stripHr(h2["問題文"]),
-		Constraints: stripHr(h2["制約"]),
-		Samples:         samples,
-		StatementNote:   strings.TrimSpace(strings.Join(stmtNoteParts, "\n\n")),
-		EasyExplanation: strings.TrimSpace(strings.Join(easyParts, "\n\n")),
-		Explanation:     strings.TrimSpace(strings.Join(expParts, "\n\n")),
-		Solutions:   sols,
-		AddedAt:     fm.str("added_at", time.Now().Format("2006-01-02")),
-	}
-	return p, fileKey, fm.str("contest", "")
-}
-
-func cmdConvert() {
-	entries, _ := os.ReadDir("problems-raw")
-	if err := os.MkdirAll("data/problems", 0755); err != nil {
-		log.Fatal(err)
-	}
-
-	idxPath := "data/index.json"
-	var index []IndexEntry
-	if b, err := os.ReadFile(idxPath); err == nil {
-		json.Unmarshal(b, &index)
-	}
-
-	for _, e := range entries {
-		if !strings.HasSuffix(e.Name(), ".md") {
-			continue
-		}
-		fmt.Printf("変換中: %s ... ", e.Name())
-
-		p, fileKey, contest := convertFile(filepath.Join("problems-raw", e.Name()))
-
-		// update data/problems/<file>.json
-		cPath := filepath.Join("data/problems", fileKey+".json")
-		var cf ContestFile
-		if b, err := os.ReadFile(cPath); err == nil {
-			json.Unmarshal(b, &cf)
-		} else {
-			cf = ContestFile{Contest: contest}
-		}
-		found := false
-		for i, ex := range cf.Problems {
-			if ex.ID == p.ID {
-				cf.Problems[i] = p
-				found = true
-				fmt.Println("更新")
-				break
-			}
-		}
-		if !found {
-			cf.Problems = append(cf.Problems, p)
-			fmt.Println("追加")
-		}
-		writeJSON(cPath, cf)
-
-		// update index
-		entry := IndexEntry{p.ID, contest, p.Problem, p.Title, p.Difficulty, p.Tags, fileKey}
-		found = false
-		for i, ex := range index {
-			if ex.ID == p.ID {
-				index[i] = entry
-				found = true
-				break
-			}
-		}
-		if !found {
-			index = append(index, entry)
-		}
-	}
-	writeJSON(idxPath, index)
-	fmt.Println("index.json 更新完了 ✓")
+type GlossaryEntry struct {
+	ID           string   `json:"id"`
+	Name         string   `json:"name"`
+	Short        string   `json:"short"`
+	Description  string   `json:"description"`
+	WithoutLabel string   `json:"without_label"`
+	WithoutCode  string   `json:"without_code"`
+	WithLabel    string   `json:"with_label"`
+	WithCode     string   `json:"with_code"`
+	WhenToUse    string   `json:"when_to_use"`
+	Problems     []string `json:"problems"`
 }
 
 // ── build: JSON → HTML ────────────────────────────────────────────────────────
@@ -453,6 +122,10 @@ func tagSpans(tags []string) string {
 	return b.String()
 }
 
+func icon(name string) string {
+	return `<span class="mi">` + name + `</span>`
+}
+
 func mdToHTML(src string) string {
 	if src == "" {
 		return ""
@@ -466,22 +139,24 @@ func mdToHTML(src string) string {
 
 func css() string {
 	return `*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f6fa;color:#222;min-height:100vh}
 a{color:inherit;text-decoration:none}
+.mi{font-family:'Material Symbols Outlined';font-weight:normal;font-style:normal;font-size:1.25em;display:inline-block;vertical-align:-.22em;line-height:1;letter-spacing:normal;text-transform:none;white-space:nowrap;word-wrap:normal;direction:ltr;font-feature-settings:'liga';-webkit-font-smoothing:antialiased}
 .header{background:#1565c0;color:#fff;padding:0 12px}
 .header-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:12px;height:52px}
-.header-logo{font-size:1.1rem;font-weight:700;flex:1}
+.header-logo{font-size:1.1rem;font-weight:700;flex:1;display:flex;align-items:center;gap:5px}
 .header-sub{font-size:.78rem;opacity:.8}
-.back-btn{font-size:.85rem;color:#fff;opacity:.9;white-space:nowrap}
+.back-btn{font-size:.85rem;color:#fff;opacity:.9;white-space:nowrap;display:flex;align-items:center;gap:3px}
 .back-btn:hover{opacity:1}
 .list-view{max-width:900px;margin:20px auto;padding:0 12px}
 .filters{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
 .search-wrap{display:flex;align-items:center;border:1.5px solid #ccd;border-radius:8px;background:#fff;padding:0 10px}
-.search-icon{color:#999;margin-right:6px}
+.search-icon{color:#999;margin-right:6px;display:flex;align-items:center}
 .search-input{flex:1;border:none;outline:none;padding:10px 0;font-size:1rem;background:transparent}
 .diff-filters{display:flex;flex-wrap:wrap;gap:6px}
 .diff-btn{border:2px solid #ccc;background:#fff;border-radius:20px;padding:5px 14px;cursor:pointer;font-size:.82rem;font-weight:600;color:#555;transition:.15s}
-.diff-btn.active{background:#1565c0;border-color:#1565c0;color:#fff}
+.diff-btn.active{background:var(--dc,#1565c0);border-color:var(--dc,#1565c0);color:#fff}
 .problem-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
 .problem-card{display:block;background:#fff;border-radius:10px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.08);border:1.5px solid transparent;transition:.15s}
 .problem-card:hover{border-color:#1565c0;box-shadow:0 3px 12px rgba(21,101,192,.15)}
@@ -495,10 +170,10 @@ a{color:inherit;text-decoration:none}
 .detail-contest{font-size:.8rem;color:#666;margin-bottom:4px}
 .detail-title{font-size:1.4rem;font-weight:700;margin-bottom:10px;line-height:1.3}
 .detail-meta{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:20px}
-.atcoder-link{font-size:.82rem;color:#1565c0;border:1px solid #1565c0;border-radius:6px;padding:3px 10px}
-.atcoder-link:hover{background:#e3f2fd}
+.atcoder-link,.print-link{font-size:.82rem;color:#1565c0;border:1px solid #1565c0;border-radius:6px;padding:3px 10px;display:inline-flex;align-items:center;gap:3px}
+.atcoder-link:hover,.print-link:hover{background:#e3f2fd}
 .detail-section{margin-bottom:28px}
-.section-title{font-size:1rem;font-weight:700;margin-bottom:10px;color:#333}
+.section-title{font-size:1rem;font-weight:700;margin-bottom:10px;color:#333;display:flex;align-items:center;gap:5px}
 .statement-box{background:#fff;border:1.5px solid #e0e0e0;border-radius:8px;padding:14px;line-height:1.75;font-size:.93rem}
 .statement-box p{margin-bottom:.6em}
 .statement-box ul,.statement-box ol{padding-left:1.6em;margin:.4em 0 .6em}
@@ -510,7 +185,13 @@ a{color:inherit;text-decoration:none}
 .statement-note strong{color:#1565c0}
 .statement-note ul,.statement-note ol{padding-left:1.6em;margin:.4em 0 .6em}
 .statement-note hr{display:none}
-.statement-note-badge{display:inline-block;background:#1565c0;color:#fff;font-size:.72rem;font-weight:700;border-radius:4px;padding:1px 7px;margin-bottom:8px;letter-spacing:.03em}
+.statement-note-badge{display:inline-flex;align-items:center;gap:3px;background:#1565c0;color:#fff;font-size:.72rem;font-weight:700;border-radius:4px;padding:1px 7px;margin-bottom:8px;letter-spacing:.03em}
+.constraints-note{background:#f3e5f5;border-left:4px solid #8e24aa;border-radius:6px;padding:12px 14px;font-size:.88rem;margin-top:10px;line-height:1.75}
+.constraints-note p{margin-bottom:.5em}
+.constraints-note ul,.constraints-note ol{padding-left:1.6em;margin:.4em 0 .6em}
+.constraints-note hr{display:none}
+.constraints-note-badge{display:inline-flex;align-items:center;gap:3px;background:#8e24aa;color:#fff;font-size:.72rem;font-weight:700;border-radius:4px;padding:1px 7px;margin-bottom:8px;letter-spacing:.03em}
+.constraints-note code{background:#ede7f6;padding:1px 5px;border-radius:3px;font-size:.88em}
 .constraints-box ul,.constraints-box ol{padding-left:1.4em}
 .constraints-box code{background:#e8e8e8;padding:1px 4px;border-radius:3px;font-size:.85em}
 .sample-block{background:#fff;border:1.5px solid #e0e0e0;border-radius:8px;padding:12px;margin-bottom:12px}
@@ -518,7 +199,7 @@ a{color:inherit;text-decoration:none}
 .sample-label{font-size:.75rem;font-weight:600;color:#555;margin-bottom:4px}
 .sample-pre{background:#f5f6fa;border-radius:6px;padding:8px 10px;font-size:.85rem;font-family:monospace;overflow-x:auto;white-space:pre;word-break:break-all}
 .sample-explanation{margin-top:10px;font-size:.85rem;color:#444;line-height:1.7;border-top:1px solid #e0e0e0;padding-top:10px}
-.sample-explanation::before{content:"📖 解説";display:block;font-weight:700;font-size:.78rem;color:#1565c0;margin-bottom:6px}
+.sample-exp-title{font-weight:700;font-size:.78rem;color:#1565c0;margin-bottom:6px;display:flex;align-items:center;gap:3px}
 .sample-explanation p{margin-bottom:.5em}
 .sample-explanation ul,.sample-explanation ol{padding-left:1.5em;margin:.3em 0 .5em}
 .sample-explanation hr{display:none}
@@ -539,8 +220,59 @@ a{color:inherit;text-decoration:none}
 pre.code-block{background:#1e1e2e;color:#cdd6f4;border-radius:0 8px 8px 8px;padding:14px;font-size:.82rem;font-family:monospace;overflow-x:auto;white-space:pre;line-height:1.6}
 pre.code-block code{background:none;padding:0;border-radius:0;font-size:inherit;font-family:inherit}
 .solution-steps{padding-left:1.5em;margin-top:12px;font-size:.88rem;line-height:1.7;color:#444}
+.bad-solutions{margin-top:16px;overflow:hidden}
+.bad-solutions-title{padding:20px 0;font-size:.88rem;font-weight:600;display:flex;align-items:center;gap:6px;color:#c62828;}
+.bad-solution{padding:12px 14px;border-top:1px solid #f0e0e0}
+.bad-solution:first-child{border-top:none}
+.bad-solution-label{font-size:.8rem;font-weight:700;color:#c62828;margin-bottom:6px;display:flex;align-items:center;gap:4px}
+pre.code-block-bad{background:#2d1b1b;color:#f8c0c0;border-radius:0 8px 8px 8px;padding:14px;font-size:.82rem;font-family:monospace;overflow-x:auto;white-space:pre;line-height:1.6}
+pre.code-block-bad code{background:none;padding:0;font-size:inherit;font-family:inherit}
+.bad-lang-tabs{display:flex;gap:4px;margin-bottom:8px}
+.bad-lang-tab{border:1.5px solid #e0a0a0;background:#fff;border-radius:8px 8px 0 0;padding:6px 18px;cursor:pointer;font-size:.88rem;font-weight:600;color:#c62828}
+.bad-lang-tab.active{background:#c62828;border-color:#c62828;color:#fff}
+.bad-code-panel{display:none}
+.bad-code-panel.active{display:block}
 .empty{text-align:center;color:#999;padding:40px;font-size:.95rem}
-@media(max-width:600px){.problem-grid{grid-template-columns:1fr}.detail-title{font-size:1.15rem}}`
+@media(max-width:600px){.problem-grid{grid-template-columns:1fr}.detail-title{font-size:1.15rem}}
+.glossary-top-link{font-size:.82rem;color:#7b1fa2;border:1px solid #7b1fa2;border-radius:6px;padding:3px 10px;display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
+.glossary-top-link:hover{background:#f3e5f5}
+.glossary-nav{background:#fff;border-radius:8px;padding:12px 16px;margin-bottom:24px;border:1.5px solid #e0e0e0}
+.glossary-nav ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px}
+.glossary-nav a{color:#1565c0;font-size:.85rem;border:1px solid #1565c0;border-radius:16px;padding:3px 12px;display:inline-block}
+.glossary-nav a:hover{background:#e3f2fd}
+.glossary-entry{background:#fff;border-radius:10px;padding:20px;margin-bottom:24px;border:1.5px solid #e0e0e0;scroll-margin-top:20px}
+.glossary-name{font-size:1.2rem;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.glossary-short{color:#555;font-size:.9rem;margin-bottom:14px;padding:8px 12px;background:#f5f6fa;border-radius:6px;border-left:3px solid #1565c0}
+.glossary-desc{font-size:.9rem;line-height:1.75;margin-bottom:16px}
+.glossary-desc p{margin-bottom:.6em}
+.glossary-desc table{border-collapse:collapse;margin:.8em 0;font-size:.85rem;width:100%}
+.glossary-desc th,.glossary-desc td{border:1px solid #ddd;padding:6px 10px}
+.glossary-desc th{background:#f0f0f0}
+.glossary-desc code{background:#f0f0f0;padding:1px 5px;border-radius:3px;font-size:.88em}
+.glossary-desc pre{background:#1e1e2e;color:#cdd6f4;border-radius:6px;padding:10px;font-size:.78rem;font-family:monospace;white-space:pre;overflow-x:auto;margin:.6em 0}
+.glossary-desc pre code{background:none;padding:0;font-size:inherit}
+.code-compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+@media(max-width:700px){.code-compare{grid-template-columns:1fr}}
+.code-compare-col{}
+.code-compare-label{font-size:.78rem;font-weight:700;padding:4px 10px;border-radius:4px 4px 0 0;display:flex;align-items:center;gap:4px}
+.bad-col .code-compare-label{background:#ffebee;color:#c62828}
+.good-col .code-compare-label{background:#e8f5e9;color:#2e7d32}
+.code-compare-pre{margin:0;border-radius:0 4px 4px 4px;padding:10px;font-size:.75rem;font-family:monospace;white-space:pre;overflow-x:auto;line-height:1.55}
+.bad-col .code-compare-pre{background:#2d1b1b;color:#f8c0c0}
+.good-col .code-compare-pre{background:#1e2d1e;color:#b8f0b8}
+.code-compare-pre code{background:none;padding:0;font-size:inherit;font-family:inherit}
+.glossary-when{background:#fff8e1;border-left:3px solid #f9a825;padding:8px 12px;font-size:.85rem;border-radius:4px;margin-bottom:12px;line-height:1.7}
+.glossary-problems{font-size:.83rem;display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:12px}
+.glossary-problem-link{color:#1565c0;border:1px solid #1565c0;border-radius:6px;padding:2px 10px;font-size:.78rem;display:inline-flex;align-items:center;gap:3px}
+.glossary-problem-link:hover{background:#e3f2fd}
+.glossary-refs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px}
+.glossary-ref-link{color:#7b1fa2;border:1px solid #7b1fa2;border-radius:6px;padding:2px 10px;font-size:.78rem;display:inline-flex;align-items:center;gap:3px}
+.glossary-ref-link:hover{background:#f3e5f5}
+.glossary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.glossary-card{display:block;background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.08);border:1.5px solid transparent;transition:.15s}
+.glossary-card:hover{border-color:#7b1fa2;box-shadow:0 3px 12px rgba(123,31,162,.15)}
+.glossary-card-name{font-size:.97rem;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:5px;color:#222}
+.glossary-card-short{font-size:.82rem;color:#666;line-height:1.5}`
 }
 
 func pwGateScript() string {
@@ -551,7 +283,7 @@ func pwGateScript() string {
 		`var o=document.createElement('div');` +
 		`o.style='position:fixed;inset:0;background:#1565c0;display:flex;align-items:center;justify-content:center;z-index:9999';` +
 		`o.innerHTML='<div style="background:#fff;border-radius:12px;padding:32px;max-width:320px;width:90%;text-align:center">` +
-		`<div style="font-size:1.4rem;font-weight:700;margin-bottom:8px">&#127891; 競プロ教材</div>` +
+		`<div style="font-size:1.4rem;font-weight:700;margin-bottom:8px">競プロ教材</div>` +
 		`<div style="color:#666;font-size:.85rem;margin-bottom:20px">パスワードを入力してください</div>` +
 		`<input type="password" id="pwi" style="width:100%;border:1.5px solid #ccc;border-radius:8px;padding:10px;font-size:1rem;margin-bottom:10px;box-sizing:border-box" placeholder="パスワード">` +
 		`<div id="pwe" style="color:#f44336;font-size:.8rem;height:1.2em;margin-bottom:8px"></div>` +
@@ -571,7 +303,7 @@ func pwGateScript() string {
 func shell(title, root, back, backLabel, sub, body string) string {
 	backEl := ""
 	if back != "" {
-		backEl = fmt.Sprintf(`<a class="back-btn" href="%s">&#8592; %s</a>`, back, backLabel)
+		backEl = fmt.Sprintf(`<a class="back-btn" href="%s"><span class="mi">arrow_back</span> %s</a>`, back, backLabel)
 	}
 	subEl := ""
 	if sub != "" {
@@ -584,6 +316,8 @@ func shell(title, root, back, backLabel, sub, body string) string {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>%s | 競プロ教材</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css">
 <link rel="stylesheet" href="%sstyle.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
@@ -596,7 +330,7 @@ func shell(title, root, back, backLabel, sub, body string) string {
 <header class="header">
   <div class="header-inner">
     %s
-    <a class="header-logo" href="%s">&#127891; 競プロ教材</a>
+    <a class="header-logo" href="%s"><span class="mi">school</span> 競プロ教材</a>
     %s
   </div>
 </header>
@@ -653,13 +387,16 @@ func buildIndex(index []IndexEntry) {
 <main class="list-view">
   <div class="filters">
     <div class="search-wrap">
-      <span class="search-icon">&#128269;</span>
+      <span class="search-icon"><span class="mi">search</span></span>
       <input class="search-input" id="search" placeholder="タイトル・タグで検索..." autocomplete="off">
     </div>
-    <div class="diff-filters" id="dfilters">%s</div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="diff-filters" id="dfilters" style="flex:1">%s</div>
+      <a class="glossary-top-link" href="glossary/index.html"><span class="mi">menu_book</span> 用語集</a>
+    </div>
   </div>
   <div class="problem-grid" id="grid">%s</div>
-  <div class="empty" id="empty" hidden>問題が見つかりませんでした</div>
+  <div class="empty" id="empty" style="display:none">問題が見つかりませんでした</div>
 </main>
 <script>
 (function(){
@@ -669,9 +406,9 @@ func buildIndex(index []IndexEntry) {
     var q=search.value.toLowerCase(),v=0;
     cards.forEach(function(c){
       var ok=(!curD||c.dataset.diff===curD)&&(!q||c.dataset.title.includes(q)||c.dataset.tags.includes(q)||c.dataset.contest.includes(q));
-      c.hidden=!ok; if(ok)v++;
+      c.style.display=ok?'':'none'; if(ok)v++;
     });
-    empty.hidden=v>0;
+    empty.style.display=v>0?'none':'';
   }
   search.addEventListener('input',filter);
   document.getElementById('dfilters').addEventListener('click',function(e){
@@ -687,7 +424,7 @@ func buildIndex(index []IndexEntry) {
 	fmt.Println("  docs/index.html")
 }
 
-func buildProblem(p Problem, contest string, force bool) {
+func buildProblem(p Problem, contest string, force bool, glossaryEntries []GlossaryEntry) {
 	out := "docs/problems/" + p.ID + ".html"
 	if !force {
 		if _, err := os.Stat(out); err == nil {
@@ -699,7 +436,7 @@ func buildProblem(p Problem, contest string, force bool) {
 	for i, s := range p.Samples {
 		exp := ""
 		if s.Explanation != "" {
-			exp = fmt.Sprintf(`<div class="sample-explanation">%s</div>`, mdToHTML(s.Explanation))
+			exp = fmt.Sprintf(`<div class="sample-explanation"><div class="sample-exp-title">%s 解説</div>%s</div>`, icon("auto_stories"), mdToHTML(s.Explanation))
 		}
 		fmt.Fprintf(&sampBuf, `
 <div class="sample-block">
@@ -712,49 +449,70 @@ func buildProblem(p Problem, contest string, force bool) {
 
 	atcLink := ""
 	if p.AtcoderURL != "" {
-		atcLink = fmt.Sprintf(`<a class="atcoder-link" href="%s" target="_blank" rel="noopener">&#128279; AtCoderで見る</a>`, e(p.AtcoderURL))
+		atcLink = fmt.Sprintf(`<a class="atcoder-link" href="%s" target="_blank" rel="noopener">%s AtCoderで見る</a>`, e(p.AtcoderURL), icon("open_in_new"))
 	}
+	printLink := fmt.Sprintf(`<a class="print-link" href="../print/%s.html" target="_blank">%s 印刷用</a>`, p.ID, icon("print"))
 
 	easySection := ""
 	if p.EasyExplanation != "" {
 		easySection = fmt.Sprintf(`
 <section class="detail-section">
-  <h2 class="section-title">&#128640; わかりやすく解説</h2>
+  <h2 class="section-title">%s わかりやすく解説</h2>
   <div class="explanation-box easy-box">%s</div>
-</section>`, mdToHTML(p.EasyExplanation))
+</section>`, icon("lightbulb"), mdToHTML(p.EasyExplanation))
 	}
 
 	expSection := ""
 	if p.Explanation != "" {
 		expSection = fmt.Sprintf(`
 <section class="detail-section">
-  <h2 class="section-title">&#128218; くわしい解説</h2>
+  <h2 class="section-title">%s くわしい解説</h2>
   <div class="explanation-box">%s</div>
-</section>`, mdToHTML(p.Explanation))
+</section>`, icon("menu_book"), mdToHTML(p.Explanation))
 	}
 
 	stmtNoteSection := ""
 	if p.StatementNote != "" {
 		stmtNoteSection = fmt.Sprintf(
-			`<div class="statement-note"><span class="statement-note-badge">&#128221; 入力例1を使った説明</span>%s</div>`,
-			mdToHTML(p.StatementNote))
+			`<div class="statement-note"><span class="statement-note-badge">%s 入力例1を使った説明</span>%s</div>`,
+			icon("info"), mdToHTML(p.StatementNote))
+	}
+
+	constraintsNoteSection := ""
+	if p.ConstraintsNote != "" {
+		constraintsNoteSection = fmt.Sprintf(
+			`<div class="constraints-note"><span class="constraints-note-badge">%s 制約の読み方</span>%s</div>`,
+			icon("help"), mdToHTML(p.ConstraintsNote))
 	}
 
 	codeSection := buildCodeSection(p)
+
+	glossaryRefsEl := ""
+	if len(glossaryEntries) > 0 {
+		var refsBuf strings.Builder
+		fmt.Fprintf(&refsBuf, `<div class="glossary-refs"><span style="font-size:.8rem;color:#666">%s 使う考え方：</span>`, icon("psychology"))
+		for _, g := range glossaryEntries {
+			fmt.Fprintf(&refsBuf, `<a class="glossary-ref-link" href="../glossary/%s.html">%s %s</a>`, g.ID, icon("book_2"), e(g.Name))
+		}
+		refsBuf.WriteString(`</div>`)
+		glossaryRefsEl = refsBuf.String()
+	}
 
 	body := fmt.Sprintf(`
 <main class="detail-view">
   <div class="detail-contest">%s %s</div>
   <h1 class="detail-title">%s</h1>
-  <div class="detail-meta">%s %s %s</div>
+  <div class="detail-meta">%s %s %s %s</div>
+  %s
   <section class="detail-section">
-    <h2 class="section-title">&#128196; 問題文</h2>
+    <h2 class="section-title">%s 問題文</h2>
     <div class="statement-box">%s</div>
+    %s
     %s
     %s
   </section>
   <section class="detail-section">
-    <h2 class="section-title">&#10067; 入力・出力の例</h2>
+    <h2 class="section-title">%s 入力・出力の例</h2>
     %s
   </section>
   %s
@@ -762,11 +520,13 @@ func buildProblem(p Problem, contest string, force bool) {
   %s
 </main>`,
 		e(contest), e(p.Problem), e(p.Title),
-		badge(p.Difficulty), tagSpans(p.Tags), atcLink,
-		mdToHTML(p.Statement),
+		badge(p.Difficulty), tagSpans(p.Tags), atcLink, printLink,
+		glossaryRefsEl,
+		icon("description"), mdToHTML(p.Statement),
 		constraintsBlock(p.Constraints),
 		stmtNoteSection,
-		sampBuf.String(),
+		constraintsNoteSection,
+		icon("quiz"), sampBuf.String(),
 		easySection,
 		expSection,
 		codeSection,
@@ -791,58 +551,70 @@ func printShell(title, body string) string {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>%s | 印刷用 | 競プロ教材</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
   onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],ignoredTags:['script','noscript','style','pre','code']})"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#fff;color:#111;max-width:820px;margin:0 auto;padding:24px 32px;font-size:.93rem;line-height:1.7}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#fff;color:#000;max-width:820px;margin:0 auto;padding:24px 32px;font-size:.93rem;line-height:1.7}
 h1{font-size:1.3rem;margin-bottom:8px}
-h2{font-size:1rem;font-weight:700;margin:20px 0 8px;color:#333;border-bottom:1px solid #e0e0e0;padding-bottom:4px}
+h2{font-size:1rem;font-weight:700;margin:20px 0 8px;color:#000;border-bottom:1.5px solid #000;padding-bottom:4px;display:flex;align-items:center;gap:4px}
 h3{font-size:.9rem;font-weight:700;margin:14px 0 6px}
 p{margin-bottom:.6em}
 ul,ol{padding-left:1.6em;margin:.4em 0 .6em}
 li{margin-bottom:.2em}
 code{background:#f0f0f0;padding:1px 5px;border-radius:3px;font-size:.88em;font-family:monospace}
-.diff-badge{display:inline-block;border-radius:12px;padding:2px 10px;font-size:.72rem;font-weight:700;color:#fff}
-.tag{display:inline-block;background:#e8eaf6;color:#3949ab;border-radius:12px;padding:2px 9px;font-size:.72rem;font-weight:600}
-.print-header{border-bottom:2px solid #1565c0;padding-bottom:12px;margin-bottom:20px}
-.print-contest{font-size:.8rem;color:#666;margin-bottom:4px}
+.mi{font-family:'Material Symbols Outlined';font-weight:normal;font-style:normal;font-size:1.2em;display:inline-block;vertical-align:-.2em;line-height:1;letter-spacing:normal;text-transform:none;white-space:nowrap}
+.diff-badge{display:inline-block;border:1.5px solid #000;border-radius:12px;padding:2px 10px;font-size:.72rem;font-weight:700;color:#000}
+.tag{display:inline-block;border:1px solid #555;border-radius:12px;padding:2px 9px;font-size:.72rem;font-weight:600;color:#000}
+.print-header{border-bottom:2px solid #000;padding-bottom:12px;margin-bottom:20px}
+.print-contest{font-size:.8rem;color:#555;margin-bottom:4px}
 .print-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;align-items:center}
 .print-section{margin-bottom:22px}
-.print-box{border:1px solid #e0e0e0;border-radius:6px;padding:12px 14px}
+.print-box{border:1px solid #888;border-radius:4px;padding:12px 14px}
 .print-box p{margin-bottom:.6em}
 .print-box ul,.print-box ol{padding-left:1.6em;margin:.4em 0 .6em}
-.print-constraints{background:#f3f4f6;border-radius:6px;padding:8px 12px;font-size:.85rem;margin-top:8px}
-.print-note{background:#e3f2fd;border-left:4px solid #1565c0;border-radius:4px;padding:10px 14px}
-.print-note h2,.print-note h3{color:#1565c0}
-.print-note hr{display:none}
-.print-easy{background:#fffde7;border-left:4px solid #f9a825;border-radius:4px;padding:10px 14px}
-.print-easy hr{display:none}
-.print-exp{background:#e8f5e9;border-left:4px solid #43a047;border-radius:4px;padding:10px 14px}
-.print-exp hr{display:none}
-.print-note p,.print-easy p,.print-exp p{margin-bottom:.5em}
-.print-note ul,.print-note ol,.print-easy ul,.print-easy ol,.print-exp ul,.print-exp ol{padding-left:1.4em;margin:.3em 0 .5em}
-.print-note code,.print-easy code,.print-exp code{background:rgba(0,0,0,.06);padding:1px 5px;border-radius:3px;font-size:.88em}
-.print-note pre,.print-easy pre,.print-exp pre{background:rgba(0,0,0,.04);border-radius:4px;padding:8px;font-size:.82rem;overflow-x:auto;margin:6px 0;white-space:pre-wrap}
-.sample-block{border:1px solid #ddd;border-radius:6px;padding:10px;margin-bottom:10px}
+.print-constraints{border:1px solid #aaa;border-radius:4px;padding:8px 12px;font-size:.85rem;margin-top:8px}
+.print-note,.print-easy,.print-exp,.print-constraints-note{padding:10px 0;margin:10px 0 0}
+.print-note hr,.print-easy hr,.print-exp hr,.print-constraints-note hr{display:none}
+.print-note p,.print-easy p,.print-exp p,.print-constraints-note p{margin-bottom:.5em}
+.print-note ul,.print-note ol,.print-easy ul,.print-easy ol,.print-exp ul,.print-exp ol,.print-constraints-note ul,.print-constraints-note ol{padding-left:1.4em;margin:.3em 0 .5em}
+.print-note code,.print-easy code,.print-exp code,.print-constraints-note code{background:#f0f0f0;padding:1px 5px;border-radius:3px;font-size:.88em}
+.print-note pre,.print-easy pre,.print-exp pre,.print-constraints-note pre{background:#f5f5f5;border:1px solid #ddd;border-radius:4px;padding:8px;font-size:.82rem;overflow-x:auto;margin:6px 0;white-space:pre-wrap}
+.sample-block{border:1px solid #aaa;border-radius:4px;padding:10px;margin-bottom:10px}
 .sample-label{font-size:.72rem;font-weight:600;color:#555;margin-bottom:3px}
-.sample-pre{background:#f5f6fa;border-radius:4px;padding:6px 10px;font-size:.82rem;font-family:monospace;white-space:pre;margin-bottom:8px}
-.sample-exp{font-size:.82rem;color:#444;border-top:1px solid #e0e0e0;padding-top:8px;margin-top:8px}
+.sample-pre{background:#f5f5f5;border:1px solid #ddd;border-radius:3px;padding:6px 10px;font-size:.82rem;font-family:monospace;white-space:pre;margin-bottom:8px}
+.sample-exp{font-size:.82rem;color:#333;border-top:1px solid #ccc;padding-top:8px;margin-top:8px}
 .sample-exp p{margin-bottom:.4em}
 .sample-exp ul,.sample-exp ol{padding-left:1.4em;margin:.2em 0 .4em}
-.lang-header{background:#1565c0;color:#fff;padding:4px 12px;border-radius:4px 4px 0 0;font-size:.8rem;font-weight:700;margin-top:14px}
-pre.code-print{background:#f5f5f5;border:1px solid #ddd;border-radius:0 4px 4px 4px;padding:12px;font-size:.75rem;font-family:monospace;white-space:pre-wrap;word-break:break-all;line-height:1.55;margin-bottom:0}
+.sample-exp-title{font-weight:700;font-size:.78rem;color:#333;margin-bottom:6px;display:flex;align-items:center;gap:3px}
+.lang-header{border:1px solid #888;border-bottom:none;border-radius:4px 4px 0 0;padding:4px 12px;font-size:.8rem;font-weight:700;margin-top:14px;background:#f0f0f0;color:#000}
+pre.code-print{background:#f8f8f8;border:1px solid #aaa;border-radius:0 4px 4px 4px;padding:12px;font-size:.75rem;font-family:monospace;white-space:pre-wrap;word-break:break-all;line-height:1.55;margin-bottom:0}
 pre.code-print code{background:none;padding:0;font-size:inherit}
-.print-btn{position:fixed;bottom:20px;right:20px;background:#1565c0;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:.9rem;cursor:pointer;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.2)}
-.print-btn:hover{background:#0d47a1}
+.bad-code-section{border-top:1px dashed #aaa;margin-top:20px;padding-top:10px}
+.bad-code-label{font-size:.78rem;font-weight:700;color:#555;margin-bottom:4px}
+pre.code-print-bad{background:#f8f8f8;border:1px dashed #aaa;border-radius:4px;padding:12px;font-size:.75rem;font-family:monospace;white-space:pre-wrap;word-break:break-all;line-height:1.55}
+.print-tagline{font-size:.92rem;color:#333;margin-bottom:18px;padding:10px 14px;border-left:3px solid #888;background:#fafafa;line-height:1.6}
+.compare-block{border:2px solid #888;border-radius:6px;margin-bottom:6px;overflow:hidden;page-break-inside:avoid}
+.bad-block{border-style:dashed;border-color:#666}
+.good-block{border-color:#333}
+.compare-block-header{padding:8px 14px;font-size:.85rem;font-weight:700;display:flex;align-items:flex-start;gap:6px;border-bottom:1.5px solid #aaa;background:#ececec;line-height:1.5}
+.bad-block .compare-block-header{border-bottom-style:dashed}
+.compare-block pre.code-print{border:none;border-radius:0;margin:0;background:#f8f8f8}
+.compare-block.good-block pre.code-print{background:#f0f0f0}
+.compare-arrow{text-align:center;padding:10px 0;font-size:.88rem;color:#333;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px}
+.print-btn{position:fixed;bottom:20px;right:20px;background:#333;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:.9rem;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.print-btn:hover{background:#000}
 @media print{
   @page{margin:1.5cm}
   body{max-width:none;padding:0}
   .print-btn{display:none}
-  pre.code-print{page-break-inside:avoid;white-space:pre-wrap}
+  pre.code-print,pre.code-print-bad{page-break-inside:avoid;white-space:pre-wrap}
   h2{page-break-after:avoid}
+  .compare-block{page-break-inside:avoid}
   .print-note,.print-easy,.print-exp,.sample-block{page-break-inside:avoid}
   .lang-header{page-break-after:avoid}
 }
@@ -851,8 +623,8 @@ pre.code-print code{background:none;padding:0;font-size:inherit}
 <body>
 %s
 %s
-<button class="print-btn" onclick="window.print()">&#128424; 印刷</button>
-<footer style="text-align:center;padding:24px 16px;color:#999;font-size:.78rem;border-top:1px solid #eee;margin-top:40px">本サイトは個人学習目的のみで使用し、商用利用・公開配布はしていません。</footer>
+<button class="print-btn" onclick="window.print()"><span class="mi">print</span> 印刷</button>
+<footer style="text-align:center;padding:24px 16px;color:#666;font-size:.78rem;border-top:1px solid #ccc;margin-top:40px">本サイトは個人学習目的のみで使用し、商用利用・公開配布はしていません。</footer>
 </body>
 </html>`, e(title), pwGateScript(), body)
 }
@@ -873,52 +645,48 @@ func buildPrintPage(p Problem, contest string, force bool) {
 <div class="print-meta">%s %s</div>
 </div>`, e(contest), e(p.Problem), e(p.Title), badge(p.Difficulty), tagSpans(p.Tags))
 
-	fmt.Fprintf(&buf, `<section class="print-section"><h2>&#128196; 問題文</h2><div class="print-box">%s</div>`, mdToHTML(p.Statement))
+	fmt.Fprintf(&buf, `<section class="print-section"><h2>%s 問題文</h2><div class="print-box">%s</div>`, icon("description"), mdToHTML(p.Statement))
 	if p.Constraints != "" {
 		fmt.Fprintf(&buf, `<div class="print-constraints"><strong>制約</strong>%s</div>`, mdToHTML(p.Constraints))
 	}
 	buf.WriteString(`</section>`)
 
+	if p.StatementNote != "" {
+		fmt.Fprintf(&buf, `<section class="print-section"><h2>%s 入力例1を使った説明</h2><div class="print-note">%s</div></section>`, icon("info"), mdToHTML(p.StatementNote))
+	}
+	if p.ConstraintsNote != "" {
+		fmt.Fprintf(&buf, `<section class="print-section"><h2>%s 制約の読み方</h2><div class="print-constraints-note">%s</div></section>`, icon("help"), mdToHTML(p.ConstraintsNote))
+	}
+
 	if len(p.Samples) > 0 {
-		buf.WriteString(`<section class="print-section"><h2>&#10067; 入力・出力の例</h2>`)
+		buf.WriteString(fmt.Sprintf(`<section class="print-section"><h2>%s 入力・出力の例</h2>`, icon("quiz")))
 		for i, s := range p.Samples {
 			exp := ""
 			if s.Explanation != "" {
-				exp = fmt.Sprintf(`<div class="sample-exp">%s</div>`, mdToHTML(s.Explanation))
+				exp = fmt.Sprintf(`<div class="sample-exp"><div class="sample-exp-title">%s 解説</div>%s</div>`, icon("auto_stories"), mdToHTML(s.Explanation))
 			}
 			fmt.Fprintf(&buf, `<div class="sample-block"><div class="sample-label">入力 %d</div><pre class="sample-pre">%s</pre><div class="sample-label">出力 %d</div><pre class="sample-pre">%s</pre>%s</div>`,
 				i+1, e(s.Input), i+1, e(s.Output), exp)
 		}
 		buf.WriteString(`</section>`)
 	}
-
-	if p.StatementNote != "" {
-		fmt.Fprintf(&buf, `<section class="print-section"><h2>&#128221; 問題の解説（入力例1で説明）</h2><div class="print-note">%s</div></section>`, mdToHTML(p.StatementNote))
-	}
 	if p.EasyExplanation != "" {
-		fmt.Fprintf(&buf, `<section class="print-section"><h2>&#128640; わかりやすく解説</h2><div class="print-easy">%s</div></section>`, mdToHTML(p.EasyExplanation))
+		fmt.Fprintf(&buf, `<section class="print-section"><h2>%s わかりやすく解説</h2><div class="print-easy">%s</div></section>`, icon("lightbulb"), mdToHTML(p.EasyExplanation))
 	}
 	if p.Explanation != "" {
-		fmt.Fprintf(&buf, `<section class="print-section"><h2>&#128218; くわしい解説</h2><div class="print-exp">%s</div></section>`, mdToHTML(p.Explanation))
+		fmt.Fprintf(&buf, `<section class="print-section"><h2>%s くわしい解説</h2><div class="print-exp">%s</div></section>`, icon("menu_book"), mdToHTML(p.Explanation))
 	}
 
-	hasSols := false
-	for _, lang := range langDefs {
-		if sol, ok := p.Solutions[lang.key]; ok && sol != nil {
-			hasSols = true
-			_ = sol
-			break
-		}
-	}
-	if hasSols {
-		buf.WriteString(`<section class="print-section"><h2>&#128187; 解答コード</h2>`)
-		for _, lang := range langDefs {
-			sol, ok := p.Solutions[lang.key]
-			if !ok || sol == nil {
-				continue
+	if sol := p.Solutions["python"]; sol != nil {
+		buf.WriteString(fmt.Sprintf(`<section class="print-section"><h2>%s 解答コード（Python）</h2>`, icon("code")))
+		fmt.Fprintf(&buf, `<div class="lang-header">Python</div><pre class="code-print"><code>%s</code></pre>`, e(sol.Code))
+		if bad := p.BadSolutions["python"]; bad != nil {
+			label := bad.Label
+			if label == "" {
+				label = "悪い書き方の例"
 			}
-			fmt.Fprintf(&buf, `<div class="lang-header">%s</div><pre class="code-print"><code>%s</code></pre>`,
-				lang.label, e(sol.Code))
+			buf.WriteString(fmt.Sprintf(`<div class="bad-code-section"><h3>%s 悪い例（結果は合ってるけど…）</h3>`, icon("sentiment_dissatisfied")))
+			fmt.Fprintf(&buf, `<div class="bad-code-label">%s</div><pre class="code-print-bad"><code>%s</code></pre></div>`, e(label), e(bad.Code))
 		}
 		buf.WriteString(`</section>`)
 	}
@@ -947,10 +715,57 @@ func buildCodeSection(p Problem) string {
 		}
 		panels.WriteString(codePanel(lang.key, active, sol))
 	}
+
+	// bad solutions
+	badSection := ""
+	if len(p.BadSolutions) > 0 {
+		var badTabs, badPanels strings.Builder
+		first = true
+		for _, lang := range langDefs {
+			bad, ok := p.BadSolutions[lang.key]
+			if !ok || bad == nil {
+				continue
+			}
+			active := first
+			first = false
+			cls := "bad-lang-tab"
+			if active {
+				cls += " active"
+			}
+			fmt.Fprintf(&badTabs, `<button class="%s" data-lang="bad-%s">%s</button>`, cls, lang.key, lang.label)
+			panelCls := "bad-code-panel"
+			if active {
+				panelCls += " active"
+			}
+			label := bad.Label
+			if label == "" {
+				label = "悪い書き方の例"
+			}
+			fmt.Fprintf(&badPanels, `<div class="%s" id="panel-bad-%s"><div class="bad-solution-label">%s %s</div><pre class="code-block-bad language-%s"><code class="language-%s">%s</code></pre></div>`,
+				panelCls, lang.key, icon("warning"), e(label), lang.key, lang.key, e(bad.Code))
+		}
+		badSection = fmt.Sprintf(`
+<div class="bad-solutions">
+  <div class="bad-solutions-title">%s 悪い例（結果は合ってるけど…）</div>
+  <div class="bad-lang-tabs" id="bltabs">%s</div>
+  %s
+</div>
+<script>
+document.getElementById('bltabs').addEventListener('click',function(e){
+  var b=e.target.closest('.bad-lang-tab'); if(!b)return;
+  document.querySelectorAll('.bad-lang-tab').forEach(function(x){x.classList.remove('active');});
+  document.querySelectorAll('.bad-code-panel').forEach(function(x){x.classList.remove('active');});
+  b.classList.add('active');
+  var p=document.getElementById('panel-'+b.dataset.lang); if(p)p.classList.add('active');
+});
+</script>`, icon("sentiment_dissatisfied"), badTabs.String(), badPanels.String())
+	}
+
 	return fmt.Sprintf(`
 <section class="detail-section">
-  <h2 class="section-title">&#128187; 解答コード</h2>
+  <h2 class="section-title">%s 解答コード</h2>
   <div class="lang-tabs" id="ltabs">%s</div>
+  %s
   %s
 </section>
 <script>
@@ -961,7 +776,7 @@ document.getElementById('ltabs').addEventListener('click',function(e){
   b.classList.add('active');
   var p=document.getElementById('panel-'+b.dataset.lang); if(p)p.classList.add('active');
 });
-</script>`, tabs.String(), panels.String())
+</script>`, icon("code"), tabs.String(), panels.String(), badSection)
 }
 
 func codePanel(lang string, active bool, sol *Solution) string {
@@ -981,6 +796,118 @@ func codePanel(lang string, active bool, sol *Solution) string {
 		cls, lang, lang, lang, e(sol.Code), steps)
 }
 
+func buildGlossary(index []IndexEntry) {
+	b, err := os.ReadFile("data/glossary.json")
+	if err != nil {
+		fmt.Println("  data/glossary.json が見つかりません（スキップ）")
+		return
+	}
+	var entries []GlossaryEntry
+	json.Unmarshal(b, &entries)
+
+	// index page
+	var cardBuf strings.Builder
+	for _, g := range entries {
+		fmt.Fprintf(&cardBuf, `
+<a class="glossary-card" href="%s.html">
+  <div class="glossary-card-name">%s %s</div>
+  <div class="glossary-card-short">%s</div>
+</a>`, g.ID, icon("book_2"), e(g.Name), e(g.Short))
+	}
+	indexBody := fmt.Sprintf(`
+<main class="list-view">
+  <h1 class="detail-title" style="margin-bottom:20px">%s 用語集</h1>
+  <p style="color:#666;font-size:.9rem;margin-bottom:20px">競プロでよく使うアルゴリズムや考え方をまとめました。</p>
+  <div class="glossary-grid">%s</div>
+</main>`, icon("menu_book"), cardBuf.String())
+	writeFile("docs/glossary/index.html", shell("用語集", "../", "", "", "", indexBody))
+	fmt.Println("  docs/glossary/index.html")
+
+	// individual pages
+	for _, g := range entries {
+		printLink := fmt.Sprintf(`<a class="print-link" href="../print/glossary_%s.html" target="_blank">%s 印刷用</a>`, g.ID, icon("print"))
+
+		body := fmt.Sprintf(`
+<main class="detail-view">
+  <h1 class="detail-title">%s %s</h1>
+  <div class="detail-meta" style="margin-bottom:16px">%s</div>
+  <p class="glossary-short" style="margin-bottom:24px">%s</p>
+  <section class="detail-section">
+    <h2 class="section-title">%s 解説</h2>
+    <div class="glossary-desc statement-box">%s</div>
+  </section>
+  <section class="detail-section">
+    <h2 class="section-title">%s 使わない場合 vs 使う場合</h2>
+    <div class="code-compare">
+      <div class="code-compare-col bad-col">
+        <div class="code-compare-label">%s %s</div>
+        <pre class="code-compare-pre"><code>%s</code></pre>
+      </div>
+      <div class="code-compare-col good-col">
+        <div class="code-compare-label">%s %s</div>
+        <pre class="code-compare-pre"><code>%s</code></pre>
+      </div>
+    </div>
+  </section>
+  <section class="detail-section">
+    <h2 class="section-title">%s いつ使う？</h2>
+    <div class="glossary-when">%s</div>
+  </section>
+</main>`,
+			icon("book_2"), e(g.Name),
+			printLink,
+			e(g.Short),
+			icon("auto_stories"), mdToHTML(g.Description),
+			icon("compare"),
+			icon("close"), e(g.WithoutLabel), e(g.WithoutCode),
+			icon("check"), e(g.WithLabel), e(g.WithCode),
+			icon("help_outline"), e(g.WhenToUse),
+		)
+
+		out := "docs/glossary/" + g.ID + ".html"
+		writeFile(out, shell(g.Name, "../", "index.html", "用語集", "", body))
+		fmt.Printf("  %s\n", out)
+
+		buildGlossaryPrintPage(g)
+	}
+}
+
+func buildGlossaryPrintPage(g GlossaryEntry) {
+	var buf strings.Builder
+
+	fmt.Fprintf(&buf, `<div class="print-header">
+<div class="print-contest">用語集</div>
+<h1>%s</h1>
+</div>
+<p class="print-tagline">%s</p>`, e(g.Name), e(g.Short))
+
+	fmt.Fprintf(&buf, `<section class="print-section"><h2>%s 解説</h2><div class="print-box">%s</div></section>`,
+		icon("auto_stories"), mdToHTML(g.Description))
+
+	fmt.Fprintf(&buf, `<section class="print-section"><h2>%s 使わない場合 vs 使う場合</h2>
+<div class="compare-block bad-block">
+  <div class="compare-block-header">%s %s</div>
+  <pre class="code-print"><code>%s</code></pre>
+</div>
+<div class="compare-arrow">%s この書き方を改善すると…</div>
+<div class="compare-block good-block">
+  <div class="compare-block-header">%s %s</div>
+  <pre class="code-print"><code>%s</code></pre>
+</div>
+</section>`,
+		icon("compare"),
+		icon("close"), e(g.WithoutLabel), e(g.WithoutCode),
+		icon("arrow_downward"),
+		icon("check"), e(g.WithLabel), e(g.WithCode))
+
+	fmt.Fprintf(&buf, `<section class="print-section"><h2>%s いつ使う？</h2><div class="print-box">%s</div></section>`,
+		icon("help_outline"), e(g.WhenToUse))
+
+	out := "docs/print/glossary_" + g.ID + ".html"
+	writeFile(out, printShell(g.Name, buf.String()))
+	fmt.Printf("  %s\n", out)
+}
+
 // ── helpers ───────────────────────────────────────────────────────────────────
 
 func writeJSON(path string, v any) {
@@ -993,19 +920,13 @@ func writeFile(path, content string) {
 	os.WriteFile(path, []byte(content), 0644)
 }
 
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
-
 func cmdBuild(force bool) {
 	if force {
 		os.RemoveAll("docs")
 	}
 	os.MkdirAll("docs/problems", 0755)
 	os.MkdirAll("docs/print", 0755)
+	os.MkdirAll("docs/glossary", 0755)
 
 	idxB, err := os.ReadFile("data/index.json")
 	if err != nil {
@@ -1014,10 +935,23 @@ func cmdBuild(force bool) {
 	var index []IndexEntry
 	json.Unmarshal(idxB, &index)
 
+	// build problem → glossary entries map
+	problemGlossary := make(map[string][]GlossaryEntry)
+	if gb, err2 := os.ReadFile("data/glossary.json"); err2 == nil {
+		var glossary []GlossaryEntry
+		json.Unmarshal(gb, &glossary)
+		for _, g := range glossary {
+			for _, pid := range g.Problems {
+				problemGlossary[pid] = append(problemGlossary[pid], g)
+			}
+		}
+	}
+
 	writeFile("docs/style.css", css())
 	fmt.Println("  docs/style.css")
 	fmt.Println("HTML 生成中...")
 	buildIndex(index)
+	buildGlossary(index)
 
 	seen := make(map[string]bool)
 	for _, meta := range index {
@@ -1032,7 +966,7 @@ func cmdBuild(force bool) {
 		}
 		json.Unmarshal(b, &cf)
 		for _, p := range cf.Problems {
-			buildProblem(p, cf.Contest, force)
+			buildProblem(p, cf.Contest, force, problemGlossary[p.ID])
 			buildPrintPage(p, cf.Contest, force)
 		}
 	}
@@ -1048,29 +982,23 @@ func cmdServe() {
 
 func main() {
 	// src/ 内から実行された場合はプロジェクトルートに移動
-	if _, err := os.Stat("problems-raw"); os.IsNotExist(err) {
+	if _, err := os.Stat("data"); os.IsNotExist(err) {
 		os.Chdir("..")
 	}
 
-	cmd := "all"
 	force := false
+	serve := false
 	for _, a := range os.Args[1:] {
 		switch a {
 		case "-f", "--force":
 			force = true
-		case "convert", "build", "serve":
-			cmd = a
+		case "serve":
+			serve = true
 		}
 	}
-	switch cmd {
-	case "convert":
-		cmdConvert()
-	case "build":
-		cmdBuild(force)
-	case "serve":
+	if serve {
 		cmdServe()
-	default: // "all"
-		cmdConvert()
+	} else {
 		cmdBuild(force)
 	}
 }

@@ -5,70 +5,82 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Longest Circular Road | 印刷用 | 競プロ教材</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
   onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],ignoredTags:['script','noscript','style','pre','code']})"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#fff;color:#111;max-width:820px;margin:0 auto;padding:24px 32px;font-size:.93rem;line-height:1.7}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#fff;color:#000;max-width:820px;margin:0 auto;padding:24px 32px;font-size:.93rem;line-height:1.7}
 h1{font-size:1.3rem;margin-bottom:8px}
-h2{font-size:1rem;font-weight:700;margin:20px 0 8px;color:#333;border-bottom:1px solid #e0e0e0;padding-bottom:4px}
+h2{font-size:1rem;font-weight:700;margin:20px 0 8px;color:#000;border-bottom:1.5px solid #000;padding-bottom:4px;display:flex;align-items:center;gap:4px}
 h3{font-size:.9rem;font-weight:700;margin:14px 0 6px}
 p{margin-bottom:.6em}
 ul,ol{padding-left:1.6em;margin:.4em 0 .6em}
 li{margin-bottom:.2em}
 code{background:#f0f0f0;padding:1px 5px;border-radius:3px;font-size:.88em;font-family:monospace}
-.diff-badge{display:inline-block;border-radius:12px;padding:2px 10px;font-size:.72rem;font-weight:700;color:#fff}
-.tag{display:inline-block;background:#e8eaf6;color:#3949ab;border-radius:12px;padding:2px 9px;font-size:.72rem;font-weight:600}
-.print-header{border-bottom:2px solid #1565c0;padding-bottom:12px;margin-bottom:20px}
-.print-contest{font-size:.8rem;color:#666;margin-bottom:4px}
+.mi{font-family:'Material Symbols Outlined';font-weight:normal;font-style:normal;font-size:1.2em;display:inline-block;vertical-align:-.2em;line-height:1;letter-spacing:normal;text-transform:none;white-space:nowrap}
+.diff-badge{display:inline-block;border:1.5px solid #000;border-radius:12px;padding:2px 10px;font-size:.72rem;font-weight:700;color:#000}
+.tag{display:inline-block;border:1px solid #555;border-radius:12px;padding:2px 9px;font-size:.72rem;font-weight:600;color:#000}
+.print-header{border-bottom:2px solid #000;padding-bottom:12px;margin-bottom:20px}
+.print-contest{font-size:.8rem;color:#555;margin-bottom:4px}
 .print-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;align-items:center}
 .print-section{margin-bottom:22px}
-.print-box{border:1px solid #e0e0e0;border-radius:6px;padding:12px 14px}
+.print-box{border:1px solid #888;border-radius:4px;padding:12px 14px}
 .print-box p{margin-bottom:.6em}
 .print-box ul,.print-box ol{padding-left:1.6em;margin:.4em 0 .6em}
-.print-constraints{background:#f3f4f6;border-radius:6px;padding:8px 12px;font-size:.85rem;margin-top:8px}
-.print-note{background:#e3f2fd;border-left:4px solid #1565c0;border-radius:4px;padding:10px 14px}
-.print-note h2,.print-note h3{color:#1565c0}
-.print-note hr{display:none}
-.print-easy{background:#fffde7;border-left:4px solid #f9a825;border-radius:4px;padding:10px 14px}
-.print-easy hr{display:none}
-.print-exp{background:#e8f5e9;border-left:4px solid #43a047;border-radius:4px;padding:10px 14px}
-.print-exp hr{display:none}
-.print-note p,.print-easy p,.print-exp p{margin-bottom:.5em}
-.print-note ul,.print-note ol,.print-easy ul,.print-easy ol,.print-exp ul,.print-exp ol{padding-left:1.4em;margin:.3em 0 .5em}
-.print-note code,.print-easy code,.print-exp code{background:rgba(0,0,0,.06);padding:1px 5px;border-radius:3px;font-size:.88em}
-.print-note pre,.print-easy pre,.print-exp pre{background:rgba(0,0,0,.04);border-radius:4px;padding:8px;font-size:.82rem;overflow-x:auto;margin:6px 0;white-space:pre-wrap}
-.sample-block{border:1px solid #ddd;border-radius:6px;padding:10px;margin-bottom:10px}
+.print-constraints{border:1px solid #aaa;border-radius:4px;padding:8px 12px;font-size:.85rem;margin-top:8px}
+.print-note,.print-easy,.print-exp,.print-constraints-note{padding:10px 0;margin:10px 0 0}
+.print-note hr,.print-easy hr,.print-exp hr,.print-constraints-note hr{display:none}
+.print-note p,.print-easy p,.print-exp p,.print-constraints-note p{margin-bottom:.5em}
+.print-note ul,.print-note ol,.print-easy ul,.print-easy ol,.print-exp ul,.print-exp ol,.print-constraints-note ul,.print-constraints-note ol{padding-left:1.4em;margin:.3em 0 .5em}
+.print-note code,.print-easy code,.print-exp code,.print-constraints-note code{background:#f0f0f0;padding:1px 5px;border-radius:3px;font-size:.88em}
+.print-note pre,.print-easy pre,.print-exp pre,.print-constraints-note pre{background:#f5f5f5;border:1px solid #ddd;border-radius:4px;padding:8px;font-size:.82rem;overflow-x:auto;margin:6px 0;white-space:pre-wrap}
+.sample-block{border:1px solid #aaa;border-radius:4px;padding:10px;margin-bottom:10px}
 .sample-label{font-size:.72rem;font-weight:600;color:#555;margin-bottom:3px}
-.sample-pre{background:#f5f6fa;border-radius:4px;padding:6px 10px;font-size:.82rem;font-family:monospace;white-space:pre;margin-bottom:8px}
-.sample-exp{font-size:.82rem;color:#444;border-top:1px solid #e0e0e0;padding-top:8px;margin-top:8px}
+.sample-pre{background:#f5f5f5;border:1px solid #ddd;border-radius:3px;padding:6px 10px;font-size:.82rem;font-family:monospace;white-space:pre;margin-bottom:8px}
+.sample-exp{font-size:.82rem;color:#333;border-top:1px solid #ccc;padding-top:8px;margin-top:8px}
 .sample-exp p{margin-bottom:.4em}
 .sample-exp ul,.sample-exp ol{padding-left:1.4em;margin:.2em 0 .4em}
-.lang-header{background:#1565c0;color:#fff;padding:4px 12px;border-radius:4px 4px 0 0;font-size:.8rem;font-weight:700;margin-top:14px}
-pre.code-print{background:#f5f5f5;border:1px solid #ddd;border-radius:0 4px 4px 4px;padding:12px;font-size:.75rem;font-family:monospace;white-space:pre-wrap;word-break:break-all;line-height:1.55;margin-bottom:0}
+.sample-exp-title{font-weight:700;font-size:.78rem;color:#333;margin-bottom:6px;display:flex;align-items:center;gap:3px}
+.lang-header{border:1px solid #888;border-bottom:none;border-radius:4px 4px 0 0;padding:4px 12px;font-size:.8rem;font-weight:700;margin-top:14px;background:#f0f0f0;color:#000}
+pre.code-print{background:#f8f8f8;border:1px solid #aaa;border-radius:0 4px 4px 4px;padding:12px;font-size:.75rem;font-family:monospace;white-space:pre-wrap;word-break:break-all;line-height:1.55;margin-bottom:0}
 pre.code-print code{background:none;padding:0;font-size:inherit}
-.print-btn{position:fixed;bottom:20px;right:20px;background:#1565c0;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:.9rem;cursor:pointer;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.2)}
-.print-btn:hover{background:#0d47a1}
+.bad-code-section{border-top:1px dashed #aaa;margin-top:20px;padding-top:10px}
+.bad-code-label{font-size:.78rem;font-weight:700;color:#555;margin-bottom:4px}
+pre.code-print-bad{background:#f8f8f8;border:1px dashed #aaa;border-radius:4px;padding:12px;font-size:.75rem;font-family:monospace;white-space:pre-wrap;word-break:break-all;line-height:1.55}
+.print-tagline{font-size:.92rem;color:#333;margin-bottom:18px;padding:10px 14px;border-left:3px solid #888;background:#fafafa;line-height:1.6}
+.compare-block{border:2px solid #888;border-radius:6px;margin-bottom:6px;overflow:hidden;page-break-inside:avoid}
+.bad-block{border-style:dashed;border-color:#666}
+.good-block{border-color:#333}
+.compare-block-header{padding:8px 14px;font-size:.85rem;font-weight:700;display:flex;align-items:flex-start;gap:6px;border-bottom:1.5px solid #aaa;background:#ececec;line-height:1.5}
+.bad-block .compare-block-header{border-bottom-style:dashed}
+.compare-block pre.code-print{border:none;border-radius:0;margin:0;background:#f8f8f8}
+.compare-block.good-block pre.code-print{background:#f0f0f0}
+.compare-arrow{text-align:center;padding:10px 0;font-size:.88rem;color:#333;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px}
+.print-btn{position:fixed;bottom:20px;right:20px;background:#333;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:.9rem;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.print-btn:hover{background:#000}
 @media print{
   @page{margin:1.5cm}
   body{max-width:none;padding:0}
   .print-btn{display:none}
-  pre.code-print{page-break-inside:avoid;white-space:pre-wrap}
+  pre.code-print,pre.code-print-bad{page-break-inside:avoid;white-space:pre-wrap}
   h2{page-break-after:avoid}
+  .compare-block{page-break-inside:avoid}
   .print-note,.print-easy,.print-exp,.sample-block{page-break-inside:avoid}
   .lang-header{page-break-after:avoid}
 }
 </style>
 </head>
 <body>
-<script>(function(){var H="__VIEW_PASSWORD__";if(H.indexOf('__')===0)return;if(sessionStorage.getItem('cps')===H)return;var o=document.createElement('div');o.style='position:fixed;inset:0;background:#1565c0;display:flex;align-items:center;justify-content:center;z-index:9999';o.innerHTML='<div style="background:#fff;border-radius:12px;padding:32px;max-width:320px;width:90%;text-align:center"><div style="font-size:1.4rem;font-weight:700;margin-bottom:8px">&#127891; 競プロ教材</div><div style="color:#666;font-size:.85rem;margin-bottom:20px">パスワードを入力してください</div><input type="password" id="pwi" style="width:100%;border:1.5px solid #ccc;border-radius:8px;padding:10px;font-size:1rem;margin-bottom:10px;box-sizing:border-box" placeholder="パスワード"><div id="pwe" style="color:#f44336;font-size:.8rem;height:1.2em;margin-bottom:8px"></div><button id="pwb" style="background:#1565c0;color:#fff;border:none;border-radius:8px;padding:10px 32px;font-size:1rem;cursor:pointer;width:100%">入る</button></div>';document.body.appendChild(o);function chk(){var v=document.getElementById('pwi').value;if(v===H){sessionStorage.setItem('cps',H);o.remove();}else document.getElementById('pwe').textContent='パスワードが違います';}document.getElementById('pwb').addEventListener('click',chk);document.getElementById('pwi').addEventListener('keydown',function(e){if(e.key==='Enter')chk();});})();</script>
+<script>(function(){var H="__VIEW_PASSWORD__";if(H.indexOf('__')===0)return;if(sessionStorage.getItem('cps')===H)return;var o=document.createElement('div');o.style='position:fixed;inset:0;background:#1565c0;display:flex;align-items:center;justify-content:center;z-index:9999';o.innerHTML='<div style="background:#fff;border-radius:12px;padding:32px;max-width:320px;width:90%;text-align:center"><div style="font-size:1.4rem;font-weight:700;margin-bottom:8px">競プロ教材</div><div style="color:#666;font-size:.85rem;margin-bottom:20px">パスワードを入力してください</div><input type="password" id="pwi" style="width:100%;border:1.5px solid #ccc;border-radius:8px;padding:10px;font-size:1rem;margin-bottom:10px;box-sizing:border-box" placeholder="パスワード"><div id="pwe" style="color:#f44336;font-size:.8rem;height:1.2em;margin-bottom:8px"></div><button id="pwb" style="background:#1565c0;color:#fff;border:none;border-radius:8px;padding:10px 32px;font-size:1rem;cursor:pointer;width:100%">入る</button></div>';document.body.appendChild(o);function chk(){var v=document.getElementById('pwi').value;if(v===H){sessionStorage.setItem('cps',H);o.remove();}else document.getElementById('pwe').textContent='パスワードが違います';}document.getElementById('pwb').addEventListener('click',chk);document.getElementById('pwi').addEventListener('keydown',function(e){if(e.key==='Enter')chk();});})();</script>
 <div class="print-header">
 <div class="print-contest">典型90問 003</div>
 <h1>Longest Circular Road</h1>
 <div class="print-meta"><span class="diff-badge" style="background:#f44336">D問題レベル</span> <span class="tag">木</span><span class="tag">木の直径</span><span class="tag">BFS</span><span class="tag">グラフ</span></div>
-</div><section class="print-section"><h2>&#128196; 問題文</h2><div class="print-box"><p>$N$ 個の都市があり、それぞれの都市に $1$ から $N$ までの番号が付けられています。
+</div><section class="print-section"><h2><span class="mi">description</span> 問題文</h2><div class="print-box"><p>$N$ 個の都市があり、それぞれの都市に $1$ から $N$ までの番号が付けられています。
 また、$N-1$ 本の道路があり、$i$ 本目 $(1 \leq i \leq N-1)$ の道路は都市 $A_i$ と都市 $B_i$ を双方向に結んでいます。
 どの都市の間も、いくつかの道路を通って移動可能なものとなっています。</p>
 <p>さて、あなたは整数 $u, v$ $(1 \leq u &lt; v \leq N)$ を自由に選び、都市 $u$ と都市 $v$ を双方向に結ぶ道路を 1 本だけ新設することができます。そこで、以下で定められる値を <strong>スコア</strong> とします。</p>
@@ -80,9 +92,27 @@ pre.code-print code{background:none;padding:0;font-size:inherit}
 <li>どの都市の間も、いくつかの道路を通って移動可能</li>
 <li>与えられる入力は全て整数</li>
 </ul>
-</div></section><section class="print-section"><h2>&#10067; 入力・出力の例</h2><div class="sample-block"><div class="sample-label">入力 1</div><pre class="sample-pre">3
+</div></section><section class="print-section"><h2><span class="mi">info</span> 入力例1を使った説明</h2><div class="print-note"><h2>この問題で何をするの？</h2>
+<p>3つの都市が 1−2−3 と一列につながっているとします（入力例1）。</p>
+<p>ここに道路を1本だけ追加して、「ぐるっと一周できるコース」を作ります。その一周の道の本数をスコアといいます。</p>
+<p>1番と3番をつなぐと <strong>1→2→3→1</strong> と3本の道を通って一周でき、スコアは <strong>3</strong>。</p>
+<p>つまり「追加する道路をどう選べば、スコア（一周の長さ）が最大になるか」を求める問題です。</p>
+<h2>入力の読み方</h2>
+<pre><code class="language-text">3       ← 都市の数が3つ
+1 2     ← 1番と2番の都市をつなぐ道路
+2 3     ← 2番と3番の都市をつなぐ道路
+</code></pre>
+<h2>出力の読み方</h2>
+<p>この例では <code>3</code> を出力する。</p>
+<hr>
+</div></section><section class="print-section"><h2><span class="mi">help</span> 制約の読み方</h2><div class="print-constraints-note"><ul>
+<li><code>3 ≤ N ≤ 100000</code>：都市は最大<strong>10万個</strong>。</li>
+<li>N が大きいので、<strong>全ペアを調べる O(N²) は間に合わない</strong>（10万×10万＝100億回）。</li>
+<li>「木の直径」アルゴリズム（BFS を2回）を使えば O(N) で求まる。</li>
+</ul>
+</div></section><section class="print-section"><h2><span class="mi">quiz</span> 入力・出力の例</h2><div class="sample-block"><div class="sample-label">入力 1</div><pre class="sample-pre">3
 1 2
-2 3</pre><div class="sample-label">出力 1</div><pre class="sample-pre">3</pre><div class="sample-exp"><p><strong>この入力の意味：</strong> 3つの都市（1・2・3番）が 1−2−3 と一列につながっている。ここに道路を1本追加する。</p>
+2 3</pre><div class="sample-label">出力 1</div><pre class="sample-pre">3</pre><div class="sample-exp"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 3つの都市（1・2・3番）が 1−2−3 と一列につながっている。ここに道路を1本追加する。</p>
 <ul>
 <li>都市 1 と 都市 3 の間に追加 → <strong>1 → 2 → 3 → 1</strong> と一周できる。道の本数 <strong>3本</strong> ← これが最大！</li>
 <li>都市 1 と 都市 2 の間に追加 → 同じ道が2本になるだけ。一周できるが道は <strong>2本</strong>（微妙）</li>
@@ -94,7 +124,7 @@ pre.code-print code{background:none;padding:0;font-size:inherit}
 1 2
 2 3
 3 4
-3 5</pre><div class="sample-label">出力 2</div><pre class="sample-pre">4</pre><div class="sample-exp"><p><strong>この入力の意味：</strong> 5つの都市、道路が 1−2−3−4 と 3−5。木の形。ここに道路を1本追加する。</p>
+3 5</pre><div class="sample-label">出力 2</div><pre class="sample-pre">4</pre><div class="sample-exp"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 5つの都市、道路が 1−2−3−4 と 3−5。木の形。ここに道路を1本追加する。</p>
 <ul>
 <li>都市 1 と 都市 4 の間 → 1→2→3→4→1、<strong>4本</strong> ← 最大！</li>
 <li>都市 1 と 都市 5 の間 → 1→2→3→5→1、<strong>4本</strong> ← 同じ最大</li>
@@ -112,7 +142,7 @@ pre.code-print code{background:none;padding:0;font-size:inherit}
 3 7
 7 8
 8 9
-8 10</pre><div class="sample-label">出力 3</div><pre class="sample-pre">8</pre><div class="sample-exp"><p><strong>この入力の意味：</strong> 10都市の木。</p>
+8 10</pre><div class="sample-label">出力 3</div><pre class="sample-pre">8</pre><div class="sample-exp"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 10都市の木。</p>
 <p>木の形を整理すると：</p>
 <ul>
 <li>1番 → 2番 → 4番 → <strong>5番</strong>（端）</li>
@@ -154,7 +184,7 @@ pre.code-print code{background:none;padding:0;font-size:inherit}
 14 28
 14 29
 15 30
-15 31</pre><div class="sample-label">出力 4</div><pre class="sample-pre">9</pre><div class="sample-exp"><p><strong>この入力の意味：</strong> 31都市の完全二分木（全部で5段）。</p>
+15 31</pre><div class="sample-label">出力 4</div><pre class="sample-pre">9</pre><div class="sample-exp"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 31都市の完全二分木（全部で5段）。</p>
 <pre><code>              1
            /     \
          2         3
@@ -169,20 +199,7 @@ pre.code-print code{background:none;padding:0;font-size:inherit}
 <p>道路を新設すると一周で道は <strong>9本</strong>。</p>
 <p>答えは <strong>9</strong>。</p>
 <hr>
-</div></div></section><section class="print-section"><h2>&#128221; 問題の解説（入力例1で説明）</h2><div class="print-note"><h2>この問題で何をするの？</h2>
-<p>3つの都市が 1−2−3 と一列につながっているとします（入力例1）。</p>
-<p>ここに道路を1本だけ追加して、「ぐるっと一周できるコース」を作ります。その一周の道の本数をスコアといいます。</p>
-<p>1番と3番をつなぐと <strong>1→2→3→1</strong> と3本の道を通って一周でき、スコアは <strong>3</strong>。</p>
-<p>つまり「追加する道路をどう選べば、スコア（一周の長さ）が最大になるか」を求める問題です。</p>
-<h2>入力の読み方</h2>
-<pre><code class="language-text">3       ← 都市の数が3つ
-1 2     ← 1番と2番の都市をつなぐ道路
-2 3     ← 2番と3番の都市をつなぐ道路
-</code></pre>
-<h2>出力の読み方</h2>
-<p>この例では <code>3</code> を出力する。</p>
-<hr>
-</div></section><section class="print-section"><h2>&#128640; わかりやすく解説</h2><div class="print-easy"><h2>イメージ</h2>
+</div></div></section><section class="print-section"><h2><span class="mi">lightbulb</span> わかりやすく解説</h2><div class="print-easy"><h2>イメージ</h2>
 <p>木に1本だけ道を追加するとき、追加した道と既存の道でぴったり1つの「輪っか」ができます。</p>
 <p>輪っかの長さ＝（追加した2都市を既存の道でつないだときの道の本数）＋（新しく追加した道の1本）</p>
 <p>なので、<strong>2都市間の既存の道の本数が最大になる2つの都市を選べばいい</strong>ことになります。</p>
@@ -198,7 +215,7 @@ pre.code-print code{background:none;padding:0;font-size:inherit}
 <li>$u$ からBFSして、いちばん遠い都市までの距離を求める → それが直径</li>
 </ol>
 <hr>
-</div></section><section class="print-section"><h2>&#128218; くわしい解説</h2><div class="print-exp"><h2>方針</h2>
+</div></section><section class="print-section"><h2><span class="mi">menu_book</span> くわしい解説</h2><div class="print-exp"><h2>方針</h2>
 <p><strong>木の直径を求めて、直径＋1を出力する。</strong></p>
 <h3>なぜ「直径＋1」か</h3>
 <p>木にエッジ $(u, v)$ を1本追加すると、ちょうど1つの単純サイクルができる。そのサイクルの長さは：</p>
@@ -230,7 +247,7 @@ pre.code-print code{background:none;padding:0;font-size:inherit}
 <li>計算量 O(N) で解ける典型問題</li>
 </ul>
 <hr>
-</div></section><section class="print-section"><h2>&#128187; 解答コード</h2><div class="lang-header">Python</div><pre class="code-print"><code>import sys
+</div></section><section class="print-section"><h2><span class="mi">code</span> 解答コード（Python）</h2><div class="lang-header">Python</div><pre class="code-print"><code>import sys
 from collections import deque
 input = sys.stdin.readline  # 高速入力に切り替え
 
@@ -267,261 +284,36 @@ u, _ = bfs(1, graph, N)
 # 2回目の BFS: 最遠点 u からさらに最も遠い都市を見つける（＝直径）
 _, diameter = bfs(u, graph, N)
 
-print(diameter + 1)  # 直径 + 1 がスコアの最大値</code></pre><div class="lang-header">C++</div><pre class="code-print"><code>#include &lt;bits/stdc++.h&gt;
-using namespace std;
+print(diameter + 1)  # 直径 + 1 がスコアの最大値</code></pre><div class="bad-code-section"><h3><span class="mi">sentiment_dissatisfied</span> 悪い例（結果は合ってるけど…）</h3><div class="bad-code-label">O(N²) 全頂点BFS — 木の直径アルゴリズムを知らずに全頂点から探索</div><pre class="code-print-bad"><code>from collections import deque
+import sys
+input = sys.stdin.readline
 
-// BFS で start から各都市への距離を求め、最遠点と距離を返す
-pair&lt;int,int&gt; bfs(int start, vector&lt;vector&lt;int&gt;&gt;&amp; graph, int n) {
-    vector&lt;int&gt; dist(n + 1, -1);  // 距離配列（-1 は未訪問）
-    dist[start] = 0;              // スタート地点の距離は 0
-    queue&lt;int&gt; q;
-    q.push(start);                // キューにスタート地点を追加
-    int farthest = start;         // 最遠点
-    int max_dist = 0;             // 最遠距離
+N = int(input())
+g = [[] for _ in range(N + 1)]
+for _ in range(N - 1):
+    a, b = map(int, input().split())
+    g[a].append(b)
+    g[b].append(a)
 
-    while (!q.empty()) {
-        int v = q.front(); q.pop();           // キューの先頭を取り出す
-        for (int u : graph[v]) {              // 隣接都市を調べる
-            if (dist[u] == -1) {             // 未訪問なら
-                dist[u] = dist[v] + 1;       // 距離を記録
-                q.push(u);
-                if (dist[u] &gt; max_dist) {    // より遠ければ更新
-                    max_dist = dist[u];
-                    farthest = u;
-                }
-            }
-        }
-    }
-    return {farthest, max_dist};  // 最遠点と距離を返す
-}
+def bfs(s):
+    d = [-1] * (N + 1)
+    d[s] = 0
+    q = deque([s])
+    while q:
+        v = q.popleft()
+        for u in g[v]:
+            if d[u] &lt; 0:
+                d[u] = d[v] + 1
+                q.append(u)
+    return d
 
-int main() {
-    ios::sync_with_stdio(false);  // 高速入力
-    cin.tie(nullptr);
-
-    int N;
-    cin &gt;&gt; N;                     // 都市の数
-
-    vector&lt;vector&lt;int&gt;&gt; graph(N + 1);  // 隣接リスト（1-indexed）
-
-    for (int i = 0; i &lt; N - 1; i++) {
-        int a, b;
-        cin &gt;&gt; a &gt;&gt; b;            // 道路の両端
-        graph[a].push_back(b);   // 双方向に追加
-        graph[b].push_back(a);
-    }
-
-    // 1回目の BFS: 都市 1 から最遠点 u を探す
-    auto [u, d1] = bfs(1, graph, N);
-
-    // 2回目の BFS: u から最遠点までの距離 = 木の直径
-    auto [v, diameter] = bfs(u, graph, N);
-
-    cout &lt;&lt; diameter + 1 &lt;&lt; &#34;\n&#34;;  // 直径 + 1 が答え
-}</code></pre><div class="lang-header">TypeScript</div><pre class="code-print"><code>import * as readline from &#39;readline&#39;;
-
-const rl = readline.createInterface({ input: process.stdin });
-const lines: string[] = [];
-rl.on(&#39;line&#39;, (line) =&gt; lines.push(line.trim()));
-rl.on(&#39;close&#39;, () =&gt; {
-    const N = parseInt(lines[0]);                              // 都市の数
-    const graph: number[][] = Array.from({length: N + 1}, () =&gt; []);  // 隣接リスト
-
-    for (let i = 1; i &lt; N; i++) {
-        const [a, b] = lines[i].split(&#39; &#39;).map(Number);       // 道路の両端
-        graph[a].push(b);                                      // 双方向に追加
-        graph[b].push(a);
-    }
-
-    // BFS で start から最遠点と距離を返す
-    function bfs(start: number): [number, number] {
-        const dist = new Array(N + 1).fill(-1);  // 距離配列
-        dist[start] = 0;
-        const q: number[] = [start];             // キュー（配列で代用）
-        let qi = 0;                              // キューの読み取り位置
-        let farthest = start;
-        let maxDist = 0;
-
-        while (qi &lt; q.length) {
-            const v = q[qi++];                   // キューの先頭を取り出す
-            for (const u of graph[v]) {          // 隣接都市を調べる
-                if (dist[u] === -1) {            // 未訪問なら
-                    dist[u] = dist[v] + 1;       // 距離を記録
-                    q.push(u);
-                    if (dist[u] &gt; maxDist) {     // より遠ければ更新
-                        maxDist = dist[u];
-                        farthest = u;
-                    }
-                }
-            }
-        }
-        return [farthest, maxDist];
-    }
-
-    const [u] = bfs(1);              // 1回目: 都市 1 から最遠点 u を探す
-    const [, diameter] = bfs(u);     // 2回目: u から直径を求める
-    console.log(diameter + 1);       // 直径 + 1 が答え
-});</code></pre><div class="lang-header">Ruby</div><pre class="code-print"><code>N = gets.to_i                              # 都市の数
-graph = Array.new(N + 1) { [] }           # 隣接リスト（1-indexed）
-
-(N - 1).times do
-    a, b = gets.split.map(&amp;:to_i)         # 道路の両端
-    graph[a] &lt;&lt; b                          # 双方向に追加
-    graph[b] &lt;&lt; a
-end
-
-# BFS で start から最遠点と距離を返す
-def bfs(start, graph, n)
-    dist = Array.new(n + 1, -1)           # 距離配列（-1 は未訪問）
-    dist[start] = 0                        # スタート地点は 0
-    q = [start]                            # BFS キュー
-    farthest = start
-    max_dist = 0
-
-    until q.empty?
-        v = q.shift                        # キューの先頭を取り出す
-        graph[v].each do |u|
-            if dist[u] == -1               # 未訪問なら
-                dist[u] = dist[v] + 1      # 距離を記録
-                q &lt;&lt; u
-                if dist[u] &gt; max_dist      # より遠ければ更新
-                    max_dist = dist[u]
-                    farthest = u
-                end
-            end
-        end
-    end
-    [farthest, max_dist]
-end
-
-u, _ = bfs(1, graph, N)           # 1回目: 都市 1 から最遠点 u を探す
-_, diameter = bfs(u, graph, N)    # 2回目: u から直径を求める
-puts diameter + 1                  # 直径 + 1 が答え</code></pre><div class="lang-header">PHP</div><pre class="code-print"><code>&lt;?php
-$N = (int)trim(fgets(STDIN));             // 都市の数
-$graph = array_fill(0, $N + 1, []);       // 隣接リスト（1-indexed）
-
-for ($i = 0; $i &lt; $N - 1; $i++) {
-    [$a, $b] = array_map(&#39;intval&#39;, explode(&#39; &#39;, trim(fgets(STDIN))));  // 道路の両端
-    $graph[$a][] = $b;                    // 双方向に追加
-    $graph[$b][] = $a;
-}
-
-// BFS で start から最遠点と距離を返す
-function bfs($start, $graph, $n) {
-    $dist = array_fill(0, $n + 1, -1);   // 距離配列（-1 は未訪問）
-    $dist[$start] = 0;                    // スタート地点は 0
-    $q = [$start];                        // BFS キュー
-    $head = 0;                            // キューの読み取り位置
-    $farthest = $start;
-    $maxDist = 0;
-
-    while ($head &lt; count($q)) {
-        $v = $q[$head++];                 // キューの先頭を取り出す
-        foreach ($graph[$v] as $u) {
-            if ($dist[$u] === -1) {       // 未訪問なら
-                $dist[$u] = $dist[$v] + 1; // 距離を記録
-                $q[] = $u;
-                if ($dist[$u] &gt; $maxDist) { // より遠ければ更新
-                    $maxDist = $dist[$u];
-                    $farthest = $u;
-                }
-            }
-        }
-    }
-    return [$farthest, $maxDist];
-}
-
-[$u] = bfs(1, $graph, $N);              // 1回目: 都市 1 から最遠点 u を探す
-[, $diameter] = bfs($u, $graph, $N);   // 2回目: u から直径を求める
-echo $diameter + 1 . &#34;\n&#34;;             // 直径 + 1 が答え</code></pre><div class="lang-header">Rust</div><pre class="code-print"><code>use std::io::{self, BufRead, Write};
-use std::collections::VecDeque;
-
-// BFS で start から最遠点と距離を返す
-fn bfs(start: usize, graph: &amp;Vec&lt;Vec&lt;usize&gt;&gt;, n: usize) -&gt; (usize, usize) {
-    let mut dist = vec![usize::MAX; n + 1];  // 距離配列（MAX は未訪問）
-    dist[start] = 0;                          // スタート地点は 0
-    let mut q = VecDeque::new();
-    q.push_back(start);
-    let mut farthest = start;
-    let mut max_dist = 0;
-
-    while let Some(v) = q.pop_front() {      // キューの先頭を取り出す
-        for &amp;u in &amp;graph[v] {               // 隣接都市を調べる
-            if dist[u] == usize::MAX {      // 未訪問なら
-                dist[u] = dist[v] + 1;     // 距離を記録
-                q.push_back(u);
-                if dist[u] &gt; max_dist {    // より遠ければ更新
-                    max_dist = dist[u];
-                    farthest = u;
-                }
-            }
-        }
-    }
-    (farthest, max_dist)
-}
-
-fn main() {
-    let stdin = io::stdin();
-    let stdout = io::stdout();
-    let mut out = io::BufWriter::new(stdout.lock());  // 出力バッファ
-
-    let mut lines = stdin.lock().lines();
-    let n: usize = lines.next().unwrap().unwrap().trim().parse().unwrap();  // 都市の数
-
-    let mut graph = vec![vec![]; n + 1];  // 隣接リスト（1-indexed）
-
-    for _ in 0..n - 1 {
-        let line = lines.next().unwrap().unwrap();
-        let mut iter = line.split_whitespace();
-        let a: usize = iter.next().unwrap().parse().unwrap();  // 道路の一端
-        let b: usize = iter.next().unwrap().parse().unwrap();  // 道路の他端
-        graph[a].push(b);  // 双方向に追加
-        graph[b].push(a);
-    }
-
-    let (u, _) = bfs(1, &amp;graph, n);            // 1回目: 都市 1 から最遠点 u を探す
-    let (_, diameter) = bfs(u, &amp;graph, n);     // 2回目: u から直径を求める
-    writeln!(out, &#34;{}&#34;, diameter + 1).unwrap(); // 直径 + 1 が答え
-}</code></pre><div class="lang-header">Perl</div><pre class="code-print"><code>use strict;
-use warnings;
-
-my $N = int(&lt;STDIN&gt;);                       # 都市の数
-my @graph = map { [] } (0..$N);             # 隣接リスト（1-indexed）
-
-for (1..$N-1) {
-    my ($a, $b) = split &#39; &#39;, &lt;STDIN&gt;;       # 道路の両端
-    push @{$graph[$a]}, $b;                 # 双方向に追加
-    push @{$graph[$b]}, $a;
-}
-
-# BFS で start から最遠点と距離を返す
-sub bfs {
-    my ($start) = @_;
-    my @dist = (-1) x ($N + 1);            # 距離配列（-1 は未訪問）
-    $dist[$start] = 0;                      # スタート地点は 0
-    my @q = ($start);                       # BFS キュー
-    my ($farthest, $max_dist) = ($start, 0);
-
-    while (@q) {
-        my $v = shift @q;                   # キューの先頭を取り出す
-        for my $u (@{$graph[$v]}) {         # 隣接都市を調べる
-            if ($dist[$u] == -1) {          # 未訪問なら
-                $dist[$u] = $dist[$v] + 1;  # 距離を記録
-                push @q, $u;
-                if ($dist[$u] &gt; $max_dist) {# より遠ければ更新
-                    $max_dist = $dist[$u];
-                    $farthest = $u;
-                }
-            }
-        }
-    }
-    return ($farthest, $max_dist);
-}
-
-my ($u) = bfs(1);                          # 1回目: 都市 1 から最遠点 u を探す
-my (undef, $diameter) = bfs($u);           # 2回目: u から直径を求める
-print $diameter + 1, &#34;\n&#34;;                 # 直径 + 1 が答え</code></pre></section>
-<button class="print-btn" onclick="window.print()">&#128424; 印刷</button>
-<footer style="text-align:center;padding:24px 16px;color:#999;font-size:.78rem;border-top:1px solid #eee;margin-top:40px">本サイトは個人学習目的のみで使用し、商用利用・公開配布はしていません。</footer>
+ans = 0
+# 全頂点からBFSしている → O(N²) でTLE
+# 「木の直径」は端点からBFSを2回するだけで O(N) で求まる
+for i in range(1, N + 1):
+    ans = max(ans, max(bfs(i)[1:]))
+print(ans + 1)</code></pre></div></section>
+<button class="print-btn" onclick="window.print()"><span class="mi">print</span> 印刷</button>
+<footer style="text-align:center;padding:24px 16px;color:#666;font-size:.78rem;border-top:1px solid #ccc;margin-top:40px">本サイトは個人学習目的のみで使用し、商用利用・公開配布はしていません。</footer>
 </body>
 </html>

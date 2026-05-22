@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Longest Circular Road | 競プロ教材</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css">
 <link rel="stylesheet" href="../style.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
@@ -13,11 +15,11 @@
   onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],ignoredTags:['script','noscript','style','pre','code']})"></script>
 </head>
 <body>
-<script>(function(){var H="__VIEW_PASSWORD__";if(H.indexOf('__')===0)return;if(sessionStorage.getItem('cps')===H)return;var o=document.createElement('div');o.style='position:fixed;inset:0;background:#1565c0;display:flex;align-items:center;justify-content:center;z-index:9999';o.innerHTML='<div style="background:#fff;border-radius:12px;padding:32px;max-width:320px;width:90%;text-align:center"><div style="font-size:1.4rem;font-weight:700;margin-bottom:8px">&#127891; 競プロ教材</div><div style="color:#666;font-size:.85rem;margin-bottom:20px">パスワードを入力してください</div><input type="password" id="pwi" style="width:100%;border:1.5px solid #ccc;border-radius:8px;padding:10px;font-size:1rem;margin-bottom:10px;box-sizing:border-box" placeholder="パスワード"><div id="pwe" style="color:#f44336;font-size:.8rem;height:1.2em;margin-bottom:8px"></div><button id="pwb" style="background:#1565c0;color:#fff;border:none;border-radius:8px;padding:10px 32px;font-size:1rem;cursor:pointer;width:100%">入る</button></div>';document.body.appendChild(o);function chk(){var v=document.getElementById('pwi').value;if(v===H){sessionStorage.setItem('cps',H);o.remove();}else document.getElementById('pwe').textContent='パスワードが違います';}document.getElementById('pwb').addEventListener('click',chk);document.getElementById('pwi').addEventListener('keydown',function(e){if(e.key==='Enter')chk();});})();</script>
+<script>(function(){var H="__VIEW_PASSWORD__";if(H.indexOf('__')===0)return;if(sessionStorage.getItem('cps')===H)return;var o=document.createElement('div');o.style='position:fixed;inset:0;background:#1565c0;display:flex;align-items:center;justify-content:center;z-index:9999';o.innerHTML='<div style="background:#fff;border-radius:12px;padding:32px;max-width:320px;width:90%;text-align:center"><div style="font-size:1.4rem;font-weight:700;margin-bottom:8px">競プロ教材</div><div style="color:#666;font-size:.85rem;margin-bottom:20px">パスワードを入力してください</div><input type="password" id="pwi" style="width:100%;border:1.5px solid #ccc;border-radius:8px;padding:10px;font-size:1rem;margin-bottom:10px;box-sizing:border-box" placeholder="パスワード"><div id="pwe" style="color:#f44336;font-size:.8rem;height:1.2em;margin-bottom:8px"></div><button id="pwb" style="background:#1565c0;color:#fff;border:none;border-radius:8px;padding:10px 32px;font-size:1rem;cursor:pointer;width:100%">入る</button></div>';document.body.appendChild(o);function chk(){var v=document.getElementById('pwi').value;if(v===H){sessionStorage.setItem('cps',H);o.remove();}else document.getElementById('pwe').textContent='パスワードが違います';}document.getElementById('pwb').addEventListener('click',chk);document.getElementById('pwi').addEventListener('keydown',function(e){if(e.key==='Enter')chk();});})();</script>
 <header class="header">
   <div class="header-inner">
-    <a class="back-btn" href="../">&#8592; もどる</a>
-    <a class="header-logo" href="../">&#127891; 競プロ教材</a>
+    <a class="back-btn" href="../"><span class="mi">arrow_back</span> もどる</a>
+    <a class="header-logo" href="../"><span class="mi">school</span> 競プロ教材</a>
     
   </div>
 </header>
@@ -25,9 +27,10 @@
 <main class="detail-view">
   <div class="detail-contest">典型90問 003</div>
   <h1 class="detail-title">Longest Circular Road</h1>
-  <div class="detail-meta"><span class="diff-badge" style="background:#f44336">D問題レベル</span> <span class="tag">木</span><span class="tag">木の直径</span><span class="tag">BFS</span><span class="tag">グラフ</span> <a class="atcoder-link" href="https://atcoder.jp/contests/typical90/tasks/typical90_c" target="_blank" rel="noopener">&#128279; AtCoderで見る</a></div>
+  <div class="detail-meta"><span class="diff-badge" style="background:#f44336">D問題レベル</span> <span class="tag">木</span><span class="tag">木の直径</span><span class="tag">BFS</span><span class="tag">グラフ</span> <a class="atcoder-link" href="https://atcoder.jp/contests/typical90/tasks/typical90_c" target="_blank" rel="noopener"><span class="mi">open_in_new</span> AtCoderで見る</a> <a class="print-link" href="../print/typical90_c.html" target="_blank"><span class="mi">print</span> 印刷用</a></div>
+  <div class="glossary-refs"><span style="font-size:.8rem;color:#666"><span class="mi">psychology</span> 使う考え方：</span><a class="glossary-ref-link" href="../glossary/graph_tree.html"><span class="mi">book_2</span> グラフ・木</a><a class="glossary-ref-link" href="../glossary/bfs.html"><span class="mi">book_2</span> BFS（幅優先探索）</a><a class="glossary-ref-link" href="../glossary/tree_diameter.html"><span class="mi">book_2</span> 木の直径</a></div>
   <section class="detail-section">
-    <h2 class="section-title">&#128196; 問題文</h2>
+    <h2 class="section-title"><span class="mi">description</span> 問題文</h2>
     <div class="statement-box"><p>$N$ 個の都市があり、それぞれの都市に $1$ から $N$ までの番号が付けられています。
 また、$N-1$ 本の道路があり、$i$ 本目 $(1 \leq i \leq N-1)$ の道路は都市 $A_i$ と都市 $B_i$ を双方向に結んでいます。
 どの都市の間も、いくつかの道路を通って移動可能なものとなっています。</p>
@@ -42,7 +45,7 @@
 <li>与えられる入力は全て整数</li>
 </ul>
 </div>
-    <div class="statement-note"><span class="statement-note-badge">&#128221; 入力例1を使った説明</span><h2>この問題で何をするの？</h2>
+    <div class="statement-note"><span class="statement-note-badge"><span class="mi">info</span> 入力例1を使った説明</span><h2>この問題で何をするの？</h2>
 <p>3つの都市が 1−2−3 と一列につながっているとします（入力例1）。</p>
 <p>ここに道路を1本だけ追加して、「ぐるっと一周できるコース」を作ります。その一周の道の本数をスコアといいます。</p>
 <p>1番と3番をつなぐと <strong>1→2→3→1</strong> と3本の道を通って一周でき、スコアは <strong>3</strong>。</p>
@@ -56,9 +59,15 @@
 <p>この例では <code>3</code> を出力する。</p>
 <hr>
 </div>
+    <div class="constraints-note"><span class="constraints-note-badge"><span class="mi">help</span> 制約の読み方</span><ul>
+<li><code>3 ≤ N ≤ 100000</code>：都市は最大<strong>10万個</strong>。</li>
+<li>N が大きいので、<strong>全ペアを調べる O(N²) は間に合わない</strong>（10万×10万＝100億回）。</li>
+<li>「木の直径」アルゴリズム（BFS を2回）を使えば O(N) で求まる。</li>
+</ul>
+</div>
   </section>
   <section class="detail-section">
-    <h2 class="section-title">&#10067; 入力・出力の例</h2>
+    <h2 class="section-title"><span class="mi">quiz</span> 入力・出力の例</h2>
     
 <div class="sample-block">
   <div class="sample-row">
@@ -66,7 +75,7 @@
 1 2
 2 3</pre></div>
     <div class="sample-col"><div class="sample-label">出力 1</div><pre class="sample-pre">3</pre></div>
-  </div><div class="sample-explanation"><p><strong>この入力の意味：</strong> 3つの都市（1・2・3番）が 1−2−3 と一列につながっている。ここに道路を1本追加する。</p>
+  </div><div class="sample-explanation"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 3つの都市（1・2・3番）が 1−2−3 と一列につながっている。ここに道路を1本追加する。</p>
 <ul>
 <li>都市 1 と 都市 3 の間に追加 → <strong>1 → 2 → 3 → 1</strong> と一周できる。道の本数 <strong>3本</strong> ← これが最大！</li>
 <li>都市 1 と 都市 2 の間に追加 → 同じ道が2本になるだけ。一周できるが道は <strong>2本</strong>（微妙）</li>
@@ -84,7 +93,7 @@
 3 4
 3 5</pre></div>
     <div class="sample-col"><div class="sample-label">出力 2</div><pre class="sample-pre">4</pre></div>
-  </div><div class="sample-explanation"><p><strong>この入力の意味：</strong> 5つの都市、道路が 1−2−3−4 と 3−5。木の形。ここに道路を1本追加する。</p>
+  </div><div class="sample-explanation"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 5つの都市、道路が 1−2−3−4 と 3−5。木の形。ここに道路を1本追加する。</p>
 <ul>
 <li>都市 1 と 都市 4 の間 → 1→2→3→4→1、<strong>4本</strong> ← 最大！</li>
 <li>都市 1 と 都市 5 の間 → 1→2→3→5→1、<strong>4本</strong> ← 同じ最大</li>
@@ -108,7 +117,7 @@
 8 9
 8 10</pre></div>
     <div class="sample-col"><div class="sample-label">出力 3</div><pre class="sample-pre">8</pre></div>
-  </div><div class="sample-explanation"><p><strong>この入力の意味：</strong> 10都市の木。</p>
+  </div><div class="sample-explanation"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 10都市の木。</p>
 <p>木の形を整理すると：</p>
 <ul>
 <li>1番 → 2番 → 4番 → <strong>5番</strong>（端）</li>
@@ -156,7 +165,7 @@
 15 30
 15 31</pre></div>
     <div class="sample-col"><div class="sample-label">出力 4</div><pre class="sample-pre">9</pre></div>
-  </div><div class="sample-explanation"><p><strong>この入力の意味：</strong> 31都市の完全二分木（全部で5段）。</p>
+  </div><div class="sample-explanation"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 31都市の完全二分木（全部で5段）。</p>
 <pre><code>              1
            /     \
          2         3
@@ -176,7 +185,7 @@
   </section>
   
 <section class="detail-section">
-  <h2 class="section-title">&#128640; わかりやすく解説</h2>
+  <h2 class="section-title"><span class="mi">lightbulb</span> わかりやすく解説</h2>
   <div class="explanation-box easy-box"><h2>イメージ</h2>
 <p>木に1本だけ道を追加するとき、追加した道と既存の道でぴったり1つの「輪っか」ができます。</p>
 <p>輪っかの長さ＝（追加した2都市を既存の道でつないだときの道の本数）＋（新しく追加した道の1本）</p>
@@ -197,7 +206,7 @@
 </section>
   
 <section class="detail-section">
-  <h2 class="section-title">&#128218; くわしい解説</h2>
+  <h2 class="section-title"><span class="mi">menu_book</span> くわしい解説</h2>
   <div class="explanation-box"><h2>方針</h2>
 <p><strong>木の直径を求めて、直径＋1を出力する。</strong></p>
 <h3>なぜ「直径＋1」か</h3>
@@ -234,7 +243,7 @@
 </section>
   
 <section class="detail-section">
-  <h2 class="section-title">&#128187; 解答コード</h2>
+  <h2 class="section-title"><span class="mi">code</span> 解答コード</h2>
   <div class="lang-tabs" id="ltabs"><button class="lang-tab active" data-lang="python">Python</button><button class="lang-tab" data-lang="cpp">C++</button><button class="lang-tab" data-lang="typescript">TypeScript</button><button class="lang-tab" data-lang="ruby">Ruby</button><button class="lang-tab" data-lang="php">PHP</button><button class="lang-tab" data-lang="rust">Rust</button><button class="lang-tab" data-lang="perl">Perl</button></div>
   <div class="code-panel active" id="panel-python"><pre class="code-block language-python"><code class="language-python">import sys
 from collections import deque
@@ -527,6 +536,49 @@ sub bfs {
 my ($u) = bfs(1);                          # 1回目: 都市 1 から最遠点 u を探す
 my (undef, $diameter) = bfs($u);           # 2回目: u から直径を求める
 print $diameter + 1, &#34;\n&#34;;                 # 直径 + 1 が答え</code></pre></div>
+  
+<div class="bad-solutions">
+  <div class="bad-solutions-title"><span class="mi">sentiment_dissatisfied</span> 悪い例（結果は合ってるけど…）</div>
+  <div class="bad-lang-tabs" id="bltabs"><button class="bad-lang-tab active" data-lang="bad-python">Python</button></div>
+  <div class="bad-code-panel active" id="panel-bad-python"><div class="bad-solution-label"><span class="mi">warning</span> O(N²) 全頂点BFS — 木の直径アルゴリズムを知らずに全頂点から探索</div><pre class="code-block-bad language-python"><code class="language-python">from collections import deque
+import sys
+input = sys.stdin.readline
+
+N = int(input())
+g = [[] for _ in range(N + 1)]
+for _ in range(N - 1):
+    a, b = map(int, input().split())
+    g[a].append(b)
+    g[b].append(a)
+
+def bfs(s):
+    d = [-1] * (N + 1)
+    d[s] = 0
+    q = deque([s])
+    while q:
+        v = q.popleft()
+        for u in g[v]:
+            if d[u] &lt; 0:
+                d[u] = d[v] + 1
+                q.append(u)
+    return d
+
+ans = 0
+# 全頂点からBFSしている → O(N²) でTLE
+# 「木の直径」は端点からBFSを2回するだけで O(N) で求まる
+for i in range(1, N + 1):
+    ans = max(ans, max(bfs(i)[1:]))
+print(ans + 1)</code></pre></div>
+</div>
+<script>
+document.getElementById('bltabs').addEventListener('click',function(e){
+  var b=e.target.closest('.bad-lang-tab'); if(!b)return;
+  document.querySelectorAll('.bad-lang-tab').forEach(function(x){x.classList.remove('active');});
+  document.querySelectorAll('.bad-code-panel').forEach(function(x){x.classList.remove('active');});
+  b.classList.add('active');
+  var p=document.getElementById('panel-'+b.dataset.lang); if(p)p.classList.add('active');
+});
+</script>
 </section>
 <script>
 document.getElementById('ltabs').addEventListener('click',function(e){

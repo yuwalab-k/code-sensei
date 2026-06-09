@@ -56,7 +56,7 @@
 </tr>
 </tbody>
 </table>
-<p><code>()</code> の中に渡すものを**引数（ひきすう）**という。道具に材料を渡すイメージ。</p>
+<p><code>()</code> の中に渡すものを<strong>引数</strong>（ひきすう）という。道具に材料を渡すイメージ。</p>
 </div>
   <pre class="cr-code">int(&#34;3&#34;)   # → 3
 print(&#34;hello&#34;)  # → hello と表示される</pre>
@@ -80,7 +80,7 @@ print(N)   # → 10</pre>
   <div class="cr-short">キーボードから1行受け取る</div>
   <div class="cr-body"><p>AtCoderでは問題の「入力」が自動的に渡される。</p>
 <p><code>input()</code> でその1行を<strong>文字列</strong>としてもらう。</p>
-<p>⚠️ もらえるのは<strong>文字列</strong>なので、計算するには数字に変換が必要。</p>
+<p>もらえるのは<strong>文字列</strong>なので、計算するには数字に変換が必要。</p>
 </div>
   <pre class="cr-code">line = input()   # &#34;3 34&#34; という文字列が入る
 print(line)      # → 3 34</pre>
@@ -240,6 +240,239 @@ mid = (low + high) // 2</pre>
 print(&#34;hello&#34;)    # → hello
 print(1 + 2)      # → 3</pre>
   <div class="cr-other"><span class="mi">translate</span> Pythonでは `print()`。C++では `cout &lt;&lt;`、Rubyでは `puts`。</div>
+</div>
+<div class="cr-entry" id="for_loop">
+  <div class="cr-name"><span class="mi">code</span> for — くり返す</div>
+  <div class="cr-short">リストや回数を指定してくり返す</div>
+  <div class="cr-body"><p>リストの全要素や、決まった回数だけ同じ処理をくり返すときに使う。</p>
+<p><code>for 変数 in リスト:</code> と書くと、リストの要素を1つずつ取り出してくり返す。</p>
+<p>回数で繰り返すときは <code>range(N)</code> を使う。<code>range(N)</code> は <code>0, 1, 2, ..., N-1</code> のリストのように動く。</p>
+</div>
+  <pre class="cr-code"># リストの要素を順番に取り出す
+A = [8, 13, 26]
+for a in A:
+    print(a)   # → 8, 13, 26 の順に表示
+
+# 3回くり返す（0, 1, 2）
+for i in range(3):
+    print(i)   # → 0, 1, 2
+
+# 1 から 5 まで
+for i in range(1, 6):
+    print(i)   # → 1, 2, 3, 4, 5</pre>
+  <div class="cr-other"><span class="mi">translate</span> 全言語共通の考え方。C++では `for(int i=0; i&lt;N; i++)` のように書く。</div>
+</div>
+<div class="cr-entry" id="compound_assign">
+  <div class="cr-name"><span class="mi">code</span> += / -= — 自分に足す・引く</div>
+  <div class="cr-short">変数の値を今の値をもとに変える</div>
+  <div class="cr-body"><p><code>n += 1</code> は <code>n = n + 1</code> と同じ意味。今の値に 1 を足して、同じ変数に入れ直す。</p>
+<p>カウンターを増やしたり、合計を積み上げるときによく使う。</p>
+</div>
+  <pre class="cr-code">cnt = 0
+cnt += 1   # cnt = cnt + 1 と同じ → cnt は 1
+cnt += 1   # → cnt は 2
+
+total = 0
+for x in [3, 5, 2]:
+    total += x   # 合計を積み上げる → 3, 8, 10
+print(total)  # → 10</pre>
+  <div class="cr-other"><span class="mi">translate</span> 全言語共通。`*=`（掛ける）や `//=`（割る）も同様に使える。</div>
+</div>
+<div class="cr-entry" id="modulo">
+  <div class="cr-name"><span class="mi">code</span> % — 余りを求める</div>
+  <div class="cr-short">割り算の余りを出す</div>
+  <div class="cr-body"><p><code>a % b</code> で <code>a</code> を <code>b</code> で割ったときの余りが出る。</p>
+<p>競プロでは「10^9+7 で割った余りを出力する」という問題が多い。答えがとても大きくなるとき、この余りだけ出せばよい。</p>
+</div>
+  <pre class="cr-code">10 % 3   # → 1（10 ÷ 3 = 3 あまり 1）
+7 % 7    # → 0（割り切れる）
+
+# 偶数か奇数か判定
+n = 4
+if n % 2 == 0:
+    print(&#34;偶数&#34;)  # → 偶数
+
+# 大きい答えを mod で管理
+ans = 123456789 * 987654321
+print(ans % (10**9 + 7))  # → 余りだけ出す</pre>
+  <div class="cr-other"><span class="mi">translate</span> 全言語共通。`%` を余り演算子という。</div>
+</div>
+<div class="cr-entry" id="len">
+  <div class="cr-name"><span class="mi">code</span> len() — 個数を数える</div>
+  <div class="cr-short">リストや文字列の長さを返す</div>
+  <div class="cr-body"><p><code>len(リスト)</code> でリストの要素数、<code>len(文字列)</code> で文字数が出る。</p>
+<p>リストの最後のインデックスは <code>len(A) - 1</code>（0始まりなので）。</p>
+</div>
+  <pre class="cr-code">A = [8, 13, 26]
+print(len(A))     # → 3（要素が3個）
+
+s = &#34;hello&#34;
+print(len(s))     # → 5（文字が5個）
+
+# よく使う：最後の要素
+print(A[len(A)-1])  # → 26</pre>
+  <div class="cr-other"><span class="mi">translate</span> 全言語共通の考え方。C++では `A.size()`、Rustでは `A.len()`。</div>
+</div>
+<div class="cr-entry" id="min_max">
+  <div class="cr-name"><span class="mi">code</span> min() / max() — 最小・最大を求める</div>
+  <div class="cr-short">複数の値の中から一番小さい・大きいものを返す</div>
+  <div class="cr-body"><p><code>min(a, b)</code> で小さい方、<code>max(a, b)</code> で大きい方が出る。</p>
+<p>リストを渡して <code>min(A)</code> のようにも使える。</p>
+<p>競プロでは「今の答えより小さければ更新する」ときによく使う。</p>
+</div>
+  <pre class="cr-code">print(min(3, 7))   # → 3
+print(max(3, 7))   # → 7
+
+A = [5, 2, 8, 1]
+print(min(A))      # → 1
+print(max(A))      # → 8
+
+# 答えの更新によく使う
+ans = 10**18  # とても大きい数で初期化
+for x in A:
+    ans = min(ans, x)  # 小さい方に更新
+print(ans)  # → 1</pre>
+  <div class="cr-other"><span class="mi">translate</span> 全言語共通の考え方。</div>
+</div>
+<div class="cr-entry" id="sorted_sort">
+  <div class="cr-name"><span class="mi">code</span> sorted() / .sort() — 並び替える</div>
+  <div class="cr-short">リストの要素を小さい順（または大きい順）に並べる</div>
+  <div class="cr-body"><p><code>sorted(A)</code> は並び替えた<strong>新しいリスト</strong>を返す（元のリストは変わらない）。</p>
+<p><code>A.sort()</code> は元のリストを直接並び替える（返り値はない）。</p>
+<p><code>reverse=True</code> を追加すると大きい順になる。</p>
+</div>
+  <pre class="cr-code">A = [5, 2, 8, 1]
+B = sorted(A)      # → [1, 2, 5, 8]（A は変わらない）
+print(A)           # → [5, 2, 8, 1]
+print(B)           # → [1, 2, 5, 8]
+
+A.sort()           # A を直接並び替える
+print(A)           # → [1, 2, 5, 8]
+
+A.sort(reverse=True)  # 大きい順
+print(A)           # → [8, 5, 2, 1]</pre>
+  <div class="cr-other"><span class="mi">translate</span> 全言語共通の考え方。C++では `sort(A.begin(), A.end())`。</div>
+</div>
+<div class="cr-entry" id="append">
+  <div class="cr-name"><span class="mi">code</span> .append() — リストに追加する</div>
+  <div class="cr-short">リストの末尾に要素を1つ追加する</div>
+  <div class="cr-body"><p><code>A.append(値)</code> でリストの末尾に値を追加できる。</p>
+<p>最初に空のリスト <code>[]</code> を作って、1つずつ追加していく使い方がよくある。</p>
+</div>
+  <pre class="cr-code">A = []
+A.append(3)   # → [3]
+A.append(7)   # → [3, 7]
+A.append(1)   # → [3, 7, 1]
+print(A)      # → [3, 7, 1]
+
+# for ループと組み合わせる
+B = []
+for i in range(4):
+    B.append(i * 2)  # 0, 2, 4, 6 を追加
+print(B)  # → [0, 2, 4, 6]</pre>
+  <div class="cr-other"><span class="mi">translate</span> 全言語共通の考え方。C++では `push_back()`。</div>
+</div>
+<div class="cr-entry" id="in_operator">
+  <div class="cr-name"><span class="mi">code</span> in — 含まれているか確認する</div>
+  <div class="cr-short">リストや文字列の中に値があるか調べる</div>
+  <div class="cr-body"><p><code>値 in リスト</code> で、そのリストに値が含まれていれば <code>True</code>、なければ <code>False</code> になる。</p>
+<p><code>if x in A:</code> のように <code>if</code> と組み合わせてよく使う。</p>
+<p><code>not in</code> で「含まれていなければ」という条件も書ける。</p>
+</div>
+  <pre class="cr-code">A = [1, 3, 5, 7]
+print(3 in A)    # → True（3 は含まれる）
+print(4 in A)    # → False（4 は含まれない）
+
+# if と組み合わせる
+if 3 in A:
+    print(&#34;ある&#34;)  # → ある
+
+# 文字列でも使える
+s = &#34;hello&#34;
+print(&#34;ell&#34; in s)  # → True</pre>
+  <div class="cr-other"><span class="mi">translate</span> 全言語共通の考え方。C++では `find()` や `count()` を使う。</div>
+</div>
+<div class="cr-entry" id="bool_values">
+  <div class="cr-name"><span class="mi">code</span> True / False — 正しい・間違い</div>
+  <div class="cr-short">条件の結果を表す2つの値</div>
+  <div class="cr-body"><p><code>True</code>（正しい）と <code>False</code>（間違い）は、条件が成り立つかどうかを表す特別な値。</p>
+<p>比較演算子（<code>&gt;</code> <code>==</code> など）の結果は <code>True</code> か <code>False</code> になる。</p>
+<p>関数が <code>return True</code> や <code>return False</code> を返すと、呼び出し元で <code>if</code> の条件として使える。</p>
+</div>
+  <pre class="cr-code">print(3 &gt; 1)    # → True
+print(3 &lt; 1)    # → False
+print(3 == 3)   # → True
+
+# 関数が True/False を返す例
+def is_even(n):
+    return n % 2 == 0  # 偶数なら True
+
+if is_even(4):
+    print(&#34;偶数&#34;)  # → 偶数</pre>
+  <div class="cr-other"><span class="mi">translate</span> 全言語共通の考え方。C++では `true` / `false`（小文字）。</div>
+</div>
+<div class="cr-entry" id="and_or_not">
+  <div class="cr-name"><span class="mi">code</span> and / or / not — 条件を組み合わせる</div>
+  <div class="cr-short">複数の条件を「かつ」「または」「否定」でつなぐ</div>
+  <div class="cr-body"><ul>
+<li><code>A and B</code>：A も B も正しいとき → <code>True</code>（両方満たす）</li>
+<li><code>A or B</code>：A か B のどちらかが正しいとき → <code>True</code></li>
+<li><code>not A</code>：A が正しくないとき → <code>True</code></li>
+</ul>
+<p><code>if a &gt; 0 and b &gt; 0:</code> のように複数の条件を一度に書けるのが便利。</p>
+</div>
+  <pre class="cr-code">x = 5
+if x &gt; 0 and x &lt; 10:
+    print(&#34;1以上9以下&#34;)  # → 1以上9以下
+
+if x &lt; 0 or x &gt; 3:
+    print(&#34;0以下か4以上&#34;)  # → 4以上なので表示される
+
+if not x == 3:
+    print(&#34;3ではない&#34;)  # → 3ではない</pre>
+  <div class="cr-other"><span class="mi">translate</span> 全言語共通の考え方。C++では `&amp;&amp;`（and）、`||`（or）、`!`（not）。</div>
+</div>
+<div class="cr-entry" id="2d_list">
+  <div class="cr-name"><span class="mi">code</span> 2次元リスト — 表形式のデータ</div>
+  <div class="cr-short">リストの中にリストを入れて「行×列」の表を作る</div>
+  <div class="cr-body"><p><code>A[i][j]</code> で i 行目 j 列目の要素を取り出せる（どちらも 0 から始まる）。</p>
+<p>グリッド（マス目）の問題でよく使う。</p>
+<p>H 行 W 列の表を作るには <code>[[0]*W for _ in range(H)]</code> と書く。</p>
+</div>
+  <pre class="cr-code"># 3×3 の表（リストの中にリスト）
+A = [
+    [1, 2, 3],   # 0行目
+    [4, 5, 6],   # 1行目
+    [7, 8, 9],   # 2行目
+]
+print(A[0][0])  # → 1（0行0列）
+print(A[1][2])  # → 6（1行2列）
+
+# 全部 0 の 3×4 表を作る
+H, W = 3, 4
+B = [[0]*W for _ in range(H)]
+print(B[2][3])  # → 0</pre>
+  <div class="cr-other"><span class="mi">translate</span> 全言語共通の考え方。C++では `vector&lt;vector&lt;int&gt;&gt;` や配列 `A[i][j]`。</div>
+</div>
+<div class="cr-entry" id="sum">
+  <div class="cr-name"><span class="mi">code</span> sum() — 合計を求める</div>
+  <div class="cr-short">リストの全要素を足し合わせる</div>
+  <div class="cr-body"><p><code>sum(リスト)</code> でリストの全要素の合計が一発で出る。</p>
+<p><code>for</code> ループで1つずつ足すのと同じだが、1行で書けてスッキリする。</p>
+</div>
+  <pre class="cr-code">A = [3, 5, 2, 8]
+print(sum(A))   # → 18
+
+# for ループで書くと同じ意味
+total = 0
+for x in A:
+    total += x
+print(total)    # → 18
+
+# 行の合計（typical90_d でよく使う）
+row = [1, 2, 3]
+print(sum(row))  # → 6</pre>
+  <div class="cr-other"><span class="mi">translate</span> 全言語共通の考え方。C++では `accumulate()` を使う。</div>
 </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-core.min.js"></script>

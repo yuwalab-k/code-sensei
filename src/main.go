@@ -620,7 +620,7 @@ pre.code-print-bad{background:#f8f8f8;border:1px dashed #aaa;border-radius:4px;p
   pre.code-print,pre.code-print-bad{page-break-inside:avoid;white-space:pre-wrap}
   h2{page-break-after:avoid}
   .compare-block{page-break-inside:avoid}
-  .print-note,.print-easy,.print-exp,.sample-block{page-break-inside:avoid}
+  .print-note,.print-easy,.print-exp,.sample-block,.print-section{page-break-inside:avoid}
   .lang-header{page-break-after:avoid}
 }
 </style>

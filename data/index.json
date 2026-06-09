@@ -50,5 +50,18 @@
       "配列"
     ],
     "file": "typical90_d"
+  },
+  {
+    "id": "typical90_e",
+    "contest": "典型90問",
+    "problem": "005",
+    "title": "Restricted Digits",
+    "difficulty": 7,
+    "tags": [
+      "DP",
+      "行列累乗",
+      "余り"
+    ],
+    "file": "typical90_e"
   }
 ]

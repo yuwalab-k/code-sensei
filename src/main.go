@@ -91,8 +91,12 @@ type CodeReadingEntry struct {
 
 // ── build: JSON → HTML ────────────────────────────────────────────────────────
 
-var diffLabel = map[int]string{1: "A問題レベル", 2: "B問題レベル", 3: "C問題レベル", 4: "D問題レベル"}
-var diffColor = map[int]string{1: "#4caf50", 2: "#2196f3", 3: "#ff9800", 4: "#f44336"}
+var diffColor = map[int]string{
+	1: "#78909c", 2: "#4caf50", 3: "#2196f3", 4: "#ff9800",
+	5: "#ff5722", 6: "#e53935", 7: "#7b1fa2",
+}
+
+func starLabel(d int) string { return fmt.Sprintf("★%d", d) }
 
 type langDef struct {
 	key     string
@@ -113,15 +117,11 @@ var langDefs = []langDef{
 func e(s string) string { return html.EscapeString(s) }
 
 func badge(d int) string {
-	lbl := diffLabel[d]
-	if lbl == "" {
-		lbl = fmt.Sprintf("Lv%d", d)
-	}
 	col := diffColor[d]
 	if col == "" {
 		col = "#888"
 	}
-	return fmt.Sprintf(`<span class="diff-badge" style="background:%s">%s</span>`, col, lbl)
+	return fmt.Sprintf(`<span class="diff-badge" style="background:%s">%s</span>`, col, starLabel(d))
 }
 
 func tagSpans(tags []string) string {
@@ -383,7 +383,7 @@ func buildIndex(index []IndexEntry) {
 			continue
 		}
 		fmt.Fprintf(&btnBuf, `<button class="diff-btn" data-diff="%d" style="--dc:%s">%s</button>`,
-			d, diffColor[d], diffLabel[d])
+			d, diffColor[d], starLabel(d))
 	}
 
 	var cardBuf strings.Builder

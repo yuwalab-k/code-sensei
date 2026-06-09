@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>前計算（累積和） | 印刷用 | 競プロ教材</title>
+<title>Restricted Digits | 印刷用 | 競プロ教材</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
@@ -80,49 +80,133 @@ pre.code-print-bad{background:#f8f8f8;border:1px dashed #aaa;border-radius:4px;p
 <body>
 <script>(function(){var H="__VIEW_PASSWORD__";if(H.indexOf('__')===0)return;if(sessionStorage.getItem('cps')===H)return;var o=document.createElement('div');o.style='position:fixed;inset:0;background:#1565c0;display:flex;align-items:center;justify-content:center;z-index:9999';o.innerHTML='<div style="background:#fff;border-radius:12px;padding:32px;max-width:320px;width:90%;text-align:center"><div style="font-size:1.4rem;font-weight:700;margin-bottom:8px">競プロ教材</div><div style="color:#666;font-size:.85rem;margin-bottom:20px">パスワードを入力してください</div><input type="password" id="pwi" style="width:100%;border:1.5px solid #ccc;border-radius:8px;padding:10px;font-size:1rem;margin-bottom:10px;box-sizing:border-box" placeholder="パスワード"><div id="pwe" style="color:#f44336;font-size:.8rem;height:1.2em;margin-bottom:8px"></div><button id="pwb" style="background:#1565c0;color:#fff;border:none;border-radius:8px;padding:10px 32px;font-size:1rem;cursor:pointer;width:100%">入る</button></div>';document.body.appendChild(o);function chk(){var v=document.getElementById('pwi').value;if(v===H){sessionStorage.setItem('cps',H);o.remove();}else document.getElementById('pwe').textContent='パスワードが違います';}document.getElementById('pwb').addEventListener('click',chk);document.getElementById('pwi').addEventListener('keydown',function(e){if(e.key==='Enter')chk();});})();</script>
 <div class="print-header">
-<div class="print-contest">用語集</div>
-<h1>前計算（累積和）</h1>
-</div>
-<p class="print-tagline">同じ計算を何度もしないよう、先にまとめて計算しておく方法</p><section class="print-section"><h2><span class="mi">auto_stories</span> 解説</h2><div class="print-box"><p>「クラス全員の点数の合計は？」を先生に何度も聞かれるとき：</p>
-<ul>
-<li><strong>毎回足す</strong>：1回あたり N 回の計算 × Q回 = <strong>N×Q 回</strong></li>
-<li><strong>先に計算しておく</strong>：最初に1回 N 回の計算 → あとは答えを返すだけ = <strong>N + Q 回</strong></li>
+<div class="print-contest">典型90問 005</div>
+<h1>Restricted Digits</h1>
+<div class="print-meta"><span class="diff-badge" style="background:#7b1fa2">★7</span> <span class="tag">DP</span><span class="tag">行列累乗</span><span class="tag">余り</span></div>
+</div><section class="print-section"><h2><span class="mi">description</span> 問題文</h2><div class="print-box"><p>数字 $c_1, c_2, \ldots, c_K$ のみを使うことで作れる $N$ 桁の正の整数のうち $B$ の倍数であるものは何個あるでしょうか。$10^9+7$ で割った余りを求めてください。</p>
+</div><div class="print-constraints"><strong>制約</strong><ul>
+<li>$1 \leq K \leq 9$</li>
+<li>$1 \leq c_1 &lt; c_2 &lt; \cdots &lt; c_K \leq 9$</li>
+<li>$1 \leq N \leq 10^{18}$</li>
+<li>$2 \leq B \leq 1000$</li>
+<li>入力はすべて整数</li>
 </ul>
-<p>N = Q = 100,000 のとき：</p>
+</div><div class="print-samples-inline"><h3><span class="mi">quiz</span> 入力・出力の例</h3><div class="sample-block"><div class="sample-label">入力 1</div><pre class="sample-pre">3 7 3
+1 4 9</pre><div class="sample-label">出力 1</div><pre class="sample-pre">3</pre></div><div class="sample-block"><div class="sample-label">入力 2</div><pre class="sample-pre">5 2 3
+1 4 9</pre><div class="sample-label">出力 2</div><pre class="sample-pre">81</pre></div><div class="sample-block"><div class="sample-label">入力 3</div><pre class="sample-pre">10000 27 7
+1 3 4 6 7 8 9</pre><div class="sample-label">出力 3</div><pre class="sample-pre">989112238</pre></div><div class="sample-block"><div class="sample-label">入力 4</div><pre class="sample-pre">1000000000000000000 29 6
+1 2 4 5 7 9</pre><div class="sample-label">出力 4</div><pre class="sample-pre">853993813</pre></div><div class="sample-block"><div class="sample-label">入力 5</div><pre class="sample-pre">1000000000000000000 957 7
+1 2 3 5 6 7 9</pre><div class="sample-label">出力 5</div><pre class="sample-pre">205384995</pre></div></div></section><section class="print-section"><h2><span class="mi">info</span> かんたん解説</h2><div class="print-note"><h2>どんな問題？</h2>
+<p>決まった数字（例：1, 4, 9）だけを使って N 桁の数を作る。その中で B の倍数は何個あるか数える。</p>
+<p>N=3, B=7, 使える数字={1,4,9} なら：</p>
 <ul>
-<li>毎回計算 → <strong>100億回</strong> → TLE</li>
-<li>前計算 → <strong>20万回</strong> → 余裕</li>
+<li>作れる3桁の数は 3×3×3=27 通り</li>
+<li>その中で 7 の倍数は <strong>119, 441, 994</strong> の <strong>3 個</strong></li>
 </ul>
-<p>**累積和（prefix sum）**はその応用で、「区間の合計」を O(1) で答えられるようにする。</p>
-</div></section><section class="print-section"><h2><span class="mi">compare</span> 使わない場合 vs 使う場合</h2>
-<div class="compare-block bad-block">
-  <div class="compare-block-header"><span class="mi">close</span> 毎回合計を計算する → O(HW(H+W))</div>
-  <pre class="code-print"><code>for i in range(H):
-    for j in range(W):
-        # 毎回この行を全部足す → O(W)
-        row_sum = sum(A[i])
-        # 毎回この列を全部足す → O(H)
-        col_sum = sum(A[k][j] for k in range(H))
-        # 合計 O(H+W) × HW マス = O(HW(H+W)) → TLE
-        print(row_sum + col_sum - A[i][j])</code></pre>
-</div>
-<div class="compare-arrow"><span class="mi">arrow_downward</span> この書き方を改善すると…</div>
-<div class="compare-block good-block">
-  <div class="compare-block-header"><span class="mi">check</span> 先に行・列の合計を計算 → O(HW)</div>
-  <pre class="code-print"><code># 前計算：O(HW) で行の合計・列の合計を求める
-row = [sum(A[i]) for i in range(H)]           # 各行の合計
-col = [sum(A[i][j] for i in range(H))         # 各列の合計
-       for j in range(W)]
+<hr>
+<h2>全部書き出すのは無理！</h2>
+<p>N が最大 10^18 のとき、作れる数は最大 9^(10億億) 通り。宇宙の原子の数よりはるかに多く、全部調べるのは絶対に無理。</p>
+<hr>
+<h2>「余り」だけ追いかけると速くなる！</h2>
+<p>今まで決めた桁を B で割った余りだけ覚えておく。</p>
+<p>たとえば B=7、今の余りが 2 のとき、次に 4 を追加すると：</p>
+<pre><code>(2 × 10 + 4) % 7 = 24 % 7 = 3
+</code></pre>
+<p>→ 余りが 2 → 3 に変わる。どの余りにいるかだけ分かれば、前の桁の具体的な数字は覚えなくていい！</p>
+<p>この「余りの変わり方」を表にすると、B×B のマス目（行列）になる。</p>
+<hr>
+<h2>N が巨大なとき</h2>
+<p>「この行列を N-1 回かけると答えが出る」が、N=10^18 では 10^18 回かけるのは不可能。</p>
+<p><strong>繰り返し二乗法</strong>を使うと：</p>
+<ul>
+<li>行列を2乗 → 2乗 → 2乗 … と 約60回 かけるだけで 10^18 乗が計算できる。</li>
+</ul>
+<p>60回 × B×B の行列の掛け算 = 速く答えが出る。</p>
+</div></section><section class="print-section"><h2><span class="mi">help</span> 制約の読み方</h2><div class="print-constraints-note"><ul>
+<li><code>N ≤ 10^18</code>：N 桁の数を全部試すのは不可能。繰り返し二乗法で行列の N 乗を計算する。</li>
+<li><code>B ≤ 1000</code>：余りは 0〜999 の最大1000種類。行列のサイズは 1000×1000。</li>
+<li><code>K ≤ 9</code>：使える数字は最大 9 種類。遷移行列の各列は最大 9 か所しか 0 でない。</li>
+<li>行列の掛け算を約60回くり返せば 10^18 でも答えが求まる。</li>
+</ul>
+</div></section><section class="print-section"><h2><span class="mi">code</span> 解答コード（Python）</h2><div class="bad-code-section"><h3><span class="mi">sentiment_dissatisfied</span> 悪い例（結果は合ってるけど…）</h3><pre class="code-print-bad"><code>import sys
+input = sys.stdin.readline
 
-# 各マスの答えを O(1) で計算
-for i in range(H):
-    print(&#39; &#39;.join(
-        str(row[i] + col[j] - A[i][j])  # A[i][j]は2回足されるので1回引く
-        for j in range(W)
-    ))</code></pre>
-</div>
-</section><section class="print-section"><h2><span class="mi">help_outline</span> いつ使う？</h2><div class="print-box"><p>「同じ部分の計算が何度も出てくる」とき。区間の合計・最大値・最小値など、クエリに何度も答える問題でよく使う。</p>
-</div></section>
+MOD = 10**9 + 7
+
+N, B, K = map(int, input().split())
+digits = list(map(int, input().split()))
+
+# dp[r] = 今まで決めた桁で余りが r になる数の個数
+dp = [0] * B
+for d in digits:
+    dp[d % B] += 1
+
+# 1桁ずつ追加する ← N が最大 10^18 なのに 1 ずつループしている！
+# N = 10^18 のとき、このループは 10^18 回まわる
+# コンピューターでも何億年もかかってしまう（絶対に TLE）
+for _ in range(N - 1):
+    new_dp = [0] * B
+    for r in range(B):
+        if dp[r] == 0:
+            continue
+        for d in digits:
+            nr = (r * 10 + d) % B
+            new_dp[nr] = (new_dp[nr] + dp[r]) % MOD
+    dp = new_dp
+
+print(dp[0])</code></pre></div><div class="lang-header">Python（正しい解答）</div><pre class="code-print"><code>import sys
+input = sys.stdin.readline
+
+MOD = 10**9 + 7  # 答えをこの数で割った余りを出す
+
+def mat_mul(A, B, mod, size):
+    &#34;&#34;&#34;行列 A と B を掛け合わせる（mod を取りながら）&#34;&#34;&#34;
+    C = [[0]*size for _ in range(size)]
+    for i in range(size):
+        for k in range(size):
+            if A[i][k] == 0:  # 0 の場合は計算をスキップ
+                continue
+            for j in range(size):
+                C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % mod
+    return C
+
+def mat_pow(M, p, mod, size):
+    &#34;&#34;&#34;行列 M の p 乗を繰り返し二乗法で計算する&#34;&#34;&#34;
+    # 単位行列（掛けても変わらない行列）から始める
+    result = [[1 if i == j else 0 for j in range(size)] for i in range(size)]
+    while p &gt; 0:
+        if p &amp; 1:  # p が奇数なら今の M を result に掛ける
+            result = mat_mul(result, M, mod, size)
+        M = mat_mul(M, M, mod, size)  # M を 2 乗する
+        p &gt;&gt;= 1  # p を半分にする（右にビットシフト）
+    return result
+
+N, B, K = map(int, input().split())  # N 桁、B の倍数、K 種類の数字
+digits = list(map(int, input().split()))  # 使える数字のリスト
+
+# 遷移行列を作る
+# T[r&#39;][r] = 「余り r の数に桁 d を追加して余り r&#39; になる桁 d の個数」
+T = [[0]*B for _ in range(B)]
+for r in range(B):          # 今の余り r に対して
+    for d in digits:        # 使える各桁 d を追加すると
+        nr = (r * 10 + d) % B  # 新しい余りは nr
+        T[nr][r] += 1
+
+# 1桁のベクトルを作る
+# v[r] = 「1桁で余りが r になる桁の個数」
+v = [0] * B
+for d in digits:
+    v[d % B] += 1
+
+if N == 1:
+    print(v[0] % MOD)  # 1桁の場合はそのまま出力
+else:
+    TN = mat_pow(T, N - 1, MOD, B)  # 遷移行列の (N-1) 乗を計算
+    ans = 0
+    for j in range(B):
+        # TN の 0 行目（余り 0 になる経路の数）と v の内積が答え
+        ans = (ans + TN[0][j] * v[j]) % MOD
+    print(ans)</code></pre></section>
 <button class="print-btn" onclick="window.print()"><span class="mi">print</span> 印刷</button>
 <footer style="text-align:center;padding:24px 16px;color:#666;font-size:.78rem;border-top:1px solid #ccc;margin-top:40px">本サイトは個人学習目的のみで使用し、商用利用・公開配布はしていません。</footer>
 </body>

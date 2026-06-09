@@ -1,0 +1,63 @@
+{
+  "contest": "典型90問",
+  "problems": [
+    {
+      "id": "typical90_e",
+      "problem": "005",
+      "title": "Restricted Digits",
+      "atcoder_url": "https://atcoder.jp/contests/typical90/tasks/typical90_e",
+      "difficulty": 7,
+      "tags": [
+        "DP",
+        "行列累乗",
+        "余り"
+      ],
+      "statement": "数字 $c_1, c_2, \\ldots, c_K$ のみを使うことで作れる $N$ 桁の正の整数のうち $B$ の倍数であるものは何個あるでしょうか。$10^9+7$ で割った余りを求めてください。",
+      "constraints": "- $1 \\leq K \\leq 9$\n- $1 \\leq c_1 < c_2 < \\cdots < c_K \\leq 9$\n- $1 \\leq N \\leq 10^{18}$\n- $2 \\leq B \\leq 1000$\n- 入力はすべて整数",
+      "samples": [
+        {
+          "input": "3 7 3\n1 4 9",
+          "output": "3",
+          "explanation": ""
+        },
+        {
+          "input": "5 2 3\n1 4 9",
+          "output": "81",
+          "explanation": ""
+        },
+        {
+          "input": "10000 27 7\n1 3 4 6 7 8 9",
+          "output": "989112238",
+          "explanation": ""
+        },
+        {
+          "input": "1000000000000000000 29 6\n1 2 4 5 7 9",
+          "output": "853993813",
+          "explanation": ""
+        },
+        {
+          "input": "1000000000000000000 957 7\n1 2 3 5 6 7 9",
+          "output": "205384995",
+          "explanation": ""
+        }
+      ],
+      "statement_note": "## どんな問題？\n\n決まった数字（例：1, 4, 9）だけを使って N 桁の数を作る。その中で B の倍数は何個あるか数える。\n\nN=3, B=7, 使える数字={1,4,9} なら：\n- 作れる3桁の数は 3×3×3=27 通り\n- その中で 7 の倍数は **119, 441, 994** の **3 個**\n\n---\n\n## 全部書き出すのは無理！\n\nN が最大 10^18 のとき、作れる数は最大 9^(10億億) 通り。宇宙の原子の数よりはるかに多く、全部調べるのは絶対に無理。\n\n---\n\n## 「余り」だけ追いかけると速くなる！\n\n今まで決めた桁を B で割った余りだけ覚えておく。\n\nたとえば B=7、今の余りが 2 のとき、次に 4 を追加すると：\n\n```\n(2 × 10 + 4) % 7 = 24 % 7 = 3\n```\n\n→ 余りが 2 → 3 に変わる。どの余りにいるかだけ分かれば、前の桁の具体的な数字は覚えなくていい！\n\nこの「余りの変わり方」を表にすると、B×B のマス目（行列）になる。\n\n---\n\n## N が巨大なとき\n\n「この行列を N-1 回かけると答えが出る」が、N=10^18 では 10^18 回かけるのは不可能。\n\n**繰り返し二乗法**を使うと：\n- 行列を2乗 → 2乗 → 2乗 … と 約60回 かけるだけで 10^18 乗が計算できる。\n\n60回 × B×B の行列の掛け算 = 速く答えが出る。",
+      "easy_explanation": "",
+      "explanation": "",
+      "constraints_note": "- `N ≤ 10^18`：N 桁の数を全部試すのは不可能。繰り返し二乗法で行列の N 乗を計算する。\n- `B ≤ 1000`：余りは 0〜999 の最大1000種類。行列のサイズは 1000×1000。\n- `K ≤ 9`：使える数字は最大 9 種類。遷移行列の各列は最大 9 か所しか 0 でない。\n- 行列の掛け算を約60回くり返せば 10^18 でも答えが求まる。",
+      "solutions": {
+        "python": {
+          "code": "import sys\ninput = sys.stdin.readline\n\nMOD = 10**9 + 7  # 答えをこの数で割った余りを出す\n\ndef mat_mul(A, B, mod, size):\n    \"\"\"行列 A と B を掛け合わせる（mod を取りながら）\"\"\"\n    C = [[0]*size for _ in range(size)]\n    for i in range(size):\n        for k in range(size):\n            if A[i][k] == 0:  # 0 の場合は計算をスキップ\n                continue\n            for j in range(size):\n                C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % mod\n    return C\n\ndef mat_pow(M, p, mod, size):\n    \"\"\"行列 M の p 乗を繰り返し二乗法で計算する\"\"\"\n    # 単位行列（掛けても変わらない行列）から始める\n    result = [[1 if i == j else 0 for j in range(size)] for i in range(size)]\n    while p > 0:\n        if p & 1:  # p が奇数なら今の M を result に掛ける\n            result = mat_mul(result, M, mod, size)\n        M = mat_mul(M, M, mod, size)  # M を 2 乗する\n        p >>= 1  # p を半分にする（右にビットシフト）\n    return result\n\nN, B, K = map(int, input().split())  # N 桁、B の倍数、K 種類の数字\ndigits = list(map(int, input().split()))  # 使える数字のリスト\n\n# 遷移行列を作る\n# T[r'][r] = 「余り r の数に桁 d を追加して余り r' になる桁 d の個数」\nT = [[0]*B for _ in range(B)]\nfor r in range(B):          # 今の余り r に対して\n    for d in digits:        # 使える各桁 d を追加すると\n        nr = (r * 10 + d) % B  # 新しい余りは nr\n        T[nr][r] += 1\n\n# 1桁のベクトルを作る\n# v[r] = 「1桁で余りが r になる桁の個数」\nv = [0] * B\nfor d in digits:\n    v[d % B] += 1\n\nif N == 1:\n    print(v[0] % MOD)  # 1桁の場合はそのまま出力\nelse:\n    TN = mat_pow(T, N - 1, MOD, B)  # 遷移行列の (N-1) 乗を計算\n    ans = 0\n    for j in range(B):\n        # TN の 0 行目（余り 0 になる経路の数）と v の内積が答え\n        ans = (ans + TN[0][j] * v[j]) % MOD\n    print(ans)",
+          "steps": null
+        }
+      },
+      "bad_solutions": {
+        "python": {
+          "label": "",
+          "code": "import sys\ninput = sys.stdin.readline\n\nMOD = 10**9 + 7\n\nN, B, K = map(int, input().split())\ndigits = list(map(int, input().split()))\n\n# dp[r] = 今まで決めた桁で余りが r になる数の個数\ndp = [0] * B\nfor d in digits:\n    dp[d % B] += 1\n\n# 1桁ずつ追加する ← N が最大 10^18 なのに 1 ずつループしている！\n# N = 10^18 のとき、このループは 10^18 回まわる\n# コンピューターでも何億年もかかってしまう（絶対に TLE）\nfor _ in range(N - 1):\n    new_dp = [0] * B\n    for r in range(B):\n        if dp[r] == 0:\n            continue\n        for d in digits:\n            nr = (r * 10 + d) % B\n            new_dp[nr] = (new_dp[nr] + dp[r]) % MOD\n    dp = new_dp\n\nprint(dp[0])"
+        }
+      },
+      "added_at": "2026-06-09"
+    }
+  ]
+}

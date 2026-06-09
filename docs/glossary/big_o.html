@@ -32,12 +32,37 @@
     <h2 class="section-title"><span class="mi">auto_stories</span> 解説</h2>
     <div class="glossary-desc statement-box"><p>プログラムが何回計算するかを、入力の大きさ（N）を使って表します。「O」は「だいたい〜回くらい」という意味です。</p>
 <p>競プロでは「1秒間に約<strong>1億回</strong>の計算ができる」と考えます。</p>
-<p>| 記法 | Nが2倍になると… | 例 |
-|------|-----------------|----|
-| O(N) | 計算回数も2倍 | 配列を1回なめる |
-| O(N²) | 計算回数は4倍 | 全ペアを調べる |
-| O(N log N) | ほんの少し増える | ソート |
-| O(log N) | ほとんど変わらない | 二分探索 |</p>
+<table>
+<thead>
+<tr>
+<th>記法</th>
+<th>Nが2倍になると…</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>O(N)</td>
+<td>計算回数も2倍</td>
+<td>配列を1回なめる</td>
+</tr>
+<tr>
+<td>O(N²)</td>
+<td>計算回数は4倍</td>
+<td>全ペアを調べる</td>
+</tr>
+<tr>
+<td>O(N log N)</td>
+<td>ほんの少し増える</td>
+<td>ソート</td>
+</tr>
+<tr>
+<td>O(log N)</td>
+<td>ほとんど変わらない</td>
+<td>二分探索</td>
+</tr>
+</tbody>
+</table>
 <p>N = 100,000 のとき：</p>
 <ul>
 <li>O(N²) = <strong>100億回</strong> → 約100秒 → TLE（時間超過）</li>

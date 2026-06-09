@@ -9,7 +9,7 @@
       "二分探索",
       "貪欲"
     ],
-    "file": "typical90"
+    "file": "typical90_a"
   },
   {
     "id": "typical90_b",
@@ -23,7 +23,7 @@
       "全探索",
       "括弧列"
     ],
-    "file": "typical90"
+    "file": "typical90_b"
   },
   {
     "id": "typical90_c",
@@ -37,7 +37,7 @@
       "BFS",
       "グラフ"
     ],
-    "file": "typical90"
+    "file": "typical90_c"
   },
   {
     "id": "typical90_d",
@@ -49,6 +49,6 @@
       "累積和",
       "配列"
     ],
-    "file": "typical90"
+    "file": "typical90_d"
   }
 ]

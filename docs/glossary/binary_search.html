@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>二分探索 | 競プロ教材</title>
+<title>二分探索（バイナリサーチ） | 競プロ教材</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css">
@@ -25,49 +25,93 @@
 </header>
 
 <main class="detail-view">
-  <h1 class="detail-title"><span class="mi">book_2</span> 二分探索</h1>
+  <h1 class="detail-title"><span class="mi">book_2</span> 二分探索（バイナリサーチ）</h1>
   <div class="detail-meta" style="margin-bottom:16px"><a class="print-link" href="../print/glossary_binary_search.html" target="_blank"><span class="mi">print</span> 印刷用</a></div>
-  <p class="glossary-short" style="margin-bottom:24px">真ん中を見て、答えが左右どちらにあるかで範囲を半分に絞る探し方</p>
+  <p class="glossary-short" style="margin-bottom:24px">「真ん中を見て、答えのある方に絞る」をくり返して、高速に探す方法</p>
   <section class="detail-section">
     <h2 class="section-title"><span class="mi">auto_stories</span> 解説</h2>
-    <div class="glossary-desc statement-box"><p>1〜100の数当てゲームで考えよう。</p>
+    <div class="glossary-desc statement-box"><h2>数当てゲームで体感しよう</h2>
+<p><strong>1〜10の数当てゲーム。答えは 7 だとする。</strong></p>
+<h3>全部試す場合</h3>
+<p>1？違う → 2？違う → 3？違う → 4？違う → 5？違う → 6？違う → <strong>7？正解！</strong></p>
+<p>→ <strong>7回かかった</strong></p>
+<h3>二分探索の場合</h3>
+<ol>
+<li>「<strong>5</strong> より大きい？」→ はい → 範囲が <strong>6〜10</strong> に絞れた</li>
+<li>「<strong>8</strong> より大きい？」→ いいえ → 範囲が <strong>6〜8</strong> に絞れた</li>
+<li>「<strong>7</strong> より大きい？」→ いいえ → 範囲が <strong>6〜7</strong> に絞れた</li>
+<li>「<strong>6</strong> と <strong>7</strong> どっち？」→ <strong>7！正解！</strong></li>
+</ol>
+<p>→ <strong>4回で当てた！</strong></p>
+<p>毎回「真ん中を確認 → 半分に絞る」をくり返す。<br>
+10個 → 最大4回、100個 → 最大7回、<strong>10億個 → 最大30回</strong> で見つかる。</p>
+<hr>
+<h2>プログラムでの使い方</h2>
+<p>競プロでは「答えそのものを二分探索する」ことが多い。</p>
+<p><strong>ようかん問題の場合：</strong></p>
+<p>「最小ピースを x cm 以上にできるか？」という質問を考える。</p>
 <ul>
-<li><strong>全部試す</strong>：「1？2？3？…」→ 最悪100回かかる</li>
-<li><strong>二分探索</strong>：「50より大きい？」→ 「はい」→「75より大きい？」→ … → <strong>最悪7回</strong>で当てられる！</li>
+<li>x = 1 のとき → <strong>できる</strong>（簡単すぎる）</li>
+<li>x = 5 のとき → <strong>できる</strong></li>
+<li>x = 13 のとき → <strong>できる</strong></li>
+<li>x = 14 のとき → <strong>できない</strong></li>
+<li>x = 20 のとき → <strong>できない</strong></li>
 </ul>
-<p>毎回「真ん中」を確認して半分に絞るので、N個の中から探すのに <strong>O(log N)</strong> 回で済みます。</p>
-<p>log₂(10億) ≈ <strong>30</strong> なので、10億通りでもたった30回で答えが出ます。</p>
+<p>つまり「できる/できない」の境目が 1 か所だけある。
+この<strong>境目を二分探索</strong>で探す！</p>
+<pre><code>「できる」「できる」「できる」「できない」「できない」
+                             ↑
+                          この境目を探す
+</code></pre>
 </div>
   </section>
   <section class="detail-section">
     <h2 class="section-title"><span class="mi">compare</span> 使わない場合 vs 使う場合</h2>
     <div class="code-compare">
       <div class="code-compare-col bad-col">
-        <div class="code-compare-label"><span class="mi">close</span> 全部試す O(L) → TLE</div>
-        <pre class="code-compare-pre"><code>ans = 0
-# L が最大10^9 → 10億回ループ → 絶対TLE
-for x in range(1, L + 1):
-    if ok(x):      # 条件を満たすか確認
+        <div class="code-compare-label"><span class="mi">close</span> 全部試す → x を 1 から L まで順番に確認（L が大きいと TLE）</div>
+        <pre class="code-compare-pre"><code># L = 34 のとき、x = 1, 2, 3, ..., 34 と全部確認する
+# L が最大10^9（10億）なら10億回ループ → 絶対TLE！
+ans = 0
+for x in range(1, L + 1):   # ← ここが問題。L が大きいと終わらない
+    if ok(x):                # x cm 以上にできるか？
         ans = x
-print(ans)</code></pre>
+print(ans)  # → 13
+
+# L=34 でさえ34回かかる。L=10^9 なら10億回。</code></pre>
       </div>
       <div class="code-compare-col good-col">
-        <div class="code-compare-label"><span class="mi">check</span> 二分探索 O(log L) → 余裕で間に合う</div>
-        <pre class="code-compare-pre"><code>low, high = 0, L + 1
-# log2(10^9) ≈ 30 → たった30回ループ
-while high - low &gt; 1:
+        <div class="code-compare-label"><span class="mi">check</span> 二分探索 → 約 30 回で答えが出る（L がいくら大きくても）</div>
+        <pre class="code-compare-pre"><code># low = 「確実にできる」, high = 「確実にできない」
+low, high = 0, L + 1   # low=0, high=35
+
+while high - low &gt; 1:  # 差が1になるまでくり返す
     mid = (low + high) // 2  # 真ん中を見る
+
+    # 例: low=0, high=35 → mid=17
+    # ok(17) → できない → high=17
+    # low=0, high=17 → mid=8
+    # ok(8)  → できる  → low=8
+    # low=8, high=17 → mid=12
+    # ok(12) → できる  → low=12
+    # low=12, high=17 → mid=14
+    # ok(14) → できない → high=14
+    # low=12, high=14 → mid=13
+    # ok(13) → できる  → low=13
+    # low=13, high=14 → 差が1 → 終了！
+
     if ok(mid):
-        low = mid   # 真ん中でOK → もっと大きくできるかも
+        low = mid
     else:
-        high = mid  # 真ん中でNG → 小さくする
-print(low)</code></pre>
+        high = mid
+
+print(low)  # → 13</code></pre>
       </div>
     </div>
   </section>
   <section class="detail-section">
     <h2 class="section-title"><span class="mi">help_outline</span> いつ使う？</h2>
-    <div class="glossary-when">「答えがxのとき条件を満たすか？」という判定ができて、「xが大きいほど難しくなる（または簡単になる）」という**単調性**があるとき。最小値の最大化・最大値の最小化問題によく登場する。</div>
+    <div class="glossary-when">「xが大きいほど難しくなる（または簡単になる）」という**単調性**があるとき。「最小ピースを最大にしたい」「最大コストを最小にしたい」という問題によく登場する。</div>
   </section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-core.min.js"></script>

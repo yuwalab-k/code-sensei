@@ -27,7 +27,7 @@
 <main class="detail-view">
   <div class="detail-contest">典型90問 003</div>
   <h1 class="detail-title">Longest Circular Road</h1>
-  <div class="detail-meta"><span class="diff-badge" style="background:#f44336">D問題レベル</span> <span class="tag">木</span><span class="tag">木の直径</span><span class="tag">BFS</span><span class="tag">グラフ</span> <a class="atcoder-link" href="https://atcoder.jp/contests/typical90/tasks/typical90_c" target="_blank" rel="noopener"><span class="mi">open_in_new</span> AtCoderで見る</a> <a class="print-link" href="../print/typical90_c.html" target="_blank"><span class="mi">print</span> 印刷用</a></div>
+  <div class="detail-meta"><span class="diff-badge" style="background:#f44336">D問題レベル</span> <span class="tag">木</span><span class="tag">木の直径</span><span class="tag">BFS</span><span class="tag">グラフ</span> <a class="atcoder-link" href="https://atcoder.jp/contests/typical90/tasks/typical90_c" target="_blank" rel="noopener"><span class="mi">open_in_new</span> AtCoderで見る</a> <a class="print-link" href="../print/typical90_c.html" target="_blank"><span class="mi">print</span> 印刷用</a> <a class="cr-link" href="../code_reading.html"><span class="mi">menu_book</span> プログラムの読み方</a></div>
   <div class="glossary-refs"><span style="font-size:.8rem;color:#666"><span class="mi">psychology</span> 使う考え方：</span><a class="glossary-ref-link" href="../glossary/graph_tree.html"><span class="mi">book_2</span> グラフ・木</a><a class="glossary-ref-link" href="../glossary/bfs.html"><span class="mi">book_2</span> BFS（幅優先探索）</a><a class="glossary-ref-link" href="../glossary/tree_diameter.html"><span class="mi">book_2</span> 木の直径</a></div>
   <section class="detail-section">
     <h2 class="section-title"><span class="mi">description</span> 問題文</h2>
@@ -45,29 +45,7 @@
 <li>与えられる入力は全て整数</li>
 </ul>
 </div>
-    <div class="statement-note"><span class="statement-note-badge"><span class="mi">info</span> 入力例1を使った説明</span><h2>この問題で何をするの？</h2>
-<p>3つの都市が 1−2−3 と一列につながっているとします（入力例1）。</p>
-<p>ここに道路を1本だけ追加して、「ぐるっと一周できるコース」を作ります。その一周の道の本数をスコアといいます。</p>
-<p>1番と3番をつなぐと <strong>1→2→3→1</strong> と3本の道を通って一周でき、スコアは <strong>3</strong>。</p>
-<p>つまり「追加する道路をどう選べば、スコア（一周の長さ）が最大になるか」を求める問題です。</p>
-<h2>入力の読み方</h2>
-<pre><code class="language-text">3       ← 都市の数が3つ
-1 2     ← 1番と2番の都市をつなぐ道路
-2 3     ← 2番と3番の都市をつなぐ道路
-</code></pre>
-<h2>出力の読み方</h2>
-<p>この例では <code>3</code> を出力する。</p>
-<hr>
-</div>
-    <div class="constraints-note"><span class="constraints-note-badge"><span class="mi">help</span> 制約の読み方</span><ul>
-<li><code>3 ≤ N ≤ 100000</code>：都市は最大<strong>10万個</strong>。</li>
-<li>N が大きいので、<strong>全ペアを調べる O(N²) は間に合わない</strong>（10万×10万＝100億回）。</li>
-<li>「木の直径」アルゴリズム（BFS を2回）を使えば O(N) で求まる。</li>
-</ul>
-</div>
-  </section>
-  <section class="detail-section">
-    <h2 class="section-title"><span class="mi">quiz</span> 入力・出力の例</h2>
+    <h2 class="section-title" style="margin-top:20px"><span class="mi">quiz</span> 入力・出力の例</h2>
     
 <div class="sample-block">
   <div class="sample-row">
@@ -75,15 +53,7 @@
 1 2
 2 3</pre></div>
     <div class="sample-col"><div class="sample-label">出力 1</div><pre class="sample-pre">3</pre></div>
-  </div><div class="sample-explanation"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 3つの都市（1・2・3番）が 1−2−3 と一列につながっている。ここに道路を1本追加する。</p>
-<ul>
-<li>都市 1 と 都市 3 の間に追加 → <strong>1 → 2 → 3 → 1</strong> と一周できる。道の本数 <strong>3本</strong> ← これが最大！</li>
-<li>都市 1 と 都市 2 の間に追加 → 同じ道が2本になるだけ。一周できるが道は <strong>2本</strong>（微妙）</li>
-<li>都市 2 と 都市 3 の間に追加 → 同上、<strong>2本</strong></li>
-</ul>
-<p>いちばんスコアが高くなる選び方は 都市1 と 都市3 → 答えは <strong>3</strong>。</p>
-<hr>
-</div>
+  </div>
 </div>
 <div class="sample-block">
   <div class="sample-row">
@@ -93,16 +63,7 @@
 3 4
 3 5</pre></div>
     <div class="sample-col"><div class="sample-label">出力 2</div><pre class="sample-pre">4</pre></div>
-  </div><div class="sample-explanation"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 5つの都市、道路が 1−2−3−4 と 3−5。木の形。ここに道路を1本追加する。</p>
-<ul>
-<li>都市 1 と 都市 4 の間 → 1→2→3→4→1、<strong>4本</strong> ← 最大！</li>
-<li>都市 1 と 都市 5 の間 → 1→2→3→5→1、<strong>4本</strong> ← 同じ最大</li>
-<li>都市 4 と 都市 5 の間 → 4→3→5→4、<strong>3本</strong></li>
-<li>都市 1 と 都市 3 の間 → 1→2→3→1、<strong>3本</strong></li>
-</ul>
-<p>答えは <strong>4</strong>。</p>
-<hr>
-</div>
+  </div>
 </div>
 <div class="sample-block">
   <div class="sample-row">
@@ -117,19 +78,7 @@
 8 9
 8 10</pre></div>
     <div class="sample-col"><div class="sample-label">出力 3</div><pre class="sample-pre">8</pre></div>
-  </div><div class="sample-explanation"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 10都市の木。</p>
-<p>木の形を整理すると：</p>
-<ul>
-<li>1番 → 2番 → 4番 → <strong>5番</strong>（端）</li>
-<li>1番 → 2番 → 4番 → <strong>6番</strong>（端）</li>
-<li>1番 → 3番 → 7番 → 8番 → <strong>9番</strong>（端）</li>
-<li>1番 → 3番 → 7番 → 8番 → <strong>10番</strong>（端）</li>
-</ul>
-<p>いちばん遠い2都市は <strong>5番と9番</strong>（または5番と10番、6番と9番、6番と10番）で、その間の道の本数は <strong>7本</strong>。</p>
-<p>都市5と都市9の間に道路を新設 → <strong>5→4→2→1→3→7→8→9→5</strong> と一周。道の本数 <strong>8本</strong>。</p>
-<p>答えは <strong>8</strong>。</p>
-<hr>
-</div>
+  </div>
 </div>
 <div class="sample-block">
   <div class="sample-row">
@@ -165,85 +114,71 @@
 15 30
 15 31</pre></div>
     <div class="sample-col"><div class="sample-label">出力 4</div><pre class="sample-pre">9</pre></div>
-  </div><div class="sample-explanation"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 31都市の完全二分木（全部で5段）。</p>
-<pre><code>              1
-           /     \
-         2         3
-        / \       / \
-       4   5     6   7
-      /\ /\     /\ /\
-     8 9 10 11 12 13 14 15
-    /\/\/\/\/\/\/\/\/\/\/\/\/\
-   16-31（葉）
-</code></pre>
-<p>いちばん遠い2都市は <strong>16番と24番</strong>（など葉と葉）で、木の上を通る道の本数は <strong>8本</strong>。</p>
-<p>道路を新設すると一周で道は <strong>9本</strong>。</p>
-<p>答えは <strong>9</strong>。</p>
-<hr>
+  </div>
 </div>
+    <div class="statement-note"><span class="statement-note-badge"><span class="mi">info</span> かんたん解説</span><h2>どんな問題？</h2>
+<p>都市と道路が木のようにつながっている（ループなし）。ここに道路を <strong>1本だけ</strong> 追加して、一周できるコースを作る。その一周の長さ（道路の本数）をできるだけ長くしたい。</p>
+<p>たとえば 1-2-3 と一列につながっている場合、1と3をつなぐと <strong>1→2→3→1</strong> で3本の道を通って一周できる。</p>
+<hr>
+<h2>どうやって解くの？</h2>
+<p>「一番遠い2都市の間に道を引く」のが最適。</p>
+<p>一番遠い2都市間の距離（<strong>木の直径</strong>）に 1 を足した数が答え。</p>
+<p>木の直径は「どこか1つの都市から一番遠い都市を探し、そこからまた一番遠い都市を探す」2回の探索で求まる。都市が10万個あっても速く終わる。</p>
+</div>
+    <div class="constraints-note"><span class="constraints-note-badge"><span class="mi">help</span> 制約の読み方</span><ul>
+<li><code>3 ≤ N ≤ 100000</code>：都市は最大 <strong>10万個</strong>。</li>
+<li>全ペアを調べると 10万 × 10万 = <strong>100億回</strong> の計算が必要でコンピューターでも数十分かかってしまう。</li>
+<li>BFS を2回使う方法なら <strong>10万回</strong> の計算で終わる。</li>
+</ul>
 </div>
   </section>
   
 <section class="detail-section">
-  <h2 class="section-title"><span class="mi">lightbulb</span> わかりやすく解説</h2>
-  <div class="explanation-box easy-box"><h2>イメージ</h2>
-<p>木に1本だけ道を追加するとき、追加した道と既存の道でぴったり1つの「輪っか」ができます。</p>
-<p>輪っかの長さ＝（追加した2都市を既存の道でつないだときの道の本数）＋（新しく追加した道の1本）</p>
-<p>なので、<strong>2都市間の既存の道の本数が最大になる2つの都市を選べばいい</strong>ことになります。</p>
-<p>木の上でいちばん遠い2点間の距離のことを <strong>「木の直径」</strong> といいます。</p>
-<h2>どう解くか</h2>
-<ol>
-<li>木の直径を求める（2回BFSで求められる）</li>
-<li>答え＝直径＋1</li>
-</ol>
-<p><strong>木の直径の求め方（2回BFS）：</strong></p>
-<ol>
-<li>都市1からBFSして、いちばん遠い都市 $u$ を見つける</li>
-<li>$u$ からBFSして、いちばん遠い都市までの距離を求める → それが直径</li>
-</ol>
-<hr>
-</div>
-</section>
-  
-<section class="detail-section">
-  <h2 class="section-title"><span class="mi">menu_book</span> くわしい解説</h2>
-  <div class="explanation-box"><h2>方針</h2>
-<p><strong>木の直径を求めて、直径＋1を出力する。</strong></p>
-<h3>なぜ「直径＋1」か</h3>
-<p>木にエッジ $(u, v)$ を1本追加すると、ちょうど1つの単純サイクルができる。そのサイクルの長さは：</p>
-<p>$$\text{サイクル長} = \text{dist}(u, v) + 1$$</p>
-<p>（<code>dist(u, v)</code> は木上での $u$〜$v$ 間の辺数）</p>
-<p>スコアを最大化するには $\text{dist}(u, v)$ を最大化すればよい。木上で最大の距離＝木の直径。</p>
-<h3>木の直径を O(N) で求める</h3>
-<p>BFS を 2 回行う。</p>
-<ol>
-<li>任意の頂点 $s$ から BFS → 最遠点 $u$ を求める</li>
-<li>$u$ から BFS → 最遠点 $v$ までの距離 $d$ を求める</li>
-<li>$d$ が木の直径</li>
-</ol>
-<hr>
-<h2>よくあるミス</h2>
-<h2>1. 答えを「直径」そのものにしてしまう</h2>
-<p>新しく1本道路を追加するので、スコアは <strong>直径＋1</strong>。<code>+1</code> を忘れずに。</p>
-<hr>
-<h2>2. BFSを1回しかしない</h2>
-<p>1回目のBFS（任意の点から）だけでは直径の端点を正しく求められない場合がある。2回必要。</p>
-<hr>
-<h2>3. グラフが大きいときにスタック溢れ（DFSの再帰）</h2>
-<p>$N \leq 100000$ なのでDFSの再帰が深くなりスタックオーバーフローになることがある。BFS（キュー）か、再帰制限を上げる必要がある。</p>
-<hr>
-<h2>学びポイント</h2>
-<ul>
-<li><strong>木の直径</strong> の典型的な求め方（2回BFS）</li>
-<li>「木に辺を1本追加するとサイクルができる」という性質の活用</li>
-<li>計算量 O(N) で解ける典型問題</li>
-</ul>
-<hr>
-</div>
-</section>
-  
-<section class="detail-section">
   <h2 class="section-title"><span class="mi">code</span> 解答コード</h2>
+  
+<div class="bad-solutions">
+  <div class="bad-solutions-title"><span class="mi">sentiment_dissatisfied</span> 悪い例（結果は合ってるけど…）</div>
+  <div class="bad-lang-tabs" id="bltabs"><button class="bad-lang-tab active" data-lang="bad-python">Python</button></div>
+  <div class="bad-code-panel active" id="panel-bad-python"><pre class="code-block-bad language-python"><code class="language-python">from collections import deque
+import sys
+input = sys.stdin.readline
+
+N = int(input())
+g = [[] for _ in range(N + 1)]
+for _ in range(N - 1):
+    a, b = map(int, input().split())
+    g[a].append(b)
+    g[b].append(a)
+
+def bfs(s):
+    d = [-1] * (N + 1)
+    d[s] = 0
+    q = deque([s])
+    while q:
+        v = q.popleft()
+        for u in g[v]:
+            if d[u] &lt; 0:
+                d[u] = d[v] + 1
+                q.append(u)
+    return d
+
+ans = 0
+# 全頂点からBFSしている → O(N²) でTLE
+# 「木の直径」は端点からBFSを2回するだけで O(N) で求まる
+for i in range(1, N + 1):
+    ans = max(ans, max(bfs(i)[1:]))
+print(ans + 1)</code></pre></div>
+</div>
+<script>
+document.getElementById('bltabs').addEventListener('click',function(e){
+  var b=e.target.closest('.bad-lang-tab'); if(!b)return;
+  document.querySelectorAll('.bad-lang-tab').forEach(function(x){x.classList.remove('active');});
+  document.querySelectorAll('.bad-code-panel').forEach(function(x){x.classList.remove('active');});
+  b.classList.add('active');
+  var p=document.getElementById('panel-'+b.dataset.lang); if(p)p.classList.add('active');
+});
+</script>
+  <div class="good-solutions-title"><span class="mi">check_circle</span> 正しいコード</div>
   <div class="lang-tabs" id="ltabs"><button class="lang-tab active" data-lang="python">Python</button><button class="lang-tab" data-lang="cpp">C++</button><button class="lang-tab" data-lang="typescript">TypeScript</button><button class="lang-tab" data-lang="ruby">Ruby</button><button class="lang-tab" data-lang="php">PHP</button><button class="lang-tab" data-lang="rust">Rust</button><button class="lang-tab" data-lang="perl">Perl</button></div>
   <div class="code-panel active" id="panel-python"><pre class="code-block language-python"><code class="language-python">import sys
 from collections import deque
@@ -536,49 +471,6 @@ sub bfs {
 my ($u) = bfs(1);                          # 1回目: 都市 1 から最遠点 u を探す
 my (undef, $diameter) = bfs($u);           # 2回目: u から直径を求める
 print $diameter + 1, &#34;\n&#34;;                 # 直径 + 1 が答え</code></pre></div>
-  
-<div class="bad-solutions">
-  <div class="bad-solutions-title"><span class="mi">sentiment_dissatisfied</span> 悪い例（結果は合ってるけど…）</div>
-  <div class="bad-lang-tabs" id="bltabs"><button class="bad-lang-tab active" data-lang="bad-python">Python</button></div>
-  <div class="bad-code-panel active" id="panel-bad-python"><div class="bad-solution-label"><span class="mi">warning</span> O(N²) 全頂点BFS — 木の直径アルゴリズムを知らずに全頂点から探索</div><pre class="code-block-bad language-python"><code class="language-python">from collections import deque
-import sys
-input = sys.stdin.readline
-
-N = int(input())
-g = [[] for _ in range(N + 1)]
-for _ in range(N - 1):
-    a, b = map(int, input().split())
-    g[a].append(b)
-    g[b].append(a)
-
-def bfs(s):
-    d = [-1] * (N + 1)
-    d[s] = 0
-    q = deque([s])
-    while q:
-        v = q.popleft()
-        for u in g[v]:
-            if d[u] &lt; 0:
-                d[u] = d[v] + 1
-                q.append(u)
-    return d
-
-ans = 0
-# 全頂点からBFSしている → O(N²) でTLE
-# 「木の直径」は端点からBFSを2回するだけで O(N) で求まる
-for i in range(1, N + 1):
-    ans = max(ans, max(bfs(i)[1:]))
-print(ans + 1)</code></pre></div>
-</div>
-<script>
-document.getElementById('bltabs').addEventListener('click',function(e){
-  var b=e.target.closest('.bad-lang-tab'); if(!b)return;
-  document.querySelectorAll('.bad-lang-tab').forEach(function(x){x.classList.remove('active');});
-  document.querySelectorAll('.bad-code-panel').forEach(function(x){x.classList.remove('active');});
-  b.classList.add('active');
-  var p=document.getElementById('panel-'+b.dataset.lang); if(p)p.classList.add('active');
-});
-</script>
 </section>
 <script>
 document.getElementById('ltabs').addEventListener('click',function(e){

@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/extension"
 )
 
 // ── types ─────────────────────────────────────────────────────────────────────
@@ -79,6 +80,15 @@ type GlossaryEntry struct {
 	Problems     []string `json:"problems"`
 }
 
+type CodeReadingEntry struct {
+	ID         string `json:"id"`
+	Name       string `json:"name"`
+	Short      string `json:"short"`
+	Body       string `json:"body"`
+	PythonCode string `json:"python_code"`
+	OtherNote  string `json:"other_note"`
+}
+
 // ── build: JSON → HTML ────────────────────────────────────────────────────────
 
 var diffLabel = map[int]string{1: "A問題レベル", 2: "B問題レベル", 3: "C問題レベル", 4: "D問題レベル"}
@@ -126,12 +136,14 @@ func icon(name string) string {
 	return `<span class="mi">` + name + `</span>`
 }
 
+var md = goldmark.New(goldmark.WithExtensions(extension.Table, extension.Strikethrough))
+
 func mdToHTML(src string) string {
 	if src == "" {
 		return ""
 	}
 	var buf bytes.Buffer
-	if err := goldmark.Convert([]byte(src), &buf); err != nil {
+	if err := md.Convert([]byte(src), &buf); err != nil {
 		return "<pre>" + e(src) + "</pre>"
 	}
 	return buf.String()
@@ -185,6 +197,9 @@ a{color:inherit;text-decoration:none}
 .statement-note strong{color:#1565c0}
 .statement-note ul,.statement-note ol{padding-left:1.6em;margin:.4em 0 .6em}
 .statement-note hr{display:none}
+.statement-note table{border-collapse:collapse;margin:.8em 0;font-size:.85rem;width:100%}
+.statement-note th,.statement-note td{border:1px solid #90caf9;padding:6px 10px}
+.statement-note th{background:#bbdefb}
 .statement-note-badge{display:inline-flex;align-items:center;gap:3px;background:#1565c0;color:#fff;font-size:.72rem;font-weight:700;border-radius:4px;padding:1px 7px;margin-bottom:8px;letter-spacing:.03em}
 .constraints-note{background:#f3e5f5;border-left:4px solid #8e24aa;border-radius:6px;padding:12px 14px;font-size:.88rem;margin-top:10px;line-height:1.75}
 .constraints-note p{margin-bottom:.5em}
@@ -222,6 +237,7 @@ pre.code-block code{background:none;padding:0;border-radius:0;font-size:inherit;
 .solution-steps{padding-left:1.5em;margin-top:12px;font-size:.88rem;line-height:1.7;color:#444}
 .bad-solutions{margin-top:16px;overflow:hidden}
 .bad-solutions-title{padding:20px 0;font-size:.88rem;font-weight:600;display:flex;align-items:center;gap:6px;color:#c62828;}
+.good-solutions-title{padding:20px 0 8px;font-size:.88rem;font-weight:600;display:flex;align-items:center;gap:6px;color:#2e7d32;}
 .bad-solution{padding:12px 14px;border-top:1px solid #f0e0e0}
 .bad-solution:first-child{border-top:none}
 .bad-solution-label{font-size:.8rem;font-weight:700;color:#c62828;margin-bottom:6px;display:flex;align-items:center;gap:4px}
@@ -272,7 +288,20 @@ pre.code-block-bad code{background:none;padding:0;font-size:inherit;font-family:
 .glossary-card{display:block;background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.08);border:1.5px solid transparent;transition:.15s}
 .glossary-card:hover{border-color:#7b1fa2;box-shadow:0 3px 12px rgba(123,31,162,.15)}
 .glossary-card-name{font-size:.97rem;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:5px;color:#222}
-.glossary-card-short{font-size:.82rem;color:#666;line-height:1.5}`
+.glossary-card-short{font-size:.82rem;color:#666;line-height:1.5}
+.cr-link{font-size:.82rem;color:#00796b;border:1px solid #00796b;border-radius:6px;padding:3px 10px;display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
+.cr-link:hover{background:#e0f2f1}
+.cr-entry{background:#fff;border-radius:10px;padding:20px;margin-bottom:20px;border:1.5px solid #e0e0e0}
+.cr-name{font-size:1.1rem;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px;color:#00796b}
+.cr-short{color:#555;font-size:.88rem;margin-bottom:12px;padding:6px 10px;background:#e0f2f1;border-radius:6px;border-left:3px solid #00796b}
+.cr-body{font-size:.9rem;line-height:1.75;margin-bottom:12px}
+.cr-body p{margin-bottom:.5em}
+.cr-body table{border-collapse:collapse;margin:.6em 0;font-size:.85rem}
+.cr-body th,.cr-body td{border:1px solid #ddd;padding:5px 10px}
+.cr-body th{background:#f0f0f0}
+.cr-body code{background:#f0f0f0;padding:1px 5px;border-radius:3px;font-size:.88em}
+.cr-code{background:#1e1e2e;color:#cdd6f4;border-radius:6px;padding:10px 14px;font-size:.82rem;font-family:monospace;white-space:pre;overflow-x:auto;margin-bottom:10px;line-height:1.6}
+.cr-other{font-size:.8rem;color:#666;padding:6px 10px;background:#f5f5f5;border-radius:6px;border-left:3px solid #bbb}`
 }
 
 func pwGateScript() string {
@@ -434,17 +463,13 @@ func buildProblem(p Problem, contest string, force bool, glossaryEntries []Gloss
 	}
 	var sampBuf strings.Builder
 	for i, s := range p.Samples {
-		exp := ""
-		if s.Explanation != "" {
-			exp = fmt.Sprintf(`<div class="sample-explanation"><div class="sample-exp-title">%s 解説</div>%s</div>`, icon("auto_stories"), mdToHTML(s.Explanation))
-		}
 		fmt.Fprintf(&sampBuf, `
 <div class="sample-block">
   <div class="sample-row">
     <div class="sample-col"><div class="sample-label">入力 %d</div><pre class="sample-pre">%s</pre></div>
     <div class="sample-col"><div class="sample-label">出力 %d</div><pre class="sample-pre">%s</pre></div>
-  </div>%s
-</div>`, i+1, e(s.Input), i+1, e(s.Output), exp)
+  </div>
+</div>`, i+1, e(s.Input), i+1, e(s.Output))
 	}
 
 	atcLink := ""
@@ -452,29 +477,12 @@ func buildProblem(p Problem, contest string, force bool, glossaryEntries []Gloss
 		atcLink = fmt.Sprintf(`<a class="atcoder-link" href="%s" target="_blank" rel="noopener">%s AtCoderで見る</a>`, e(p.AtcoderURL), icon("open_in_new"))
 	}
 	printLink := fmt.Sprintf(`<a class="print-link" href="../print/%s.html" target="_blank">%s 印刷用</a>`, p.ID, icon("print"))
-
-	easySection := ""
-	if p.EasyExplanation != "" {
-		easySection = fmt.Sprintf(`
-<section class="detail-section">
-  <h2 class="section-title">%s わかりやすく解説</h2>
-  <div class="explanation-box easy-box">%s</div>
-</section>`, icon("lightbulb"), mdToHTML(p.EasyExplanation))
-	}
-
-	expSection := ""
-	if p.Explanation != "" {
-		expSection = fmt.Sprintf(`
-<section class="detail-section">
-  <h2 class="section-title">%s くわしい解説</h2>
-  <div class="explanation-box">%s</div>
-</section>`, icon("menu_book"), mdToHTML(p.Explanation))
-	}
+	codeReadingLink := `<a class="cr-link" href="../code_reading.html">` + icon("menu_book") + ` プログラムの読み方</a>`
 
 	stmtNoteSection := ""
 	if p.StatementNote != "" {
 		stmtNoteSection = fmt.Sprintf(
-			`<div class="statement-note"><span class="statement-note-badge">%s 入力例1を使った説明</span>%s</div>`,
+			`<div class="statement-note"><span class="statement-note-badge">%s かんたん解説</span>%s</div>`,
 			icon("info"), mdToHTML(p.StatementNote))
 	}
 
@@ -502,33 +510,27 @@ func buildProblem(p Problem, contest string, force bool, glossaryEntries []Gloss
 <main class="detail-view">
   <div class="detail-contest">%s %s</div>
   <h1 class="detail-title">%s</h1>
-  <div class="detail-meta">%s %s %s %s</div>
+  <div class="detail-meta">%s %s %s %s %s</div>
   %s
   <section class="detail-section">
     <h2 class="section-title">%s 問題文</h2>
     <div class="statement-box">%s</div>
     %s
+    <h2 class="section-title" style="margin-top:20px">%s 入力・出力の例</h2>
     %s
     %s
-  </section>
-  <section class="detail-section">
-    <h2 class="section-title">%s 入力・出力の例</h2>
     %s
   </section>
-  %s
-  %s
   %s
 </main>`,
 		e(contest), e(p.Problem), e(p.Title),
-		badge(p.Difficulty), tagSpans(p.Tags), atcLink, printLink,
+		badge(p.Difficulty), tagSpans(p.Tags), atcLink, printLink, codeReadingLink,
 		glossaryRefsEl,
 		icon("description"), mdToHTML(p.Statement),
 		constraintsBlock(p.Constraints),
+		icon("quiz"), sampBuf.String(),
 		stmtNoteSection,
 		constraintsNoteSection,
-		icon("quiz"), sampBuf.String(),
-		easySection,
-		expSection,
 		codeSection,
 	)
 
@@ -559,7 +561,7 @@ func printShell(title, body string) string {
   onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],ignoredTags:['script','noscript','style','pre','code']})"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#fff;color:#000;max-width:820px;margin:0 auto;padding:24px 32px;font-size:.93rem;line-height:1.7}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#fff;color:#000;max-width:820px;margin:0 auto;padding:24px 32px 24px 48px;font-size:.93rem;line-height:1.7}
 h1{font-size:1.3rem;margin-bottom:8px}
 h2{font-size:1rem;font-weight:700;margin:20px 0 8px;color:#000;border-bottom:1.5px solid #000;padding-bottom:4px;display:flex;align-items:center;gap:4px}
 h3{font-size:.9rem;font-weight:700;margin:14px 0 6px}
@@ -583,6 +585,9 @@ code{background:#f0f0f0;padding:1px 5px;border-radius:3px;font-size:.88em;font-f
 .print-note p,.print-easy p,.print-exp p,.print-constraints-note p{margin-bottom:.5em}
 .print-note ul,.print-note ol,.print-easy ul,.print-easy ol,.print-exp ul,.print-exp ol,.print-constraints-note ul,.print-constraints-note ol{padding-left:1.4em;margin:.3em 0 .5em}
 .print-note code,.print-easy code,.print-exp code,.print-constraints-note code{background:#f0f0f0;padding:1px 5px;border-radius:3px;font-size:.88em}
+.print-note table{border-collapse:collapse;margin:.6em 0;font-size:.85rem;width:100%%}
+.print-note th,.print-note td{border:1px solid #aaa;padding:5px 10px}
+.print-note th{background:#f0f0f0}
 .print-note pre,.print-easy pre,.print-exp pre,.print-constraints-note pre{background:#f5f5f5;border:1px solid #ddd;border-radius:4px;padding:8px;font-size:.82rem;overflow-x:auto;margin:6px 0;white-space:pre-wrap}
 .sample-block{border:1px solid #aaa;border-radius:4px;padding:10px;margin-bottom:10px}
 .sample-label{font-size:.72rem;font-weight:600;color:#555;margin-bottom:3px}
@@ -609,7 +614,7 @@ pre.code-print-bad{background:#f8f8f8;border:1px dashed #aaa;border-radius:4px;p
 .print-btn{position:fixed;bottom:20px;right:20px;background:#333;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:.9rem;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.25)}
 .print-btn:hover{background:#000}
 @media print{
-  @page{margin:1.5cm}
+  @page{margin:1.5cm 1.5cm 1.5cm 2.5cm}
   body{max-width:none;padding:0}
   .print-btn{display:none}
   pre.code-print,pre.code-print-bad{page-break-inside:avoid;white-space:pre-wrap}
@@ -649,45 +654,30 @@ func buildPrintPage(p Problem, contest string, force bool) {
 	if p.Constraints != "" {
 		fmt.Fprintf(&buf, `<div class="print-constraints"><strong>制約</strong>%s</div>`, mdToHTML(p.Constraints))
 	}
+	if len(p.Samples) > 0 {
+		buf.WriteString(fmt.Sprintf(`<div class="print-samples-inline"><h3>%s 入力・出力の例</h3>`, icon("quiz")))
+		for i, s := range p.Samples {
+			fmt.Fprintf(&buf, `<div class="sample-block"><div class="sample-label">入力 %d</div><pre class="sample-pre">%s</pre><div class="sample-label">出力 %d</div><pre class="sample-pre">%s</pre></div>`,
+				i+1, e(s.Input), i+1, e(s.Output))
+		}
+		buf.WriteString(`</div>`)
+	}
 	buf.WriteString(`</section>`)
 
 	if p.StatementNote != "" {
-		fmt.Fprintf(&buf, `<section class="print-section"><h2>%s 入力例1を使った説明</h2><div class="print-note">%s</div></section>`, icon("info"), mdToHTML(p.StatementNote))
+		fmt.Fprintf(&buf, `<section class="print-section"><h2>%s かんたん解説</h2><div class="print-note">%s</div></section>`, icon("info"), mdToHTML(p.StatementNote))
 	}
 	if p.ConstraintsNote != "" {
 		fmt.Fprintf(&buf, `<section class="print-section"><h2>%s 制約の読み方</h2><div class="print-constraints-note">%s</div></section>`, icon("help"), mdToHTML(p.ConstraintsNote))
 	}
 
-	if len(p.Samples) > 0 {
-		buf.WriteString(fmt.Sprintf(`<section class="print-section"><h2>%s 入力・出力の例</h2>`, icon("quiz")))
-		for i, s := range p.Samples {
-			exp := ""
-			if s.Explanation != "" {
-				exp = fmt.Sprintf(`<div class="sample-exp"><div class="sample-exp-title">%s 解説</div>%s</div>`, icon("auto_stories"), mdToHTML(s.Explanation))
-			}
-			fmt.Fprintf(&buf, `<div class="sample-block"><div class="sample-label">入力 %d</div><pre class="sample-pre">%s</pre><div class="sample-label">出力 %d</div><pre class="sample-pre">%s</pre>%s</div>`,
-				i+1, e(s.Input), i+1, e(s.Output), exp)
-		}
-		buf.WriteString(`</section>`)
-	}
-	if p.EasyExplanation != "" {
-		fmt.Fprintf(&buf, `<section class="print-section"><h2>%s わかりやすく解説</h2><div class="print-easy">%s</div></section>`, icon("lightbulb"), mdToHTML(p.EasyExplanation))
-	}
-	if p.Explanation != "" {
-		fmt.Fprintf(&buf, `<section class="print-section"><h2>%s くわしい解説</h2><div class="print-exp">%s</div></section>`, icon("menu_book"), mdToHTML(p.Explanation))
-	}
-
 	if sol := p.Solutions["python"]; sol != nil {
 		buf.WriteString(fmt.Sprintf(`<section class="print-section"><h2>%s 解答コード（Python）</h2>`, icon("code")))
-		fmt.Fprintf(&buf, `<div class="lang-header">Python</div><pre class="code-print"><code>%s</code></pre>`, e(sol.Code))
 		if bad := p.BadSolutions["python"]; bad != nil {
-			label := bad.Label
-			if label == "" {
-				label = "悪い書き方の例"
-			}
 			buf.WriteString(fmt.Sprintf(`<div class="bad-code-section"><h3>%s 悪い例（結果は合ってるけど…）</h3>`, icon("sentiment_dissatisfied")))
-			fmt.Fprintf(&buf, `<div class="bad-code-label">%s</div><pre class="code-print-bad"><code>%s</code></pre></div>`, e(label), e(bad.Code))
+			fmt.Fprintf(&buf, `<pre class="code-print-bad"><code>%s</code></pre></div>`, e(bad.Code))
 		}
+		fmt.Fprintf(&buf, `<div class="lang-header">Python（正しい解答）</div><pre class="code-print"><code>%s</code></pre>`, e(sol.Code))
 		buf.WriteString(`</section>`)
 	}
 
@@ -737,12 +727,8 @@ func buildCodeSection(p Problem) string {
 			if active {
 				panelCls += " active"
 			}
-			label := bad.Label
-			if label == "" {
-				label = "悪い書き方の例"
-			}
-			fmt.Fprintf(&badPanels, `<div class="%s" id="panel-bad-%s"><div class="bad-solution-label">%s %s</div><pre class="code-block-bad language-%s"><code class="language-%s">%s</code></pre></div>`,
-				panelCls, lang.key, icon("warning"), e(label), lang.key, lang.key, e(bad.Code))
+			fmt.Fprintf(&badPanels, `<div class="%s" id="panel-bad-%s"><pre class="code-block-bad language-%s"><code class="language-%s">%s</code></pre></div>`,
+				panelCls, lang.key, lang.key, lang.key, e(bad.Code))
 		}
 		badSection = fmt.Sprintf(`
 <div class="bad-solutions">
@@ -764,8 +750,9 @@ document.getElementById('bltabs').addEventListener('click',function(e){
 	return fmt.Sprintf(`
 <section class="detail-section">
   <h2 class="section-title">%s 解答コード</h2>
-  <div class="lang-tabs" id="ltabs">%s</div>
   %s
+  <div class="good-solutions-title">%s 正しいコード</div>
+  <div class="lang-tabs" id="ltabs">%s</div>
   %s
 </section>
 <script>
@@ -776,7 +763,7 @@ document.getElementById('ltabs').addEventListener('click',function(e){
   b.classList.add('active');
   var p=document.getElementById('panel-'+b.dataset.lang); if(p)p.classList.add('active');
 });
-</script>`, icon("code"), tabs.String(), panels.String(), badSection)
+</script>`, icon("code"), badSection, icon("check_circle"), tabs.String(), panels.String())
 }
 
 func codePanel(lang string, active bool, sol *Solution) string {
@@ -794,6 +781,74 @@ func codePanel(lang string, active bool, sol *Solution) string {
 	}
 	return fmt.Sprintf(`<div class="%s" id="panel-%s"><pre class="code-block language-%s"><code class="language-%s">%s</code></pre>%s</div>`,
 		cls, lang, lang, lang, e(sol.Code), steps)
+}
+
+func buildCodeReading() {
+	b, err := os.ReadFile("data/code_reading.json")
+	if err != nil {
+		fmt.Println("  data/code_reading.json が見つかりません（スキップ）")
+		return
+	}
+	var entries []CodeReadingEntry
+	json.Unmarshal(b, &entries)
+
+	var buf strings.Builder
+	for _, cr := range entries {
+		codeEl := ""
+		if cr.PythonCode != "" {
+			codeEl = fmt.Sprintf(`<pre class="cr-code">%s</pre>`, e(cr.PythonCode))
+		}
+		otherEl := ""
+		if cr.OtherNote != "" {
+			otherEl = fmt.Sprintf(`<div class="cr-other">%s %s</div>`, icon("translate"), e(cr.OtherNote))
+		}
+		fmt.Fprintf(&buf, `
+<div class="cr-entry" id="%s">
+  <div class="cr-name">%s %s</div>
+  <div class="cr-short">%s</div>
+  <div class="cr-body">%s</div>
+  %s
+  %s
+</div>`, cr.ID, icon("code"), e(cr.Name), e(cr.Short), mdToHTML(cr.Body), codeEl, otherEl)
+	}
+
+	printLnk := fmt.Sprintf(`<a class="print-link" href="print/code_reading.html" target="_blank">%s 印刷用</a>`, icon("print"))
+	body := fmt.Sprintf(`
+<main class="detail-view">
+  <h1 class="detail-title" style="margin-bottom:6px">%s プログラムの読み方</h1>
+  <div style="margin-bottom:20px">%s</div>
+  <p style="color:#666;font-size:.88rem;margin-bottom:24px">コードに出てくる言葉の意味をまとめました。わからない言葉があったら調べてみよう。</p>
+  %s
+</main>`, icon("menu_book"), printLnk, buf.String())
+
+	writeFile("docs/code_reading.html", shell("プログラムの読み方", "", "", "", "", body))
+	fmt.Println("  docs/code_reading.html")
+
+	// 印刷ページ
+	var printBuf strings.Builder
+	fmt.Fprintf(&printBuf, `<div class="print-header">
+<h1>プログラムの読み方</h1>
+<p style="font-size:.85rem;color:#555;margin-top:6px">コードに出てくる言葉の意味一覧</p>
+</div>`)
+	for _, cr := range entries {
+		codeEl := ""
+		if cr.PythonCode != "" {
+			codeEl = fmt.Sprintf(`<div class="lang-header">Python の例</div><pre class="code-print"><code>%s</code></pre>`, e(cr.PythonCode))
+		}
+		otherEl := ""
+		if cr.OtherNote != "" {
+			otherEl = fmt.Sprintf(`<p style="font-size:.8rem;color:#555;margin-top:6px">%s</p>`, e(cr.OtherNote))
+		}
+		fmt.Fprintf(&printBuf, `<section class="print-section">
+<h2>%s %s</h2>
+<p class="print-tagline">%s</p>
+<div class="print-box">%s</div>
+%s
+%s
+</section>`, icon("code"), e(cr.Name), e(cr.Short), mdToHTML(cr.Body), codeEl, otherEl)
+	}
+	writeFile("docs/print/code_reading.html", printShell("プログラムの読み方", printBuf.String()))
+	fmt.Println("  docs/print/code_reading.html")
 }
 
 func buildGlossary(index []IndexEntry) {
@@ -861,7 +916,7 @@ func buildGlossary(index []IndexEntry) {
 			icon("compare"),
 			icon("close"), e(g.WithoutLabel), e(g.WithoutCode),
 			icon("check"), e(g.WithLabel), e(g.WithCode),
-			icon("help_outline"), e(g.WhenToUse),
+			icon("help_outline"), mdToHTML(g.WhenToUse),
 		)
 
 		out := "docs/glossary/" + g.ID + ".html"
@@ -901,7 +956,7 @@ func buildGlossaryPrintPage(g GlossaryEntry) {
 		icon("check"), e(g.WithLabel), e(g.WithCode))
 
 	fmt.Fprintf(&buf, `<section class="print-section"><h2>%s いつ使う？</h2><div class="print-box">%s</div></section>`,
-		icon("help_outline"), e(g.WhenToUse))
+		icon("help_outline"), mdToHTML(g.WhenToUse))
 
 	out := "docs/print/glossary_" + g.ID + ".html"
 	writeFile(out, printShell(g.Name, buf.String()))
@@ -918,6 +973,36 @@ func writeJSON(path string, v any) {
 func writeFile(path, content string) {
 	os.MkdirAll(filepath.Dir(path), 0755)
 	os.WriteFile(path, []byte(content), 0644)
+}
+
+func buildExecution(index []IndexEntry) {
+	os.MkdirAll("execution", 0755)
+	seen := make(map[string]bool)
+	for _, meta := range index {
+		if seen[meta.File] {
+			continue
+		}
+		seen[meta.File] = true
+		b, err := os.ReadFile("data/problems/" + meta.File + ".json")
+		if err != nil {
+			continue
+		}
+		var cf ContestFile
+		json.Unmarshal(b, &cf)
+		for _, p := range cf.Problems {
+			dir := "execution/" + p.ID
+			os.MkdirAll(dir, 0755)
+			for i, s := range p.Samples {
+				fname := fmt.Sprintf("%s/input%d.txt", dir, i+1)
+				os.WriteFile(fname, []byte(s.Input), 0644)
+			}
+			solPath := dir + "/solution.py"
+			if _, err := os.Stat(solPath); os.IsNotExist(err) {
+				os.WriteFile(solPath, []byte("# ここにコードを書いてね\n"), 0644)
+			}
+			fmt.Printf("  execution/%s/ (%d 入力)\n", p.ID, len(p.Samples))
+		}
+	}
 }
 
 func cmdBuild(force bool) {
@@ -952,6 +1037,7 @@ func cmdBuild(force bool) {
 	fmt.Println("HTML 生成中...")
 	buildIndex(index)
 	buildGlossary(index)
+	buildCodeReading()
 
 	seen := make(map[string]bool)
 	for _, meta := range index {
@@ -970,7 +1056,10 @@ func cmdBuild(force bool) {
 			buildPrintPage(p, cf.Contest, force)
 		}
 	}
-	fmt.Println("\n完了 ✓  →  docs/")
+
+	fmt.Println("\n実行環境生成中...")
+	buildExecution(index)
+	fmt.Println("\n完了 ✓  →  docs/  execution/")
 }
 
 func cmdServe() {

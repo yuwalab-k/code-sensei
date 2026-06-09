@@ -27,7 +27,7 @@
 <main class="detail-view">
   <div class="detail-contest">典型90問 002</div>
   <h1 class="detail-title">Encyclopedia of Parentheses</h1>
-  <div class="detail-meta"><span class="diff-badge" style="background:#ff9800">C問題レベル</span> <span class="tag">再帰</span><span class="tag">バックトラッキング</span><span class="tag">全探索</span><span class="tag">括弧列</span> <a class="atcoder-link" href="https://atcoder.jp/contests/typical90/tasks/typical90_b" target="_blank" rel="noopener"><span class="mi">open_in_new</span> AtCoderで見る</a> <a class="print-link" href="../print/typical90_b.html" target="_blank"><span class="mi">print</span> 印刷用</a></div>
+  <div class="detail-meta"><span class="diff-badge" style="background:#ff9800">C問題レベル</span> <span class="tag">再帰</span><span class="tag">バックトラッキング</span><span class="tag">全探索</span><span class="tag">括弧列</span> <a class="atcoder-link" href="https://atcoder.jp/contests/typical90/tasks/typical90_b" target="_blank" rel="noopener"><span class="mi">open_in_new</span> AtCoderで見る</a> <a class="print-link" href="../print/typical90_b.html" target="_blank"><span class="mi">print</span> 印刷用</a> <a class="cr-link" href="../code_reading.html"><span class="mi">menu_book</span> プログラムの読み方</a></div>
   <div class="glossary-refs"><span style="font-size:.8rem;color:#666"><span class="mi">psychology</span> 使う考え方：</span><a class="glossary-ref-link" href="../glossary/recursion.html"><span class="mi">book_2</span> 再帰・バックトラッキング</a></div>
   <section class="detail-section">
     <h2 class="section-title"><span class="mi">description</span> 問題文</h2>
@@ -46,68 +46,26 @@
 <li>$N$ は整数</li>
 </ul>
 </div>
-    <div class="statement-note"><span class="statement-note-badge"><span class="mi">info</span> 入力例1を使った説明</span><h2>この問題で何をするの？</h2>
-<p><code>(</code> と <code>)</code> の2種類の文字だけを使って、長さ <strong>4</strong> の文字列を作るとします（入力例3の場合）。</p>
-<p>ちゃんと対応しているカッコ列、つまり：</p>
-<ul>
-<li>左から読んで、いつでも <code>(</code> の数 ≥ <code>)</code> の数</li>
-<li>最後に <code>(</code> と <code>)</code> の数がぴったり同じ</li>
-</ul>
-<p>になっているものだけを、アルファベット順（辞書順）にすべて出力する。</p>
-<h2>入力の読み方</h2>
-<pre><code class="language-text">4  ← 作りたいカッコ列の長さ
-</code></pre>
-<h2>出力の読み方</h2>
-<p>条件を満たすカッコ列を1行に1つずつ出力する。この例では <code>(())</code> と <code>()()</code> の2つ。</p>
-<hr>
-</div>
-    <div class="constraints-note"><span class="constraints-note-badge"><span class="mi">help</span> 制約の読み方</span><ul>
-<li><code>1 ≤ N ≤ 8</code>：Nは最大<strong>8</strong>。括弧の長さは最大 2×8=<strong>16文字</strong>。</li>
-<li>Nが小さいので、2^16=<strong>65536通り</strong>の全探索でも間に合う。ただし再帰で丁寧に生成する方法のほうがスマート。</li>
-<li>Nが大きくなると全探索は指数爆発するので、再帰（バックトラッキング）の考え方を覚えよう。</li>
-</ul>
-</div>
-  </section>
-  <section class="detail-section">
-    <h2 class="section-title"><span class="mi">quiz</span> 入力・出力の例</h2>
+    <h2 class="section-title" style="margin-top:20px"><span class="mi">quiz</span> 入力・出力の例</h2>
     
 <div class="sample-block">
   <div class="sample-row">
     <div class="sample-col"><div class="sample-label">入力 1</div><pre class="sample-pre">2</pre></div>
     <div class="sample-col"><div class="sample-label">出力 1</div><pre class="sample-pre">()</pre></div>
-  </div><div class="sample-explanation"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 長さ <strong>2</strong> の正しいカッコ列を全部出力する。</p>
-<p>長さ2のカッコ列は <code>()</code> と <code>)(</code> の2種類しかない。</p>
-<ul>
-<li><code>()</code> → <code>(</code> が先に来て <code>)</code> で閉じている → <strong>正しい</strong> ✓</li>
-<li><code>)(</code> → <code>)</code> が先に来ている → <strong>正しくない</strong> ✗</li>
-</ul>
-<p>答えは <code>()</code> の1つだけ。</p>
-<hr>
-</div>
+  </div>
 </div>
 <div class="sample-block">
   <div class="sample-row">
     <div class="sample-col"><div class="sample-label">入力 2</div><pre class="sample-pre">3</pre></div>
     <div class="sample-col"><div class="sample-label">出力 2</div><pre class="sample-pre"></pre></div>
-  </div><div class="sample-explanation"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 長さ <strong>3</strong> の正しいカッコ列を全部出力する。</p>
-<p>正しいカッコ列は必ず <code>(</code> と <code>)</code> が同じ数だけ必要。長さが奇数のときは必ず片方が余るので、正しいカッコ列は <strong>1つも存在しない</strong>。何も出力しない。</p>
-<hr>
-</div>
+  </div>
 </div>
 <div class="sample-block">
   <div class="sample-row">
     <div class="sample-col"><div class="sample-label">入力 3</div><pre class="sample-pre">4</pre></div>
     <div class="sample-col"><div class="sample-label">出力 3</div><pre class="sample-pre">(())
 ()()</pre></div>
-  </div><div class="sample-explanation"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 長さ <strong>4</strong> の正しいカッコ列を全部出力する。</p>
-<p>長さ4では <code>(</code> が2個・<code>)</code> が2個。正しい並べ方は2通り：</p>
-<ul>
-<li><code>(())</code> → 外側のカッコが内側を包んでいる ✓</li>
-<li><code>()()</code> → 2つのカッコが横に並んでいる ✓</li>
-</ul>
-<p>辞書順では <code>(</code> &lt; <code>)</code> なので <code>(())</code> が先。</p>
-<hr>
-</div>
+  </div>
 </div>
 <div class="sample-block">
   <div class="sample-row">
@@ -154,62 +112,71 @@
 ()()(())()
 ()()()(())
 ()()()()()</pre></div>
-  </div><div class="sample-explanation"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 長さ <strong>10</strong> の正しいカッコ列を全部出力する。</p>
-<p><code>(</code> が5個・<code>)</code> が5個の並べ方で正しいものをすべて列挙する。全部で <strong>42通り</strong> ある。</p>
-<hr>
+  </div>
 </div>
+    <div class="statement-note"><span class="statement-note-badge"><span class="mi">info</span> かんたん解説</span><h2>どんな問題？</h2>
+<p><code>(</code> と <code>)</code> だけを使って、ちゃんと対応しているカッコ列をすべて出す。</p>
+<p>「ちゃんと対応している」とは：</p>
+<ul>
+<li>左から読んで、いつでも <code>(</code> の数が <code>)</code> の数以上</li>
+<li>最後に <code>(</code> と <code>)</code> の数がぴったり同じ</li>
+</ul>
+<p>たとえば長さ 4（N=2）なら、答えは <code>(())</code> と <code>()()</code> の2つ。</p>
+<hr>
+<h2>どうやって全部見つけるの？</h2>
+<p>1文字ずつ左から決めていく。</p>
+<ul>
+<li><code>(</code> は、まだ N 個未満しか使っていなければ置ける</li>
+<li><code>)</code> は、今まで置いた <code>(</code> より少ないなら置ける</li>
+<li>それ以外は行き止まりとして諦める</li>
+</ul>
+<p>これを全パターン試すと、条件を満たすカッコ列だけが集まる。N が最大 8 と小さいので、全パターン試しても速い。</p>
+<hr>
+<h2>なぜ全部試せるの？</h2>
+<p>N = 8 のとき最大でも 1430 通り程度しかない。コンピューターにはあっという間。</p>
+</div>
+    <div class="constraints-note"><span class="constraints-note-badge"><span class="mi">help</span> 制約の読み方</span><ul>
+<li><code>1 ≤ N ≤ 8</code>：N は最大 <strong>8</strong>。カッコ列の長さは最大 16文字。</li>
+<li>N が小さいので、全パターン試しても問題なく間に合う。</li>
+<li>N が 20 や 30 になると爆発的に増えるが、N ≤ 8 ならその心配はない。</li>
+</ul>
 </div>
   </section>
   
 <section class="detail-section">
-  <h2 class="section-title"><span class="mi">lightbulb</span> わかりやすく解説</h2>
-  <div class="explanation-box easy-box"><h2>イメージ</h2>
-<p>カッコを1文字ずつ左から決めていく。</p>
-<ul>
-<li><code>(</code> を追加できるのは、まだ <code>(</code> を増やす余裕があるとき</li>
-<li><code>)</code> を追加できるのは、閉じていない <code>(</code> がまだ残っているとき</li>
-</ul>
-<p>このルールで全パターンを試すと、自動的に辞書順になる（<code>(</code> &lt; <code>)</code> なので <code>(</code> を先に試す）。</p>
-<h2>どう解くか</h2>
-<ol>
-<li>今まで置いた <code>(</code> の数を <code>l</code>、<code>)</code> の数を <code>r</code> として管理する</li>
-<li>文字列の長さが $N$ になったら出力して終わり</li>
-<li><code>l &lt; N/2</code> なら <code>(</code> を追加して再帰</li>
-<li><code>r &lt; l</code> なら <code>)</code> を追加して再帰</li>
-</ol>
-<hr>
-</div>
-</section>
-  
-<section class="detail-section">
-  <h2 class="section-title"><span class="mi">menu_book</span> くわしい解説</h2>
-  <div class="explanation-box"><h2>方針</h2>
-<p><strong>バックトラッキング（再帰的全探索）</strong> で解く。</p>
-<p>左から1文字ずつ選んで進み、条件を満たせなくなったら戻る。</p>
-<p>「<code>(</code> と <code>)</code> の残り枚数」を管理しながら深さ優先探索すると、辞書順に出力できる。</p>
-<hr>
-<h2>なぜ辞書順になるか</h2>
-<p>再帰で <code>(</code> を先に試し、その後 <code>)</code> を試すため、<code>(</code> &lt; <code>)</code> の順番が自然に保たれる。</p>
-<hr>
-<h2>よくあるミス</h2>
-<h2>1. N が奇数のとき出力してしまう</h2>
-<p>正しいカッコ列の長さは必ず偶数。<code>N % 2 != 0</code> のときは何も出力しない。</p>
-<hr>
-<h2>2. <code>)</code> を置ける条件を間違える</h2>
-<p><code>r &lt; N/2</code> ではなく <code>r &lt; l</code>（閉じていない <code>(</code> がある）が正しい条件。</p>
-<hr>
-<h2>学びポイント</h2>
-<ul>
-<li><strong>バックトラッキング</strong> の基本パターン</li>
-<li>「制約を満たしながら全列挙」する典型問題</li>
-<li>辞書順出力は「小さい選択肢から先に試す」だけで自然に実現できる</li>
-</ul>
-<hr>
-</div>
-</section>
-  
-<section class="detail-section">
   <h2 class="section-title"><span class="mi">code</span> 解答コード</h2>
+  
+<div class="bad-solutions">
+  <div class="bad-solutions-title"><span class="mi">sentiment_dissatisfied</span> 悪い例（結果は合ってるけど…）</div>
+  <div class="bad-lang-tabs" id="bltabs"><button class="bad-lang-tab active" data-lang="bad-python">Python</button></div>
+  <div class="bad-code-panel active" id="panel-bad-python"><pre class="code-block-bad language-python"><code class="language-python">from itertools import product
+N = int(input())
+for n in range(1, N + 1):
+    # 2^(2n) 通りの文字列をすべて生成してから判定
+    # n=8 のとき 2^16 = 65536 通り → ギリギリ間に合うが無駄が多い
+    # 再帰で「最初から正しい括弧列だけ」を作れば余分な生成がない
+    for bits in product(&#39;()&#39;, repeat=2*n):
+        s = &#39;&#39;.join(bits)
+        d = 0
+        ok = True
+        for c in s:
+            d += 1 if c == &#39;(&#39; else -1
+            if d &lt; 0:  # 途中でマイナスになったら無効
+                ok = False
+                break
+        if ok and d == 0:  # 最後に0になれば有効
+            print(s)</code></pre></div>
+</div>
+<script>
+document.getElementById('bltabs').addEventListener('click',function(e){
+  var b=e.target.closest('.bad-lang-tab'); if(!b)return;
+  document.querySelectorAll('.bad-lang-tab').forEach(function(x){x.classList.remove('active');});
+  document.querySelectorAll('.bad-code-panel').forEach(function(x){x.classList.remove('active');});
+  b.classList.add('active');
+  var p=document.getElementById('panel-'+b.dataset.lang); if(p)p.classList.add('active');
+});
+</script>
+  <div class="good-solutions-title"><span class="mi">check_circle</span> 正しいコード</div>
   <div class="lang-tabs" id="ltabs"><button class="lang-tab active" data-lang="python">Python</button><button class="lang-tab" data-lang="cpp">C++</button><button class="lang-tab" data-lang="typescript">TypeScript</button><button class="lang-tab" data-lang="ruby">Ruby</button><button class="lang-tab" data-lang="php">PHP</button><button class="lang-tab" data-lang="rust">Rust</button><button class="lang-tab" data-lang="perl">Perl</button></div>
   <div class="code-panel active" id="panel-python"><pre class="code-block language-python"><code class="language-python">N = int(input())  # カッコ列の長さを読み込む
 
@@ -347,37 +314,6 @@ sub solve {
 }
 
 solve(&#39;&#39;, 0, 0) if $N % 2 == 0;  # 奇数のときは何もしない</code></pre></div>
-  
-<div class="bad-solutions">
-  <div class="bad-solutions-title"><span class="mi">sentiment_dissatisfied</span> 悪い例（結果は合ってるけど…）</div>
-  <div class="bad-lang-tabs" id="bltabs"><button class="bad-lang-tab active" data-lang="bad-python">Python</button></div>
-  <div class="bad-code-panel active" id="panel-bad-python"><div class="bad-solution-label"><span class="mi">warning</span> O(2^(2N)×N) 全探索 — 全パターン生成して後から判定</div><pre class="code-block-bad language-python"><code class="language-python">from itertools import product
-N = int(input())
-for n in range(1, N + 1):
-    # 2^(2n) 通りの文字列をすべて生成してから判定
-    # n=8 のとき 2^16 = 65536 通り → ギリギリ間に合うが無駄が多い
-    # 再帰で「最初から正しい括弧列だけ」を作れば余分な生成がない
-    for bits in product(&#39;()&#39;, repeat=2*n):
-        s = &#39;&#39;.join(bits)
-        d = 0
-        ok = True
-        for c in s:
-            d += 1 if c == &#39;(&#39; else -1
-            if d &lt; 0:  # 途中でマイナスになったら無効
-                ok = False
-                break
-        if ok and d == 0:  # 最後に0になれば有効
-            print(s)</code></pre></div>
-</div>
-<script>
-document.getElementById('bltabs').addEventListener('click',function(e){
-  var b=e.target.closest('.bad-lang-tab'); if(!b)return;
-  document.querySelectorAll('.bad-lang-tab').forEach(function(x){x.classList.remove('active');});
-  document.querySelectorAll('.bad-code-panel').forEach(function(x){x.classList.remove('active');});
-  b.classList.add('active');
-  var p=document.getElementById('panel-'+b.dataset.lang); if(p)p.classList.add('active');
-});
-</script>
 </section>
 <script>
 document.getElementById('ltabs').addEventListener('click',function(e){

@@ -1,0 +1,83 @@
+{
+  "contest": "典型90問",
+  "problems": [
+    {
+      "id": "typical90_c",
+      "problem": "003",
+      "title": "Longest Circular Road",
+      "atcoder_url": "https://atcoder.jp/contests/typical90/tasks/typical90_c",
+      "difficulty": 4,
+      "tags": [
+        "木",
+        "木の直径",
+        "BFS",
+        "グラフ"
+      ],
+      "statement": "$N$ 個の都市があり、それぞれの都市に $1$ から $N$ までの番号が付けられています。\nまた、$N-1$ 本の道路があり、$i$ 本目 $(1 \\leq i \\leq N-1)$ の道路は都市 $A_i$ と都市 $B_i$ を双方向に結んでいます。\nどの都市の間も、いくつかの道路を通って移動可能なものとなっています。\n\nさて、あなたは整数 $u, v$ $(1 \\leq u < v \\leq N)$ を自由に選び、都市 $u$ と都市 $v$ を双方向に結ぶ道路を 1 本だけ新設することができます。そこで、以下で定められる値を **スコア** とします。\n\n同じ道を 2 度通らずにある都市から同じ都市に戻ってくる経路における、通った道の本数（この値はただ 1 つに定まる）\n\nスコアとして考えられる最大の値を出力してください。",
+      "constraints": "- $3 \\leq N \\leq 100000$\n- $1 \\leq A_i < B_i \\leq N$ $(1 \\leq i \\leq N-1)$\n- どの都市の間も、いくつかの道路を通って移動可能\n- 与えられる入力は全て整数",
+      "samples": [
+        {
+          "input": "3\n1 2\n2 3",
+          "output": "3",
+          "explanation": "**この入力の意味：** 3つの都市（1・2・3番）が 1−2−3 と一列につながっている。ここに道路を1本追加する。\n\n- 都市 1 と 都市 3 の間に追加 → **1 → 2 → 3 → 1** と一周できる。道の本数 **3本** ← これが最大！\n- 都市 1 と 都市 2 の間に追加 → 同じ道が2本になるだけ。一周できるが道は **2本**（微妙）\n- 都市 2 と 都市 3 の間に追加 → 同上、**2本**\n\nいちばんスコアが高くなる選び方は 都市1 と 都市3 → 答えは **3**。\n\n---"
+        },
+        {
+          "input": "5\n1 2\n2 3\n3 4\n3 5",
+          "output": "4",
+          "explanation": "**この入力の意味：** 5つの都市、道路が 1−2−3−4 と 3−5。木の形。ここに道路を1本追加する。\n\n- 都市 1 と 都市 4 の間 → 1→2→3→4→1、**4本** ← 最大！\n- 都市 1 と 都市 5 の間 → 1→2→3→5→1、**4本** ← 同じ最大\n- 都市 4 と 都市 5 の間 → 4→3→5→4、**3本**\n- 都市 1 と 都市 3 の間 → 1→2→3→1、**3本**\n\n答えは **4**。\n\n---"
+        },
+        {
+          "input": "10\n1 2\n1 3\n2 4\n4 5\n4 6\n3 7\n7 8\n8 9\n8 10",
+          "output": "8",
+          "explanation": "**この入力の意味：** 10都市の木。\n\n木の形を整理すると：\n- 1番 → 2番 → 4番 → **5番**（端）\n- 1番 → 2番 → 4番 → **6番**（端）\n- 1番 → 3番 → 7番 → 8番 → **9番**（端）\n- 1番 → 3番 → 7番 → 8番 → **10番**（端）\n\nいちばん遠い2都市は **5番と9番**（または5番と10番、6番と9番、6番と10番）で、その間の道の本数は **7本**。\n\n都市5と都市9の間に道路を新設 → **5→4→2→1→3→7→8→9→5** と一周。道の本数 **8本**。\n\n答えは **8**。\n\n---"
+        },
+        {
+          "input": "31\n1 2\n1 3\n2 4\n2 5\n3 6\n3 7\n4 8\n4 9\n5 10\n5 11\n6 12\n6 13\n7 14\n7 15\n8 16\n8 17\n9 18\n9 19\n10 20\n10 21\n11 22\n11 23\n12 24\n12 25\n13 26\n13 27\n14 28\n14 29\n15 30\n15 31",
+          "output": "9",
+          "explanation": "**この入力の意味：** 31都市の完全二分木（全部で5段）。\n\n```\n              1\n           /     \\\n         2         3\n        / \\       / \\\n       4   5     6   7\n      /\\ /\\     /\\ /\\\n     8 9 10 11 12 13 14 15\n    /\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\\n   16-31（葉）\n```\n\nいちばん遠い2都市は **16番と24番**（など葉と葉）で、木の上を通る道の本数は **8本**。\n\n道路を新設すると一周で道は **9本**。\n\n答えは **9**。\n\n---"
+        }
+      ],
+      "statement_note": "## どんな問題？\n\n都市と道路が木のようにつながっている（ループなし）。ここに道路を **1本だけ** 追加して、一周できるコースを作る。その一周の長さ（道路の本数）をできるだけ長くしたい。\n\nたとえば 1-2-3 と一列につながっている場合、1と3をつなぐと **1→2→3→1** で3本の道を通って一周できる。\n\n---\n\n## どうやって解くの？\n\n「一番遠い2都市の間に道を引く」のが最適。\n\n一番遠い2都市間の距離（**木の直径**）に 1 を足した数が答え。\n\n木の直径は「どこか1つの都市から一番遠い都市を探し、そこからまた一番遠い都市を探す」2回の探索で求まる。都市が10万個あっても速く終わる。",
+      "easy_explanation": "## イメージ\n\n木に1本だけ道を追加するとき、追加した道と既存の道でぴったり1つの「輪っか」ができます。\n\n輪っかの長さ＝（追加した2都市を既存の道でつないだときの道の本数）＋（新しく追加した道の1本）\n\nなので、**2都市間の既存の道の本数が最大になる2つの都市を選べばいい**ことになります。\n\n木の上でいちばん遠い2点間の距離のことを **「木の直径」** といいます。\n\n## どう解くか\n\n1. 木の直径を求める（2回BFSで求められる）\n2. 答え＝直径＋1\n\n**木の直径の求め方（2回BFS）：**\n\n1. 都市1からBFSして、いちばん遠い都市 $u$ を見つける\n2. $u$ からBFSして、いちばん遠い都市までの距離を求める → それが直径\n\n---",
+      "explanation": "## 方針\n\n**木の直径を求めて、直径＋1を出力する。**\n\n### なぜ「直径＋1」か\n\n木にエッジ $(u, v)$ を1本追加すると、ちょうど1つの単純サイクルができる。そのサイクルの長さは：\n\n$$\\text{サイクル長} = \\text{dist}(u, v) + 1$$\n\n（`dist(u, v)` は木上での $u$〜$v$ 間の辺数）\n\nスコアを最大化するには $\\text{dist}(u, v)$ を最大化すればよい。木上で最大の距離＝木の直径。\n\n### 木の直径を O(N) で求める\n\nBFS を 2 回行う。\n\n1. 任意の頂点 $s$ から BFS → 最遠点 $u$ を求める\n2. $u$ から BFS → 最遠点 $v$ までの距離 $d$ を求める\n3. $d$ が木の直径\n\n---\n\n## よくあるミス\n\n## 1. 答えを「直径」そのものにしてしまう\n\n新しく1本道路を追加するので、スコアは **直径＋1**。`+1` を忘れずに。\n\n---\n\n## 2. BFSを1回しかしない\n\n1回目のBFS（任意の点から）だけでは直径の端点を正しく求められない場合がある。2回必要。\n\n---\n\n## 3. グラフが大きいときにスタック溢れ（DFSの再帰）\n\n$N \\leq 100000$ なのでDFSの再帰が深くなりスタックオーバーフローになることがある。BFS（キュー）か、再帰制限を上げる必要がある。\n\n---\n\n## 学びポイント\n\n- **木の直径** の典型的な求め方（2回BFS）\n- 「木に辺を1本追加するとサイクルができる」という性質の活用\n- 計算量 O(N) で解ける典型問題\n\n---",
+      "solutions": {
+        "cpp": {
+          "code": "#include <bits/stdc++.h>\nusing namespace std;\n\n// BFS で start から各都市への距離を求め、最遠点と距離を返す\npair<int,int> bfs(int start, vector<vector<int>>& graph, int n) {\n    vector<int> dist(n + 1, -1);  // 距離配列（-1 は未訪問）\n    dist[start] = 0;              // スタート地点の距離は 0\n    queue<int> q;\n    q.push(start);                // キューにスタート地点を追加\n    int farthest = start;         // 最遠点\n    int max_dist = 0;             // 最遠距離\n\n    while (!q.empty()) {\n        int v = q.front(); q.pop();           // キューの先頭を取り出す\n        for (int u : graph[v]) {              // 隣接都市を調べる\n            if (dist[u] == -1) {             // 未訪問なら\n                dist[u] = dist[v] + 1;       // 距離を記録\n                q.push(u);\n                if (dist[u] > max_dist) {    // より遠ければ更新\n                    max_dist = dist[u];\n                    farthest = u;\n                }\n            }\n        }\n    }\n    return {farthest, max_dist};  // 最遠点と距離を返す\n}\n\nint main() {\n    ios::sync_with_stdio(false);  // 高速入力\n    cin.tie(nullptr);\n\n    int N;\n    cin >> N;                     // 都市の数\n\n    vector<vector<int>> graph(N + 1);  // 隣接リスト（1-indexed）\n\n    for (int i = 0; i < N - 1; i++) {\n        int a, b;\n        cin >> a >> b;            // 道路の両端\n        graph[a].push_back(b);   // 双方向に追加\n        graph[b].push_back(a);\n    }\n\n    // 1回目の BFS: 都市 1 から最遠点 u を探す\n    auto [u, d1] = bfs(1, graph, N);\n\n    // 2回目の BFS: u から最遠点までの距離 = 木の直径\n    auto [v, diameter] = bfs(u, graph, N);\n\n    cout << diameter + 1 << \"\\n\";  // 直径 + 1 が答え\n}",
+          "steps": null
+        },
+        "perl": {
+          "code": "use strict;\nuse warnings;\n\nmy $N = int(<STDIN>);                       # 都市の数\nmy @graph = map { [] } (0..$N);             # 隣接リスト（1-indexed）\n\nfor (1..$N-1) {\n    my ($a, $b) = split ' ', <STDIN>;       # 道路の両端\n    push @{$graph[$a]}, $b;                 # 双方向に追加\n    push @{$graph[$b]}, $a;\n}\n\n# BFS で start から最遠点と距離を返す\nsub bfs {\n    my ($start) = @_;\n    my @dist = (-1) x ($N + 1);            # 距離配列（-1 は未訪問）\n    $dist[$start] = 0;                      # スタート地点は 0\n    my @q = ($start);                       # BFS キュー\n    my ($farthest, $max_dist) = ($start, 0);\n\n    while (@q) {\n        my $v = shift @q;                   # キューの先頭を取り出す\n        for my $u (@{$graph[$v]}) {         # 隣接都市を調べる\n            if ($dist[$u] == -1) {          # 未訪問なら\n                $dist[$u] = $dist[$v] + 1;  # 距離を記録\n                push @q, $u;\n                if ($dist[$u] > $max_dist) {# より遠ければ更新\n                    $max_dist = $dist[$u];\n                    $farthest = $u;\n                }\n            }\n        }\n    }\n    return ($farthest, $max_dist);\n}\n\nmy ($u) = bfs(1);                          # 1回目: 都市 1 から最遠点 u を探す\nmy (undef, $diameter) = bfs($u);           # 2回目: u から直径を求める\nprint $diameter + 1, \"\\n\";                 # 直径 + 1 が答え",
+          "steps": null
+        },
+        "php": {
+          "code": "<?php\n$N = (int)trim(fgets(STDIN));             // 都市の数\n$graph = array_fill(0, $N + 1, []);       // 隣接リスト（1-indexed）\n\nfor ($i = 0; $i < $N - 1; $i++) {\n    [$a, $b] = array_map('intval', explode(' ', trim(fgets(STDIN))));  // 道路の両端\n    $graph[$a][] = $b;                    // 双方向に追加\n    $graph[$b][] = $a;\n}\n\n// BFS で start から最遠点と距離を返す\nfunction bfs($start, $graph, $n) {\n    $dist = array_fill(0, $n + 1, -1);   // 距離配列（-1 は未訪問）\n    $dist[$start] = 0;                    // スタート地点は 0\n    $q = [$start];                        // BFS キュー\n    $head = 0;                            // キューの読み取り位置\n    $farthest = $start;\n    $maxDist = 0;\n\n    while ($head < count($q)) {\n        $v = $q[$head++];                 // キューの先頭を取り出す\n        foreach ($graph[$v] as $u) {\n            if ($dist[$u] === -1) {       // 未訪問なら\n                $dist[$u] = $dist[$v] + 1; // 距離を記録\n                $q[] = $u;\n                if ($dist[$u] > $maxDist) { // より遠ければ更新\n                    $maxDist = $dist[$u];\n                    $farthest = $u;\n                }\n            }\n        }\n    }\n    return [$farthest, $maxDist];\n}\n\n[$u] = bfs(1, $graph, $N);              // 1回目: 都市 1 から最遠点 u を探す\n[, $diameter] = bfs($u, $graph, $N);   // 2回目: u から直径を求める\necho $diameter + 1 . \"\\n\";             // 直径 + 1 が答え",
+          "steps": null
+        },
+        "python": {
+          "code": "import sys\nfrom collections import deque\ninput = sys.stdin.readline  # 高速入力に切り替え\n\ndef bfs(start, graph, n):\n    dist = [-1] * (n + 1)   # 各都市までの距離。-1 は未訪問\n    dist[start] = 0          # スタート地点は距離 0\n    q = deque([start])       # BFS 用キュー\n    farthest = start         # 最遠点（初期値はスタート地点）\n    max_dist = 0             # 最遠距離\n\n    while q:\n        v = q.popleft()      # キューの先頭から都市を取り出す\n        for u in graph[v]:   # 隣接する都市を全部調べる\n            if dist[u] == -1:          # まだ訪れていない都市なら\n                dist[u] = dist[v] + 1  # 距離を 1 増やして記録\n                q.append(u)            # キューに追加\n                if dist[u] > max_dist: # より遠い都市を見つけたら更新\n                    max_dist = dist[u]\n                    farthest = u\n\n    return farthest, max_dist  # 最遠点とその距離を返す\n\nN = int(input())                            # 都市の数\ngraph = [[] for _ in range(N + 1)]         # 隣接リスト（1-indexed）\n\nfor _ in range(N - 1):\n    a, b = map(int, input().split())        # 道路の両端を読む\n    graph[a].append(b)                      # a→b の道\n    graph[b].append(a)                      # b→a の道（双方向）\n\n# 1回目の BFS: 都市 1 から最も遠い都市を見つける\nu, _ = bfs(1, graph, N)\n\n# 2回目の BFS: 最遠点 u からさらに最も遠い都市を見つける（＝直径）\n_, diameter = bfs(u, graph, N)\n\nprint(diameter + 1)  # 直径 + 1 がスコアの最大値",
+          "steps": null
+        },
+        "ruby": {
+          "code": "N = gets.to_i                              # 都市の数\ngraph = Array.new(N + 1) { [] }           # 隣接リスト（1-indexed）\n\n(N - 1).times do\n    a, b = gets.split.map(&:to_i)         # 道路の両端\n    graph[a] << b                          # 双方向に追加\n    graph[b] << a\nend\n\n# BFS で start から最遠点と距離を返す\ndef bfs(start, graph, n)\n    dist = Array.new(n + 1, -1)           # 距離配列（-1 は未訪問）\n    dist[start] = 0                        # スタート地点は 0\n    q = [start]                            # BFS キュー\n    farthest = start\n    max_dist = 0\n\n    until q.empty?\n        v = q.shift                        # キューの先頭を取り出す\n        graph[v].each do |u|\n            if dist[u] == -1               # 未訪問なら\n                dist[u] = dist[v] + 1      # 距離を記録\n                q << u\n                if dist[u] > max_dist      # より遠ければ更新\n                    max_dist = dist[u]\n                    farthest = u\n                end\n            end\n        end\n    end\n    [farthest, max_dist]\nend\n\nu, _ = bfs(1, graph, N)           # 1回目: 都市 1 から最遠点 u を探す\n_, diameter = bfs(u, graph, N)    # 2回目: u から直径を求める\nputs diameter + 1                  # 直径 + 1 が答え",
+          "steps": null
+        },
+        "rust": {
+          "code": "use std::io::{self, BufRead, Write};\nuse std::collections::VecDeque;\n\n// BFS で start から最遠点と距離を返す\nfn bfs(start: usize, graph: &Vec<Vec<usize>>, n: usize) -> (usize, usize) {\n    let mut dist = vec![usize::MAX; n + 1];  // 距離配列（MAX は未訪問）\n    dist[start] = 0;                          // スタート地点は 0\n    let mut q = VecDeque::new();\n    q.push_back(start);\n    let mut farthest = start;\n    let mut max_dist = 0;\n\n    while let Some(v) = q.pop_front() {      // キューの先頭を取り出す\n        for &u in &graph[v] {               // 隣接都市を調べる\n            if dist[u] == usize::MAX {      // 未訪問なら\n                dist[u] = dist[v] + 1;     // 距離を記録\n                q.push_back(u);\n                if dist[u] > max_dist {    // より遠ければ更新\n                    max_dist = dist[u];\n                    farthest = u;\n                }\n            }\n        }\n    }\n    (farthest, max_dist)\n}\n\nfn main() {\n    let stdin = io::stdin();\n    let stdout = io::stdout();\n    let mut out = io::BufWriter::new(stdout.lock());  // 出力バッファ\n\n    let mut lines = stdin.lock().lines();\n    let n: usize = lines.next().unwrap().unwrap().trim().parse().unwrap();  // 都市の数\n\n    let mut graph = vec![vec![]; n + 1];  // 隣接リスト（1-indexed）\n\n    for _ in 0..n - 1 {\n        let line = lines.next().unwrap().unwrap();\n        let mut iter = line.split_whitespace();\n        let a: usize = iter.next().unwrap().parse().unwrap();  // 道路の一端\n        let b: usize = iter.next().unwrap().parse().unwrap();  // 道路の他端\n        graph[a].push(b);  // 双方向に追加\n        graph[b].push(a);\n    }\n\n    let (u, _) = bfs(1, &graph, n);            // 1回目: 都市 1 から最遠点 u を探す\n    let (_, diameter) = bfs(u, &graph, n);     // 2回目: u から直径を求める\n    writeln!(out, \"{}\", diameter + 1).unwrap(); // 直径 + 1 が答え\n}",
+          "steps": null
+        },
+        "typescript": {
+          "code": "import * as readline from 'readline';\n\nconst rl = readline.createInterface({ input: process.stdin });\nconst lines: string[] = [];\nrl.on('line', (line) => lines.push(line.trim()));\nrl.on('close', () => {\n    const N = parseInt(lines[0]);                              // 都市の数\n    const graph: number[][] = Array.from({length: N + 1}, () => []);  // 隣接リスト\n\n    for (let i = 1; i < N; i++) {\n        const [a, b] = lines[i].split(' ').map(Number);       // 道路の両端\n        graph[a].push(b);                                      // 双方向に追加\n        graph[b].push(a);\n    }\n\n    // BFS で start から最遠点と距離を返す\n    function bfs(start: number): [number, number] {\n        const dist = new Array(N + 1).fill(-1);  // 距離配列\n        dist[start] = 0;\n        const q: number[] = [start];             // キュー（配列で代用）\n        let qi = 0;                              // キューの読み取り位置\n        let farthest = start;\n        let maxDist = 0;\n\n        while (qi < q.length) {\n            const v = q[qi++];                   // キューの先頭を取り出す\n            for (const u of graph[v]) {          // 隣接都市を調べる\n                if (dist[u] === -1) {            // 未訪問なら\n                    dist[u] = dist[v] + 1;       // 距離を記録\n                    q.push(u);\n                    if (dist[u] > maxDist) {     // より遠ければ更新\n                        maxDist = dist[u];\n                        farthest = u;\n                    }\n                }\n            }\n        }\n        return [farthest, maxDist];\n    }\n\n    const [u] = bfs(1);              // 1回目: 都市 1 から最遠点 u を探す\n    const [, diameter] = bfs(u);     // 2回目: u から直径を求める\n    console.log(diameter + 1);       // 直径 + 1 が答え\n});",
+          "steps": null
+        }
+      },
+      "added_at": "2026-05-21",
+      "bad_solutions": {
+        "python": {
+          "label": "O(N²) 全頂点BFS — 木の直径アルゴリズムを知らずに全頂点から探索",
+          "code": "from collections import deque\nimport sys\ninput = sys.stdin.readline\n\nN = int(input())\ng = [[] for _ in range(N + 1)]\nfor _ in range(N - 1):\n    a, b = map(int, input().split())\n    g[a].append(b)\n    g[b].append(a)\n\ndef bfs(s):\n    d = [-1] * (N + 1)\n    d[s] = 0\n    q = deque([s])\n    while q:\n        v = q.popleft()\n        for u in g[v]:\n            if d[u] < 0:\n                d[u] = d[v] + 1\n                q.append(u)\n    return d\n\nans = 0\n# 全頂点からBFSしている → O(N²) でTLE\n# 「木の直径」は端点からBFSを2回するだけで O(N) で求まる\nfor i in range(1, N + 1):\n    ans = max(ans, max(bfs(i)[1:]))\nprint(ans + 1)"
+        }
+      },
+      "constraints_note": "- `3 ≤ N ≤ 100000`：都市は最大 **10万個**。\n- 全ペアを調べると 10万 × 10万 = **100億回** の計算が必要でコンピューターでも数十分かかってしまう。\n- BFS を2回使う方法なら **10万回** の計算で終わる。"
+    }
+  ]
+}

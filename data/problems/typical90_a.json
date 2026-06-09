@@ -1,0 +1,86 @@
+{
+  "contest": "典型90問",
+  "problems": [
+    {
+      "id": "typical90_a",
+      "problem": "001",
+      "title": "Yokan Party",
+      "atcoder_url": "https://atcoder.jp/contests/typical90/tasks/typical90_a",
+      "difficulty": 4,
+      "tags": [
+        "二分探索",
+        "貪欲"
+      ],
+      "statement": "左右の長さが $L$ cm のようかんがあります。  \n$N$ 個の切れ目が付けられており、左から $i$ 番目の切れ目は左から $A_i$ cm の位置にあります。\n\nあなたは $N$ 個の切れ目のうち $K$ 個を選び、ようかんを $K+1$ 個のピースに分割したいです。\n\nこのとき、以下の値を **スコア** とします。\n\n> $K+1$ 個のピースのうち、最も短いものの長さ\n\nスコアが最大となるように分割する場合に得られるスコアを求めてください。",
+      "constraints": "- $1 \\leq K \\leq N \\leq 100000$\n- $0 < A_1 < A_2 < \\cdots < A_N < L \\leq 10^9$\n- 入力はすべて整数",
+      "samples": [
+        {
+          "input": "3 34\n1\n8 13 26",
+          "output": "13",
+          "explanation": "**この入力の意味：** 34cm のようかんに切れ目が **3か所**（8cm・13cm・26cm）あって、その中から **1か所** を選んで切る。\n\n全部の切り方を比べると：\n\n- 8cm で切る → ピースは **8cm** と 26cm → いちばん短いのは **8cm**\n- **13cm で切る** → ピースは **13cm** と 21cm → いちばん短いのは **13cm** ← これが最大！\n- 26cm で切る → ピースは **8cm** と 26cm → いちばん短いのは **8cm**\n\nいちばん短いピースが最も長くなる切り方は 13cm → 答えは **13**。\n\n---"
+        },
+        {
+          "input": "7 45\n2\n7 11 16 20 28 34 38",
+          "output": "12",
+          "explanation": "**この入力の意味：** 45cm のようかんに切れ目が **7か所**（7・11・16・20・28・34・38cm）あって、その中から **2か所** 選んで3つに切る。\n\n16cm と 28cm で切ると：\n\n- 0〜16cm → **16cm**\n- 16〜28cm → **12cm**\n- 28〜45cm → **17cm**\n\nいちばん短いのは **12cm** → 答えは **12**。\n\n---"
+        },
+        {
+          "input": "3 100\n1\n28 54 81",
+          "output": "46",
+          "explanation": "**この入力の意味：** 100cm のようかんに切れ目が **3か所**（28cm・54cm・81cm）あって、**1か所** 選んで2つに切る。\n\n全部の切り方：\n\n- 28cm で切る → **28cm** と 72cm → 最小 **28cm**\n- **54cm で切る** → **46cm** と 46cm → 最小 **46cm** ← これが最大！\n- 81cm で切る → 19cm と **81cm** → 最小 **19cm**\n\n真ん中に近い 54cm で切ると両方が均等になる → 答えは **46**。\n\n---"
+        },
+        {
+          "input": "3 100\n2\n28 54 81",
+          "output": "26",
+          "explanation": "**この入力の意味：** 100cm のようかんに切れ目が **3か所**（28cm・54cm・81cm）あって、**2か所** 選んで3つに切る。\n\n28cm と 54cm で切ると：\n\n- 0〜28cm → **28cm**\n- 28〜54cm → **26cm**\n- 54〜100cm → **46cm**\n\nいちばん短いのは **26cm** → 答えは **26**。\n\n---"
+        },
+        {
+          "input": "20 1000\n4\n51 69 102 127 233 295 350 388 417 466 469 523 553 587 720 739 801 855 926 954",
+          "output": "170",
+          "explanation": "**この入力の意味：** 1000cm のようかんに切れ目が **20か所** あって、その中から **4か所** 選んで5つに切る。\n\n組み合わせがとても多いので全部試すのは大変。プログラムで最良の切り方を探す。\n\n最もうまく切ったとき、いちばん短いピースは **170cm** → 答えは **170**。\n\n---"
+        }
+      ],
+      "statement_note": "## どんな問題？\n\nようかんを **K か所** で切って、できたピースが**なるべく短くならない**ようにしたい。\n\nたとえば 34cm のようかん、切れ目は 3 か所（8cm・13cm・26cm）、1 か所だけ切る。\n\n| 切る場所 | できるピース | 短い方 |\n|---------|------------|-------|\n| 8cm | 8cm と 26cm | **8cm** |\n| **13cm** | **13cm と 21cm** | **13cm** ← 最大！ |\n| 26cm | 26cm と 8cm | **8cm** |\n\n13cm で切るのがいちばんよく、答えは **13**。\n\n---\n\n## 全部の切り方を試せばいいんじゃないの？\n\n切れ目が 3 か所しかないときは全部試せる。  \nでもようかんの長さは最大 **10 億 cm** になることがある。\n\n「1cm で切ったら？」「2cm で切ったら？」… と 10 億回試すと、  \nコンピューターでも **何時間もかかってしまう**。\n\n---\n\n## 「できる？できない？」で考えると速くなる！\n\n「**全部のピースを〇cm 以上にできる？**」という質問に変える。\n\n- 「全部 10cm 以上にできる？」→ できる\n- 「全部 13cm 以上にできる？」→ できる\n- 「全部 14cm 以上にできる？」→ できない\n\n**「できる」の最大が答え！**\n\nこの境目を探すには、1 から順に試さなくていい。  \n「真ん中を試して、できたら上半分、できなければ下半分だけ調べる」をくり返すと、  \n10 億回が **たった 30 回ほど** で終わる（**二分探索**）。\n\n---\n\n## 「〇cm 以上にできるか」をどう調べるの？\n\n左から順に見ていって、**ちょうど〇cm 以上になったらすぐ切る**。  \nそれが K 回できたら「できる」、K 回できなかったら「できない」。",
+      "easy_explanation": "## なんで「いちばん短いピース」を長くしたいの？\n\nたとえば入力例1（34cm、切れ目 8・13・26、K=1）で考える。\n\n- 8cm で切る → ピースは **8cm** と 26cm → 一番短いのは **8cm**\n- 13cm で切る → ピースは **13cm** と 21cm → 一番短いのは **13cm**\n- 26cm で切る → ピースは **26cm** と 8cm → 一番短いのは **8cm**\n\n「スコア = 一番短いピースの長さ」なので、スコアを高くするには  \n**どの人ももらえる最低ラインをできるだけ上げる** ことが目標になる。\n\n---\n\n## どうやって最大を見つけるの？\n\n「全部のピースを **〇cm 以上** にできる？」という質問に変える。\n\n```\n「全部 10cm 以上にできる？」→ できる（13で切れば 13cm と 21cm）\n「全部 13cm 以上にできる？」→ できる（13で切れば 13cm と 21cm）\n「全部 14cm 以上にできる？」→ できない（どこで切っても14cm未満ができる）\n```\n\n**「できる」の最大 = 答え**。\n\n「全部 13cm 以上にできる = 答えが 13 以上ある」と同じ意味だから。\n\nこの境目を **二分探索** で素早く見つける。\n\n---\n\n## どこで切るかは「早めに切る」\n\n「全部 13cm 以上にできる？」を確認するとき、  \n「13cm 以上になったら **すぐ切る**」を左から順にやる。\n\n早めに切るほど後ろにスペースが残るので、次の切り場所が見つかりやすくなる。",
+      "explanation": "",
+      "solutions": {
+        "cpp": {
+          "code": "#include <bits/stdc++.h>\nusing namespace std;\nusing ll = long long;  // long long を ll と短く書けるようにする（大きな数に対応）\n\nint main() {\n    int N, K;\n    ll L;\n\n    cin >> N >> L;  // 切れ目の数 N と ようかんの長さ L を読み込む\n    cin >> K;       // 選ぶ切れ目の数 K を読み込む\n\n    vector<ll> A(N);  // 切れ目の位置を N 個分用意する\n\n    for (int i = 0; i < N; i++) {\n        cin >> A[i];  // 各切れ目の位置を読み込む\n    }\n\n    // 「全ピースを x cm 以上にできるか？」を判定する関数\n    // できれば true、できなければ false を返す\n    auto check = [&](ll x) {\n        ll prev = 0;  // 直前に切った位置（最初は左端 = 0）\n        int cnt = 0;  // 実際に切った回数\n\n        for (int i = 0; i < N; i++) {\n            // A[i] - prev >= x : 今切るとこのピースが x 以上になる\n            // L - A[i] >= x   : 最後のピース（右端まで）も x 以上になる\n            if (A[i] - prev >= x && L - A[i] >= x) {\n                cnt++;        // 切る\n                prev = A[i];  // 切った位置を更新\n            }\n        }\n\n        return cnt >= K;  // K 回以上切れれば OK\n    };\n\n    ll low = 0;      // low は「この値なら確実にできる」（答えの候補）\n    ll high = L + 1; // high は「この値ではできない」\n\n    // 二分探索：low と high の差が 1 になるまで繰り返す\n    while (high - low > 1) {\n        ll mid = (low + high) / 2;  // 真ん中の値を試す\n\n        if (check(mid)) {\n            low = mid;   // mid でできた → もっと大きくできるかも\n        } else {\n            high = mid;  // mid ではできない → 小さくする\n        }\n    }\n\n    cout << low << endl;  // low が答え（最大スコア）\n}",
+          "steps": null
+        },
+        "perl": {
+          "code": "use strict;    # 変数宣言を強制（バグを防ぐ）\nuse warnings;  # 警告を有効化（バグを見つけやすくする）\n\n# 1行目：空白で分割して N と L に代入\nmy ($N, $L) = split ' ', <STDIN>;\nmy $K = int(<STDIN>);        # 2行目：K（int で整数に変換）\nmy @A = split ' ', <STDIN>;  # 3行目：切れ目リスト（@ は配列の印）\n\n# 「全ピースを x cm 以上にできるか？」を判定するサブルーチン\nsub check {\n    my ($x) = @_;           # 引数 x を受け取る（Perl の引数は @_ 経由）\n    my ($prev, $cnt) = (0, 0);  # 直前に切った位置と切った回数を 0 で初期化\n    for my $a (@A) {\n        # このピース($a - $prev)が x 以上 かつ 残り($L - $a)が x 以上なら切る\n        if ($a - $prev >= $x && $L - $a >= $x) {\n            $cnt++;\n            $prev = $a;\n        }\n    }\n    return $cnt >= $K;  # K 回以上切れれば 1（true）を返す\n}\n\nmy ($low, $high) = (0, $L + 1);  # 二分探索の範囲を初期化\nwhile ($high - $low > 1) {\n    my $mid = int(($low + $high) / 2);  # int で整数除算\n    if (check($mid)) { $low = $mid; }   # できた → low を上げる\n    else             { $high = $mid; }  # できない → high を下げる\n}\nprint \"$low\\n\";  # 答えを出力",
+          "steps": null
+        },
+        "php": {
+          "code": "<?php\n// 1行目を読んで空白で分割し、整数に変換して N と L に代入\n[$N, $L] = array_map('intval', explode(' ', trim(fgets(STDIN))));\n$K = (int)trim(fgets(STDIN));                                    // 2行目：K\n$A = array_map('intval', explode(' ', trim(fgets(STDIN))));      // 3行目：切れ目リスト\n\n// 「全ピースを x cm 以上にできるか？」を判定する関数\n// PHP は関数内から外の変数を直接使えないので $A, $L, $K を引数で渡す\nfunction check($A, $L, $K, $x) {\n    $prev = 0;  // 直前に切った位置\n    $cnt = 0;   // 切った回数\n    foreach ($A as $a) {\n        // このピース($a - $prev)が x 以上 かつ 残り($L - $a)が x 以上なら切る\n        if ($a - $prev >= $x && $L - $a >= $x) {\n            $cnt++;\n            $prev = $a;\n        }\n    }\n    return $cnt >= $K;  // K 回以上切れれば true\n}\n\n$low = 0;       // できる側の境界\n$high = $L + 1; // できない側の境界\nwhile ($high - $low > 1) {\n    $mid = intdiv($low + $high, 2);  // intdiv で整数除算（切り捨て）\n    if (check($A, $L, $K, $mid)) $low = $mid;   // できた → low を上げる\n    else $high = $mid;                           // できない → high を下げる\n}\necho $low . \"\\n\";  // 答えを出力",
+          "steps": null
+        },
+        "python": {
+          "code": "N, L = map(int, input().split())  # 切れ目の数 N、ようかんの長さ L を読み込む\nK = int(input())                  # 選ぶ切れ目の数 K を読み込む\nA = list(map(int, input().split()))  # 各切れ目の位置をリストで読み込む\n\n# 「全ピースを x cm 以上にできるか？」を判定する関数\ndef check(x):\n    prev = 0  # 直前に切った位置（最初は左端 = 0）\n    cnt = 0   # 実際に切った回数\n\n    for a in A:\n        # a - prev >= x : 今切るとこのピースが x 以上\n        # L - a >= x   : 残り（右端まで）も x 以上\n        if a - prev >= x and L - a >= x:\n            cnt += 1  # 切る\n            prev = a  # 切った位置を更新\n\n    return cnt >= K  # K 回以上切れれば OK\n\nlow = 0      # low は「この値なら確実にできる」\nhigh = L + 1 # high は「この値ではできない」\n\n# 二分探索：low と high の差が 1 になるまで繰り返す\nwhile high - low > 1:\n    mid = (low + high) // 2  # 真ん中の値を試す（// は整数除算）\n\n    if check(mid):\n        low = mid   # mid でできた → もっと大きくできるかも\n    else:\n        high = mid  # mid ではできない → 小さくする\n\nprint(low)  # low が答え（最大スコア）",
+          "steps": null
+        },
+        "ruby": {
+          "code": "N, L = gets.split.map(&:to_i)  # 1行目：N と L（文字列 → 整数に変換）\nK = gets.to_i                  # 2行目：K\nA = gets.split.map(&:to_i)     # 3行目：切れ目の位置リスト\n\n# 「全ピースを x cm 以上にできるか？」を判定するラムダ（無名関数）\ncheck = ->(x) {\n  prev = 0  # 直前に切った位置\n  cnt = 0   # 切った回数\n  A.each do |a|\n    # このピース(a - prev)が x 以上 かつ 残り(L - a)が x 以上なら切る\n    if a - prev >= x && L - a >= x\n      cnt += 1\n      prev = a\n    end\n  end\n  cnt >= K  # Ruby では最後の式が return 値になる\n}\n\nlow = 0      # low：できる側の境界\nhigh = L + 1 # high：できない側の境界\nwhile high - low > 1\n  mid = (low + high) / 2  # 真ん中を試す\n  if check.call(mid)      # ラムダは .call() で呼び出す\n    low = mid   # できた → low を上げる\n  else\n    high = mid  # できない → high を下げる\n  end\nend\nputs low  # 答えを出力",
+          "steps": null
+        },
+        "rust": {
+          "code": "use std::io::{self, BufRead};  // 標準入力を読むためにインポート\n\n// 「全ピースを x cm 以上にできるか？」を判定する関数\n// &[i64] はスライス（配列の参照）、-> bool は返り値の型\nfn check(a: &[i64], l: i64, k: usize, x: i64) -> bool {\n    let mut prev = 0i64;    // 直前に切った位置（i64 型で初期化）\n    let mut cnt = 0usize;   // 切った回数（usize は配列添字などに使う符号なし整数）\n    for &ai in a {          // a の各要素を ai として取り出す（& でコピー）\n        // このピース(ai - prev)が x 以上 かつ 残り(l - ai)が x 以上なら切る\n        if ai - prev >= x && l - ai >= x {\n            cnt += 1;\n            prev = ai;\n        }\n    }\n    cnt >= k  // Rust では最後の式がセミコロンなしだと return 値になる\n}\n\nfn main() {\n    let stdin = io::stdin();\n    let mut lines = stdin.lock().lines();  // 標準入力を行単位で読む\n\n    // 1行目：空白区切りで N と L を読み込む\n    // unwrap() はエラーがないと仮定して値を取り出す（競プロでは通常 OK）\n    let line1: Vec<i64> = lines.next().unwrap().unwrap()\n        .split_whitespace().map(|s| s.parse().unwrap()).collect();\n    let (_n, l) = (line1[0] as usize, line1[1]);  // N は使わないので _ を付ける\n\n    // 2行目：K を読み込む\n    let k: usize = lines.next().unwrap().unwrap().trim().parse().unwrap();\n\n    // 3行目：切れ目の位置リストを読み込む\n    let a: Vec<i64> = lines.next().unwrap().unwrap()\n        .split_whitespace().map(|s| s.parse().unwrap()).collect();\n\n    let mut low = 0i64;   // できる側の境界\n    let mut high = l + 1; // できない側の境界\n    while high - low > 1 {\n        let mid = (low + high) / 2;  // 真ん中を試す\n        // Rust の if は式なので、結果を直接代入できる\n        if check(&a, l, k, mid) { low = mid; } else { high = mid; }\n    }\n    println!(\"{}\", low);  // 答えを出力\n}",
+          "steps": null
+        },
+        "typescript": {
+          "code": "import * as readline from 'readline';\n\n// 標準入力を1行ずつ受け取る（AtCoder の Node.js 典型パターン）\nconst rl = readline.createInterface({ input: process.stdin });\nconst lines: string[] = [];\nrl.on('line', (line) => lines.push(line.trim()));  // 1行読むたびに配列に追加\nrl.on('close', () => {\n  // 全行読み終わったら処理開始\n  const [N, L] = lines[0].split(' ').map(Number);  // 1行目：N と L\n  const K = Number(lines[1]);                       // 2行目：K\n  const A = lines[2].split(' ').map(Number);        // 3行目：切れ目の位置リスト\n\n  // 「全ピースを x cm 以上にできるか？」を判定する関数\n  // number 型の x を受け取り、boolean（true/false）を返す\n  const check = (x: number): boolean => {\n    let prev = 0, cnt = 0;  // prev：直前に切った位置、cnt：切った回数\n    for (const a of A) {\n      // このピース(a - prev)が x 以上 かつ 残り(L - a)が x 以上なら切る\n      if (a - prev >= x && L - a >= x) {\n        cnt++;\n        prev = a;\n      }\n    }\n    return cnt >= K;  // K 回以上切れれば OK\n  };\n\n  let low = 0, high = L + 1;  // 二分探索の範囲を初期化\n  while (high - low > 1) {\n    const mid = Math.floor((low + high) / 2);  // 整数で真ん中を計算\n    if (check(mid)) low = mid;   // できた → low を上げる\n    else high = mid;             // できない → high を下げる\n  }\n  console.log(low);  // 答えを出力\n});",
+          "steps": null
+        }
+      },
+      "added_at": "2026-05-20",
+      "bad_solutions": {
+        "python": {
+          "label": "O(L×N) 線形探索 — 二分探索を使わず1からLまで全部試す",
+          "code": "N, L = map(int, input().split())\nK = int(input())\nA = list(map(int, input().split()))\n\ndef can_cut(min_len):\n    prev = 0\n    cuts = 0\n    for a in A:\n        if a - prev >= min_len and L - a >= min_len:\n            cuts += 1\n            prev = a\n    return cuts >= K\n\nans = 0\n# L が最大10^9なのに1から全部試している → TLE\n# 二分探索を使えば O(N log L) で済む\nfor x in range(1, L + 1):\n    if can_cut(x):\n        ans = x\nprint(ans)"
+        }
+      },
+      "constraints_note": "- `1 ≤ K ≤ N ≤ 100000`：切れ目は最大**10万個**。選ぶ数 K もそれ以下。\n- `L ≤ 10^9`：ようかんの長さは最大**10億 cm**。\n- ようかんが 10 億 cm もあるので、「1cm から順に全部試す」と 10 億回以上かかってしまう。コンピューターでも何時間もかかるので間に合わない。二分探索を使えば **約 30 回** で答えが見つかる。"
+    }
+  ]
+}

@@ -27,7 +27,7 @@
 <main class="detail-view">
   <div class="detail-contest">典型90問 004</div>
   <h1 class="detail-title">Cross Sum</h1>
-  <div class="detail-meta"><span class="diff-badge" style="background:#2196f3">B問題レベル</span> <span class="tag">累積和</span><span class="tag">配列</span> <a class="atcoder-link" href="https://atcoder.jp/contests/typical90/tasks/typical90_d" target="_blank" rel="noopener"><span class="mi">open_in_new</span> AtCoderで見る</a> <a class="print-link" href="../print/typical90_d.html" target="_blank"><span class="mi">print</span> 印刷用</a></div>
+  <div class="detail-meta"><span class="diff-badge" style="background:#2196f3">B問題レベル</span> <span class="tag">累積和</span><span class="tag">配列</span> <a class="atcoder-link" href="https://atcoder.jp/contests/typical90/tasks/typical90_d" target="_blank" rel="noopener"><span class="mi">open_in_new</span> AtCoderで見る</a> <a class="print-link" href="../print/typical90_d.html" target="_blank"><span class="mi">print</span> 印刷用</a> <a class="cr-link" href="../code_reading.html"><span class="mi">menu_book</span> プログラムの読み方</a></div>
   <div class="glossary-refs"><span style="font-size:.8rem;color:#666"><span class="mi">psychology</span> 使う考え方：</span><a class="glossary-ref-link" href="../glossary/precomputation.html"><span class="mi">book_2</span> 前計算（累積和）</a></div>
   <section class="detail-section">
     <h2 class="section-title"><span class="mi">description</span> 問題文</h2>
@@ -42,33 +42,7 @@
 <li>入力は全て整数</li>
 </ul>
 </div>
-    <div class="statement-note"><span class="statement-note-badge"><span class="mi">info</span> 入力例1を使った説明</span><h2>この問題で何をするの？</h2>
-<p>3×3 のマス目（全部 1）があるとき、マス $(1,1)$ について考える。</p>
-<ul>
-<li>同じ <strong>行</strong>（1行目）にあるマス：$(1,1), (1,2), (1,3)$ → 合計 3</li>
-<li>同じ <strong>列</strong>（1列目）にあるマス：$(1,1), (2,1), (3,1)$ → 合計 3</li>
-<li>$(1,1)$ 自身は両方に含まれるので <strong>1回だけ</strong> 数える</li>
-</ul>
-<p>合計は $3+3-1=5$。</p>
-<h2>入力の読み方</h2>
-<pre><code class="language-text">3 3      ← H=3行、W=3列
-1 1 1    ← 1行目
-1 1 1    ← 2行目
-1 1 1    ← 3行目
-</code></pre>
-<h2>出力の読み方</h2>
-<p>各マスの答えをスペース区切りで並べて H 行出力する。</p>
-<hr>
-</div>
-    <div class="constraints-note"><span class="constraints-note-badge"><span class="mi">help</span> 制約の読み方</span><ul>
-<li><code>2 ≤ H, W ≤ 2000</code>：マスは最大 2000×2000=<strong>400万個</strong>。</li>
-<li><code>1 ≤ A_{i,j} ≤ 99</code>：各マスの値は小さい（最大99）。行や列の合計は最大 99×2000=<strong>198000</strong> 程度。</li>
-<li>各マスごとに行・列を毎回足すと O(HW(H+W)) ≈ <strong>160億回</strong> でTLE。<strong>前計算</strong>で行の合計・列の合計を求めておけば O(HW) で済む。</li>
-</ul>
-</div>
-  </section>
-  <section class="detail-section">
-    <h2 class="section-title"><span class="mi">quiz</span> 入力・出力の例</h2>
+    <h2 class="section-title" style="margin-top:20px"><span class="mi">quiz</span> 入力・出力の例</h2>
     
 <div class="sample-block">
   <div class="sample-row">
@@ -79,16 +53,7 @@
     <div class="sample-col"><div class="sample-label">出力 1</div><pre class="sample-pre">5 5 5
 5 5 5
 5 5 5</pre></div>
-  </div><div class="sample-explanation"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 3×3 のマス目で、全マスに 1 が書かれている。</p>
-<p>マス $(1,1)$ と同じ行または列のマスは：</p>
-<ul>
-<li>同じ行（1行目）：$(1,1), (1,2), (1,3)$ → 合計 $1+1+1=3$</li>
-<li>同じ列（1列目）：$(1,1), (2,1), (3,1)$ → 合計 $1+1+1=3$</li>
-<li><strong>重複する $(1,1)$ は1回だけ数える</strong> → $3+3-1=\mathbf{5}$</li>
-</ul>
-<p>すべてのマスで同じ計算になるので、答えは全部 <strong>5</strong>。</p>
-<hr>
-</div>
+  </div>
 </div>
 <div class="sample-block">
   <div class="sample-row">
@@ -101,16 +66,7 @@
 39 33 40 34
 38 38 36 31
 41 41 39 43</pre></div>
-  </div><div class="sample-explanation"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 4×4 のマス目で、それぞれのマスに数が書かれている。</p>
-<p>マス $(1,1)$ の値は $3$。</p>
-<ul>
-<li>1行目の合計：$3+1+4+1=9$</li>
-<li>1列目の合計：$3+5+5+9=22$</li>
-<li>$(1,1)$ の値 $3$ は両方に含まれているので1回引く</li>
-</ul>
-<p>$9+22-3=\mathbf{28}$ → 答えは <strong>28</strong>。</p>
-<hr>
-</div>
+  </div>
 </div>
 <div class="sample-block">
   <div class="sample-row">
@@ -146,55 +102,57 @@
 1425 1442 1492 1442 1467 1456 1506 1417 1452 1473</pre></div>
   </div>
 </div>
+    <div class="statement-note"><span class="statement-note-badge"><span class="mi">info</span> かんたん解説</span><h2>どんな問題？</h2>
+<p>H×W のマス目があって、各マスに数字が入っている。</p>
+<p>各マス (i, j) について「同じ行にある全マスの合計 + 同じ列にある全マスの合計 − そのマス自身の値」を出力する。</p>
+<p>たとえば 3×3 で全部1のマス目、マス(1,1)なら：行の合計3 + 列の合計3 − 自分1 = <strong>5</strong>。</p>
+<hr>
+<h2>全マスを毎回足し算すると遅い！</h2>
+<p>マス目は最大 2000×2000 = 400万個。各マスで行と列を毎回足すと何十億回も計算が必要で間に合わない。</p>
+<p>そこで先に「各行の合計」「各列の合計」を計算して覚えておく（<strong>前計算</strong>）。</p>
+<p>そうすれば各マスの答えは：</p>
+<pre><code>行の合計 + 列の合計 − そのマスの値
+</code></pre>
+<p>の 3 つの数字だけで出せる。</p>
+</div>
+    <div class="constraints-note"><span class="constraints-note-badge"><span class="mi">help</span> 制約の読み方</span><ul>
+<li><code>2 ≤ H, W ≤ 2000</code>：マスは最大 2000×2000 = <strong>400万個</strong>。</li>
+<li>各マスごとに行・列を毎回足すと 400万 × 4000 = <strong>160億回</strong> の計算になり間に合わない。</li>
+<li>先に行の合計・列の合計を計算しておけば、あとは足し算・引き算3回で1マスの答えが出る。</li>
+</ul>
+</div>
   </section>
   
 <section class="detail-section">
-  <h2 class="section-title"><span class="mi">lightbulb</span> わかりやすく解説</h2>
-  <div class="explanation-box easy-box"><h2>イメージ</h2>
-<p>マス $(i, j)$ の答えは：</p>
-<p>$$B_{i,j} = \text{(i行目の合計)} + \text{(j列目の合計)} - A_{i,j}$$</p>
-<p><strong>なぜ引くの？</strong> $A_{i,j}$ は行の合計にも列の合計にも含まれているので、2回足してしまう。1回分引いて調整する。</p>
-<h2>前計算でまとめて解く</h2>
-<p>各行の合計・各列の合計を先に計算しておけば、各マスの答えは足し算と引き算だけで求まる。</p>
-<ul>
-<li>各行の合計を計算：$O(HW)$</li>
-<li>各列の合計を計算：$O(HW)$</li>
-<li>各マスの答えを求める：$O(HW)$</li>
-</ul>
-<p>全体：$O(HW)$ → 2000×2000 でも余裕で間に合う。</p>
-<hr>
-</div>
-</section>
-  
-<section class="detail-section">
-  <h2 class="section-title"><span class="mi">menu_book</span> くわしい解説</h2>
-  <div class="explanation-box"><h2>方針</h2>
-<p>愚直に各マス $(i,j)$ ごとに行と列を走査すると $O(HW(H+W))$ かかり、2000×2000 では <strong>約 160 億回</strong> の操作になりTLE（時間超過）。</p>
-<p><strong>前計算（累積和）</strong> を使う：</p>
-<ul>
-<li><code>row[i]</code>：$i$ 行目の全要素の合計</li>
-<li><code>col[j]</code>：$j$ 列目の全要素の合計</li>
-</ul>
-<p>を先に $O(HW)$ で求めておく。</p>
-<p>各マス $(i,j)$ の答えは：</p>
-<p>$$B_{i,j} = \text{row}[i] + \text{col}[j] - A_{i,j}$$</p>
-<hr>
-<h2>なぜ引くの？</h2>
-<p>行の合計 $\text{row}[i]$ にも列の合計 $\text{col}[j]$ にも $A_{i,j}$ が含まれている。足すと $A_{i,j}$ を2回数えてしまうので、1回引いて正しい合計にする。</p>
-<hr>
-<h2>計算量</h2>
-<ul>
-<li>前計算：$O(HW)$</li>
-<li>各マスの答え：$O(HW)$</li>
-<li>全体：$O(HW)$</li>
-</ul>
-<p>2000×2000 = 400万回の操作 → 十分高速。</p>
-<hr>
-</div>
-</section>
-  
-<section class="detail-section">
   <h2 class="section-title"><span class="mi">code</span> 解答コード</h2>
+  
+<div class="bad-solutions">
+  <div class="bad-solutions-title"><span class="mi">sentiment_dissatisfied</span> 悪い例（結果は合ってるけど…）</div>
+  <div class="bad-lang-tabs" id="bltabs"><button class="bad-lang-tab active" data-lang="bad-python">Python</button></div>
+  <div class="bad-code-panel active" id="panel-bad-python"><pre class="code-block-bad language-python"><code class="language-python">H, W = map(int, input().split())
+A = [list(map(int, input().split())) for _ in range(H)]
+
+for i in range(H):
+    row = []
+    for j in range(W):
+        # sum(A[i]) → 毎回 W 回の足し算
+        # sum(A[k][j]...) → 毎回 H 回の足し算
+        # → 1マスにつき O(H+W) かかり、全体で O(HW(H+W)) → TLE
+        # 先に行合計・列合計を計算しておけば O(HW) で済む
+        s = sum(A[i]) + sum(A[k][j] for k in range(H)) - A[i][j]
+        row.append(s)
+    print(&#39; &#39;.join(map(str, row)))</code></pre></div>
+</div>
+<script>
+document.getElementById('bltabs').addEventListener('click',function(e){
+  var b=e.target.closest('.bad-lang-tab'); if(!b)return;
+  document.querySelectorAll('.bad-lang-tab').forEach(function(x){x.classList.remove('active');});
+  document.querySelectorAll('.bad-code-panel').forEach(function(x){x.classList.remove('active');});
+  b.classList.add('active');
+  var p=document.getElementById('panel-'+b.dataset.lang); if(p)p.classList.add('active');
+});
+</script>
+  <div class="good-solutions-title"><span class="mi">check_circle</span> 正しいコード</div>
   <div class="lang-tabs" id="ltabs"><button class="lang-tab active" data-lang="python">Python</button><button class="lang-tab" data-lang="cpp">C++</button><button class="lang-tab" data-lang="typescript">TypeScript</button><button class="lang-tab" data-lang="ruby">Ruby</button><button class="lang-tab" data-lang="php">PHP</button><button class="lang-tab" data-lang="rust">Rust</button><button class="lang-tab" data-lang="perl">Perl</button></div>
   <div class="code-panel active" id="panel-python"><pre class="code-block language-python"><code class="language-python">H, W = map(int, input().split())
 A = [list(map(int, input().split())) for _ in range(H)]
@@ -355,33 +313,6 @@ for my $i (0..$H-1) {
 for my $i (0..$H-1) {
     print join(&#39; &#39;, map { $row[$i] + $col[$_] - $A[$i][$_] } 0..$W-1) . &#34;\n&#34;;
 }</code></pre></div>
-  
-<div class="bad-solutions">
-  <div class="bad-solutions-title"><span class="mi">sentiment_dissatisfied</span> 悪い例（結果は合ってるけど…）</div>
-  <div class="bad-lang-tabs" id="bltabs"><button class="bad-lang-tab active" data-lang="bad-python">Python</button></div>
-  <div class="bad-code-panel active" id="panel-bad-python"><div class="bad-solution-label"><span class="mi">warning</span> O(HW(H+W)) 愚直解 — 各マスごとに行・列を毎回合計する</div><pre class="code-block-bad language-python"><code class="language-python">H, W = map(int, input().split())
-A = [list(map(int, input().split())) for _ in range(H)]
-
-for i in range(H):
-    row = []
-    for j in range(W):
-        # sum(A[i]) → 毎回 W 回の足し算
-        # sum(A[k][j]...) → 毎回 H 回の足し算
-        # → 1マスにつき O(H+W) かかり、全体で O(HW(H+W)) → TLE
-        # 先に行合計・列合計を計算しておけば O(HW) で済む
-        s = sum(A[i]) + sum(A[k][j] for k in range(H)) - A[i][j]
-        row.append(s)
-    print(&#39; &#39;.join(map(str, row)))</code></pre></div>
-</div>
-<script>
-document.getElementById('bltabs').addEventListener('click',function(e){
-  var b=e.target.closest('.bad-lang-tab'); if(!b)return;
-  document.querySelectorAll('.bad-lang-tab').forEach(function(x){x.classList.remove('active');});
-  document.querySelectorAll('.bad-code-panel').forEach(function(x){x.classList.remove('active');});
-  b.classList.add('active');
-  var p=document.getElementById('panel-'+b.dataset.lang); if(p)p.classList.add('active');
-});
-</script>
 </section>
 <script>
 document.getElementById('ltabs').addEventListener('click',function(e){

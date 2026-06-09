@@ -13,7 +13,7 @@
   onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],ignoredTags:['script','noscript','style','pre','code']})"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#fff;color:#000;max-width:820px;margin:0 auto;padding:24px 32px;font-size:.93rem;line-height:1.7}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#fff;color:#000;max-width:820px;margin:0 auto;padding:24px 32px 24px 48px;font-size:.93rem;line-height:1.7}
 h1{font-size:1.3rem;margin-bottom:8px}
 h2{font-size:1rem;font-weight:700;margin:20px 0 8px;color:#000;border-bottom:1.5px solid #000;padding-bottom:4px;display:flex;align-items:center;gap:4px}
 h3{font-size:.9rem;font-weight:700;margin:14px 0 6px}
@@ -37,6 +37,9 @@ code{background:#f0f0f0;padding:1px 5px;border-radius:3px;font-size:.88em;font-f
 .print-note p,.print-easy p,.print-exp p,.print-constraints-note p{margin-bottom:.5em}
 .print-note ul,.print-note ol,.print-easy ul,.print-easy ol,.print-exp ul,.print-exp ol,.print-constraints-note ul,.print-constraints-note ol{padding-left:1.4em;margin:.3em 0 .5em}
 .print-note code,.print-easy code,.print-exp code,.print-constraints-note code{background:#f0f0f0;padding:1px 5px;border-radius:3px;font-size:.88em}
+.print-note table{border-collapse:collapse;margin:.6em 0;font-size:.85rem;width:100%}
+.print-note th,.print-note td{border:1px solid #aaa;padding:5px 10px}
+.print-note th{background:#f0f0f0}
 .print-note pre,.print-easy pre,.print-exp pre,.print-constraints-note pre{background:#f5f5f5;border:1px solid #ddd;border-radius:4px;padding:8px;font-size:.82rem;overflow-x:auto;margin:6px 0;white-space:pre-wrap}
 .sample-block{border:1px solid #aaa;border-radius:4px;padding:10px;margin-bottom:10px}
 .sample-label{font-size:.72rem;font-weight:600;color:#555;margin-bottom:3px}
@@ -63,7 +66,7 @@ pre.code-print-bad{background:#f8f8f8;border:1px dashed #aaa;border-radius:4px;p
 .print-btn{position:fixed;bottom:20px;right:20px;background:#333;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:.9rem;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.25)}
 .print-btn:hover{background:#000}
 @media print{
-  @page{margin:1.5cm}
+  @page{margin:1.5cm 1.5cm 1.5cm 2.5cm}
   body{max-width:none;padding:0}
   .print-btn{display:none}
   pre.code-print,pre.code-print-bad{page-break-inside:avoid;white-space:pre-wrap}
@@ -93,131 +96,93 @@ $N$ 個の切れ目が付けられており、左から $i$ 番目の切れ目�
 <li>$0 &lt; A_1 &lt; A_2 &lt; \cdots &lt; A_N &lt; L \leq 10^9$</li>
 <li>入力はすべて整数</li>
 </ul>
-</div></section><section class="print-section"><h2><span class="mi">info</span> 入力例1を使った説明</h2><div class="print-note"><h2>この問題で何をするの？</h2>
-<p>34cm のようかんがあって、切れ目が 3 か所（8cm・13cm・26cm）に入っています。</p>
-<p>この中から <strong>1 か所だけ</strong> 選んで切ります。すると 2 つのピースになります。</p>
-<ul>
-<li>8cm で切る → 8cm と 26cm → 短い方は <strong>8cm</strong></li>
-<li>13cm で切る → 13cm と 21cm → 短い方は <strong>13cm</strong></li>
-<li>26cm で切る → 26cm と 8cm → 短い方は <strong>8cm</strong></li>
-</ul>
-<p>「短い方のピース」ができるだけ長くなるように切りたい。<br>
-いちばん長くなるのは <strong>13cm で切ったとき（答え：13）</strong>。</p>
-<h2>入力の読み方</h2>
-<pre><code class="language-text">3 34     ← 「切れ目が 3 か所」「ようかんは 34cm」
-1        ← 「1 か所だけ選んで切る」
-8 13 26  ← 切れ目の場所（左の端から何 cm か）
-</code></pre>
-<h2>出力の読み方</h2>
-<p>「いちばん短いピース」の長さを 1 つ出力する。この例では <code>13</code>。</p>
+</div><div class="print-samples-inline"><h3><span class="mi">quiz</span> 入力・出力の例</h3><div class="sample-block"><div class="sample-label">入力 1</div><pre class="sample-pre">3 34
+1
+8 13 26</pre><div class="sample-label">出力 1</div><pre class="sample-pre">13</pre></div><div class="sample-block"><div class="sample-label">入力 2</div><pre class="sample-pre">7 45
+2
+7 11 16 20 28 34 38</pre><div class="sample-label">出力 2</div><pre class="sample-pre">12</pre></div><div class="sample-block"><div class="sample-label">入力 3</div><pre class="sample-pre">3 100
+1
+28 54 81</pre><div class="sample-label">出力 3</div><pre class="sample-pre">46</pre></div><div class="sample-block"><div class="sample-label">入力 4</div><pre class="sample-pre">3 100
+2
+28 54 81</pre><div class="sample-label">出力 4</div><pre class="sample-pre">26</pre></div><div class="sample-block"><div class="sample-label">入力 5</div><pre class="sample-pre">20 1000
+4
+51 69 102 127 233 295 350 388 417 466 469 523 553 587 720 739 801 855 926 954</pre><div class="sample-label">出力 5</div><pre class="sample-pre">170</pre></div></div></section><section class="print-section"><h2><span class="mi">info</span> かんたん解説</h2><div class="print-note"><h2>どんな問題？</h2>
+<p>ようかんを <strong>K か所</strong> で切って、できたピースが<strong>なるべく短くならない</strong>ようにしたい。</p>
+<p>たとえば 34cm のようかん、切れ目は 3 か所（8cm・13cm・26cm）、1 か所だけ切る。</p>
+<table>
+<thead>
+<tr>
+<th>切る場所</th>
+<th>できるピース</th>
+<th>短い方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8cm</td>
+<td>8cm と 26cm</td>
+<td><strong>8cm</strong></td>
+</tr>
+<tr>
+<td><strong>13cm</strong></td>
+<td><strong>13cm と 21cm</strong></td>
+<td><strong>13cm</strong> ← 最大！</td>
+</tr>
+<tr>
+<td>26cm</td>
+<td>26cm と 8cm</td>
+<td><strong>8cm</strong></td>
+</tr>
+</tbody>
+</table>
+<p>13cm で切るのがいちばんよく、答えは <strong>13</strong>。</p>
 <hr>
+<h2>全部の切り方を試せばいいんじゃないの？</h2>
+<p>切れ目が 3 か所しかないときは全部試せる。<br>
+でもようかんの長さは最大 <strong>10 億 cm</strong> になることがある。</p>
+<p>「1cm で切ったら？」「2cm で切ったら？」… と 10 億回試すと、<br>
+コンピューターでも <strong>何時間もかかってしまう</strong>。</p>
+<hr>
+<h2>「できる？できない？」で考えると速くなる！</h2>
+<p>「<strong>全部のピースを〇cm 以上にできる？</strong>」という質問に変える。</p>
+<ul>
+<li>「全部 10cm 以上にできる？」→ できる</li>
+<li>「全部 13cm 以上にできる？」→ できる</li>
+<li>「全部 14cm 以上にできる？」→ できない</li>
+</ul>
+<p><strong>「できる」の最大が答え！</strong></p>
+<p>この境目を探すには、1 から順に試さなくていい。<br>
+「真ん中を試して、できたら上半分、できなければ下半分だけ調べる」をくり返すと、<br>
+10 億回が <strong>たった 30 回ほど</strong> で終わる（<strong>二分探索</strong>）。</p>
+<hr>
+<h2>「〇cm 以上にできるか」をどう調べるの？</h2>
+<p>左から順に見ていって、<strong>ちょうど〇cm 以上になったらすぐ切る</strong>。<br>
+それが K 回できたら「できる」、K 回できなかったら「できない」。</p>
 </div></section><section class="print-section"><h2><span class="mi">help</span> 制約の読み方</h2><div class="print-constraints-note"><ul>
 <li><code>1 ≤ K ≤ N ≤ 100000</code>：切れ目は最大<strong>10万個</strong>。選ぶ数 K もそれ以下。</li>
-<li><code>L ≤ 10^9</code>：ようかんの長さは最大<strong>10億 cm</strong>。Pythonはそのまま使えるが、C++では <code>int</code>（約21億まで）でも大丈夫。ただし掛け算が入る場合は <code>long long</code> を使おう。</li>
-<li>制約が大きいから <strong>全部試す方法（O(L×N)）は間に合わない</strong>。二分探索で O(N log L) にする必要がある。</li>
+<li><code>L ≤ 10^9</code>：ようかんの長さは最大<strong>10億 cm</strong>。</li>
+<li>ようかんが 10 億 cm もあるので、「1cm から順に全部試す」と 10 億回以上かかってしまう。コンピューターでも何時間もかかるので間に合わない。二分探索を使えば <strong>約 30 回</strong> で答えが見つかる。</li>
 </ul>
-</div></section><section class="print-section"><h2><span class="mi">quiz</span> 入力・出力の例</h2><div class="sample-block"><div class="sample-label">入力 1</div><pre class="sample-pre">3 34
-1
-8 13 26</pre><div class="sample-label">出力 1</div><pre class="sample-pre">13</pre><div class="sample-exp"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 34cm のようかんに切れ目が <strong>3か所</strong>（8cm・13cm・26cm）あって、その中から <strong>1か所</strong> を選んで切る。</p>
-<p>全部の切り方を比べると：</p>
-<ul>
-<li>8cm で切る → ピースは <strong>8cm</strong> と 26cm → いちばん短いのは <strong>8cm</strong></li>
-<li><strong>13cm で切る</strong> → ピースは <strong>13cm</strong> と 21cm → いちばん短いのは <strong>13cm</strong> ← これが最大！</li>
-<li>26cm で切る → ピースは <strong>8cm</strong> と 26cm → いちばん短いのは <strong>8cm</strong></li>
-</ul>
-<p>いちばん短いピースが最も長くなる切り方は 13cm → 答えは <strong>13</strong>。</p>
-<hr>
-</div></div><div class="sample-block"><div class="sample-label">入力 2</div><pre class="sample-pre">7 45
-2
-7 11 16 20 28 34 38</pre><div class="sample-label">出力 2</div><pre class="sample-pre">12</pre><div class="sample-exp"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 45cm のようかんに切れ目が <strong>7か所</strong>（7・11・16・20・28・34・38cm）あって、その中から <strong>2か所</strong> 選んで3つに切る。</p>
-<p>16cm と 28cm で切ると：</p>
-<ul>
-<li>0〜16cm → <strong>16cm</strong></li>
-<li>16〜28cm → <strong>12cm</strong></li>
-<li>28〜45cm → <strong>17cm</strong></li>
-</ul>
-<p>いちばん短いのは <strong>12cm</strong> → 答えは <strong>12</strong>。</p>
-<hr>
-</div></div><div class="sample-block"><div class="sample-label">入力 3</div><pre class="sample-pre">3 100
-1
-28 54 81</pre><div class="sample-label">出力 3</div><pre class="sample-pre">46</pre><div class="sample-exp"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 100cm のようかんに切れ目が <strong>3か所</strong>（28cm・54cm・81cm）あって、<strong>1か所</strong> 選んで2つに切る。</p>
-<p>全部の切り方：</p>
-<ul>
-<li>28cm で切る → <strong>28cm</strong> と 72cm → 最小 <strong>28cm</strong></li>
-<li><strong>54cm で切る</strong> → <strong>46cm</strong> と 46cm → 最小 <strong>46cm</strong> ← これが最大！</li>
-<li>81cm で切る → 19cm と <strong>81cm</strong> → 最小 <strong>19cm</strong></li>
-</ul>
-<p>真ん中に近い 54cm で切ると両方が均等になる → 答えは <strong>46</strong>。</p>
-<hr>
-</div></div><div class="sample-block"><div class="sample-label">入力 4</div><pre class="sample-pre">3 100
-2
-28 54 81</pre><div class="sample-label">出力 4</div><pre class="sample-pre">26</pre><div class="sample-exp"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 100cm のようかんに切れ目が <strong>3か所</strong>（28cm・54cm・81cm）あって、<strong>2か所</strong> 選んで3つに切る。</p>
-<p>28cm と 54cm で切ると：</p>
-<ul>
-<li>0〜28cm → <strong>28cm</strong></li>
-<li>28〜54cm → <strong>26cm</strong></li>
-<li>54〜100cm → <strong>46cm</strong></li>
-</ul>
-<p>いちばん短いのは <strong>26cm</strong> → 答えは <strong>26</strong>。</p>
-<hr>
-</div></div><div class="sample-block"><div class="sample-label">入力 5</div><pre class="sample-pre">20 1000
-4
-51 69 102 127 233 295 350 388 417 466 469 523 553 587 720 739 801 855 926 954</pre><div class="sample-label">出力 5</div><pre class="sample-pre">170</pre><div class="sample-exp"><div class="sample-exp-title"><span class="mi">auto_stories</span> 解説</div><p><strong>この入力の意味：</strong> 1000cm のようかんに切れ目が <strong>20か所</strong> あって、その中から <strong>4か所</strong> 選んで5つに切る。</p>
-<p>組み合わせがとても多いので全部試すのは大変。プログラムで最良の切り方を探す。</p>
-<p>最もうまく切ったとき、いちばん短いピースは <strong>170cm</strong> → 答えは <strong>170</strong>。</p>
-<hr>
-</div></div></section><section class="print-section"><h2><span class="mi">lightbulb</span> わかりやすく解説</h2><div class="print-easy"><h2>イメージ</h2>
-<p>ようかんを何個かのピースに切るとき、「いちばん短いピース」をできるだけ長くしたい。</p>
-<p>たとえば <code>x = 13 cm</code> のとき：「全部のピースを 13 cm 以上にできる？」という <strong>YES/NO の質問</strong> に変える。</p>
-<p>この YES/NO の境目を <strong>二分探索</strong> で素早く見つける。</p>
-<h2>どうやって切るか</h2>
-<p>左から歩いていって「もう <code>x</code> cm 歩いた！」と思ったら切る。でも最後の残りも <code>x</code> cm 以上なければダメ。</p>
-<p>できるだけ <strong>左で切るほど後ろに余裕ができる</strong> から、このやり方（貪欲法）が正しい。</p>
-</div></section><section class="print-section"><h2><span class="mi">menu_book</span> くわしい解説</h2><div class="print-exp"><h2>方針</h2>
-<p>「最小ピース長」を最大化したい → <strong>答えを決めて判定する</strong> 方針に変える。</p>
-<p>「全ピースを <code>x</code> cm 以上にできるか？」という判定が <strong>できる/できない</strong> の境目を二分探索で求める。</p>
-<hr>
-<h2>判定問題に変換</h2>
-<p>「すべてのピース長を <code>x</code> 以上にできるか？」</p>
-<p>を考える。</p>
-<p>例えば：</p>
-<ul>
-<li><code>x = 10</code> → 可能</li>
-<li><code>x = 20</code> → 不可能</li>
-</ul>
-<p>なら、</p>
-<pre><code class="language-text">可能 可能 可能 不可能 不可能
-</code></pre>
-<p>のように単調性があるので二分探索できる。</p>
-<hr>
-<h2>貪欲（Greedy）判定</h2>
-<p>左から順番に見て：</p>
-<ul>
-<li>前回切った位置から <code>x</code> 以上になったら切る</li>
-</ul>
-<p>を繰り返す。</p>
-<p>ただし最後のピースも <code>x</code> 以上必要。</p>
-<hr>
-<h2>なぜ貪欲（Greedy）でよい？</h2>
-<p>できるだけ左で切るほど：</p>
-<ul>
-<li>後ろに余裕ができる</li>
-<li>次のピースを作りやすい</li>
-</ul>
-<p>ため。</p>
-<hr>
-<h2>計算量</h2>
-<p>二分探索は：</p>
-<pre><code class="language-text">O(log L)
-</code></pre>
-<p>各判定は：</p>
-<pre><code class="language-text">O(N)
-</code></pre>
-<p>なので全体：</p>
-<pre><code class="language-text">O(N log L)
-</code></pre>
-<hr>
-</div></section><section class="print-section"><h2><span class="mi">code</span> 解答コード（Python）</h2><div class="lang-header">Python</div><pre class="code-print"><code>N, L = map(int, input().split())  # 切れ目の数 N、ようかんの長さ L を読み込む
+</div></section><section class="print-section"><h2><span class="mi">code</span> 解答コード（Python）</h2><div class="bad-code-section"><h3><span class="mi">sentiment_dissatisfied</span> 悪い例（結果は合ってるけど…）</h3><pre class="code-print-bad"><code>N, L = map(int, input().split())
+K = int(input())
+A = list(map(int, input().split()))
+
+def can_cut(min_len):
+    prev = 0
+    cuts = 0
+    for a in A:
+        if a - prev &gt;= min_len and L - a &gt;= min_len:
+            cuts += 1
+            prev = a
+    return cuts &gt;= K
+
+ans = 0
+# L が最大10^9なのに1から全部試している → TLE
+# 二分探索を使えば O(N log L) で済む
+for x in range(1, L + 1):
+    if can_cut(x):
+        ans = x
+print(ans)</code></pre></div><div class="lang-header">Python（正しい解答）</div><pre class="code-print"><code>N, L = map(int, input().split())  # 切れ目の数 N、ようかんの長さ L を読み込む
 K = int(input())                  # 選ぶ切れ目の数 K を読み込む
 A = list(map(int, input().split()))  # 各切れ目の位置をリストで読み込む
 
@@ -247,26 +212,7 @@ while high - low &gt; 1:
     else:
         high = mid  # mid ではできない → 小さくする
 
-print(low)  # low が答え（最大スコア）</code></pre><div class="bad-code-section"><h3><span class="mi">sentiment_dissatisfied</span> 悪い例（結果は合ってるけど…）</h3><div class="bad-code-label">O(L×N) 線形探索 — 二分探索を使わず1からLまで全部試す</div><pre class="code-print-bad"><code>N, L = map(int, input().split())
-K = int(input())
-A = list(map(int, input().split()))
-
-def can_cut(min_len):
-    prev = 0
-    cuts = 0
-    for a in A:
-        if a - prev &gt;= min_len and L - a &gt;= min_len:
-            cuts += 1
-            prev = a
-    return cuts &gt;= K
-
-ans = 0
-# L が最大10^9なのに1から全部試している → TLE
-# 二分探索を使えば O(N log L) で済む
-for x in range(1, L + 1):
-    if can_cut(x):
-        ans = x
-print(ans)</code></pre></div></section>
+print(low)  # low が答え（最大スコア）</code></pre></section>
 <button class="print-btn" onclick="window.print()"><span class="mi">print</span> 印刷</button>
 <footer style="text-align:center;padding:24px 16px;color:#666;font-size:.78rem;border-top:1px solid #ccc;margin-top:40px">本サイトは個人学習目的のみで使用し、商用利用・公開配布はしていません。</footer>
 </body>

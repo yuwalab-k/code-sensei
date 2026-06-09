@@ -1,0 +1,81 @@
+{
+  "contest": "典型90問",
+  "problems": [
+    {
+      "id": "typical90_d",
+      "problem": "004",
+      "title": "Cross Sum",
+      "atcoder_url": "https://atcoder.jp/contests/typical90/tasks/typical90_d",
+      "difficulty": 2,
+      "tags": [
+        "累積和",
+        "配列"
+      ],
+      "statement": "$H$ 行 $W$ 列のマス目があります。上から $i$ $(1 \\leq i \\leq H)$ 行目、左から $j$ $(1 \\leq j \\leq W)$ 列目にあるマス $(i, j)$ には、整数 $A_{i,j}$ が書かれています。すべてのマス $(i, j)$ $(1 \\leq i \\leq H, 1 \\leq j \\leq W)$ について、以下の値を求めてください。\n\n> マス $(i, j)$ と同じ行または同じ列にあるマス（自分自身を含む）に書かれている整数をすべて合計した値",
+      "constraints": "- $2 \\leq H, W \\leq 2000$\n- $1 \\leq A_{i,j} \\leq 99$\n- 入力は全て整数",
+      "samples": [
+        {
+          "input": "3 3\n1 1 1\n1 1 1\n1 1 1",
+          "output": "5 5 5\n5 5 5\n5 5 5",
+          "explanation": "**この入力の意味：** 3×3 のマス目で、全マスに 1 が書かれている。\n\nマス $(1,1)$ と同じ行または列のマスは：\n\n- 同じ行（1行目）：$(1,1), (1,2), (1,3)$ → 合計 $1+1+1=3$\n- 同じ列（1列目）：$(1,1), (2,1), (3,1)$ → 合計 $1+1+1=3$\n- **重複する $(1,1)$ は1回だけ数える** → $3+3-1=\\mathbf{5}$\n\nすべてのマスで同じ計算になるので、答えは全部 **5**。\n\n---"
+        },
+        {
+          "input": "4 4\n3 1 4 1\n5 9 2 6\n5 3 5 8\n9 7 9 3",
+          "output": "28 28 25 26\n39 33 40 34\n38 38 36 31\n41 41 39 43",
+          "explanation": "**この入力の意味：** 4×4 のマス目で、それぞれのマスに数が書かれている。\n\nマス $(1,1)$ の値は $3$。\n\n- 1行目の合計：$3+1+4+1=9$\n- 1列目の合計：$3+5+5+9=22$\n- $(1,1)$ の値 $3$ は両方に含まれているので1回引く\n\n$9+22-3=\\mathbf{28}$ → 答えは **28**。\n\n---"
+        },
+        {
+          "input": "2 10\n31 41 59 26 53 58 97 93 23 84\n62 64 33 83 27 95 2 88 41 97",
+          "output": "627 629 598 648 592 660 567 653 606 662\n623 633 651 618 645 650 689 685 615 676",
+          "explanation": ""
+        },
+        {
+          "input": "10 10\n83 86 77 65 93 85 86 92 99 71\n62 77 90 59 63 76 90 76 72 86\n61 68 67 79 82 80 62 73 67 85\n79 52 72 58 69 67 93 56 61 92\n79 73 71 69 84 87 98 74 65 70\n63 76 91 80 56 73 62 70 96 81\n55 75 84 77 86 55 96 79 63 57\n74 95 82 95 64 67 84 64 93 50\n87 58 76 78 88 84 53 51 54 99\n82 60 76 68 89 62 76 86 94 89",
+          "output": "1479 1471 1546 1500 1518 1488 1551 1466 1502 1546\n1414 1394 1447 1420 1462 1411 1461 1396 1443 1445\n1388 1376 1443 1373 1416 1380 1462 1372 1421 1419\n1345 1367 1413 1369 1404 1368 1406 1364 1402 1387\n1416 1417 1485 1429 1460 1419 1472 1417 1469 1480\n1410 1392 1443 1396 1466 1411 1486 1399 1416 1447\n1397 1372 1429 1378 1415 1408 1431 1369 1428 1450\n1419 1393 1472 1401 1478 1437 1484 1425 1439 1498\n1366 1390 1438 1378 1414 1380 1475 1398 1438 1409\n1425 1442 1492 1442 1467 1456 1506 1417 1452 1473",
+          "explanation": ""
+        }
+      ],
+      "statement_note": "## どんな問題？\n\nH×W のマス目があって、各マスに数字が入っている。\n\n各マス (i, j) について「同じ行にある全マスの合計 + 同じ列にある全マスの合計 − そのマス自身の値」を出力する。\n\nたとえば 3×3 で全部1のマス目、マス(1,1)なら：行の合計3 + 列の合計3 − 自分1 = **5**。\n\n---\n\n## 全マスを毎回足し算すると遅い！\n\nマス目は最大 2000×2000 = 400万個。各マスで行と列を毎回足すと何十億回も計算が必要で間に合わない。\n\nそこで先に「各行の合計」「各列の合計」を計算して覚えておく（**前計算**）。\n\nそうすれば各マスの答えは：\n\n```\n行の合計 + 列の合計 − そのマスの値\n```\n\nの 3 つの数字だけで出せる。",
+      "easy_explanation": "## イメージ\n\nマス $(i, j)$ の答えは：\n\n$$B_{i,j} = \\text{(i行目の合計)} + \\text{(j列目の合計)} - A_{i,j}$$\n\n**なぜ引くの？** $A_{i,j}$ は行の合計にも列の合計にも含まれているので、2回足してしまう。1回分引いて調整する。\n\n## 前計算でまとめて解く\n\n各行の合計・各列の合計を先に計算しておけば、各マスの答えは足し算と引き算だけで求まる。\n\n- 各行の合計を計算：$O(HW)$\n- 各列の合計を計算：$O(HW)$\n- 各マスの答えを求める：$O(HW)$\n\n全体：$O(HW)$ → 2000×2000 でも余裕で間に合う。\n\n---",
+      "explanation": "## 方針\n\n愚直に各マス $(i,j)$ ごとに行と列を走査すると $O(HW(H+W))$ かかり、2000×2000 では **約 160 億回** の操作になりTLE（時間超過）。\n\n**前計算（累積和）** を使う：\n\n- `row[i]`：$i$ 行目の全要素の合計\n- `col[j]`：$j$ 列目の全要素の合計\n\nを先に $O(HW)$ で求めておく。\n\n各マス $(i,j)$ の答えは：\n\n$$B_{i,j} = \\text{row}[i] + \\text{col}[j] - A_{i,j}$$\n\n---\n\n## なぜ引くの？\n\n行の合計 $\\text{row}[i]$ にも列の合計 $\\text{col}[j]$ にも $A_{i,j}$ が含まれている。足すと $A_{i,j}$ を2回数えてしまうので、1回引いて正しい合計にする。\n\n---\n\n## 計算量\n\n- 前計算：$O(HW)$\n- 各マスの答え：$O(HW)$\n- 全体：$O(HW)$\n\n2000×2000 = 400万回の操作 → 十分高速。\n\n---",
+      "solutions": {
+        "cpp": {
+          "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);  // 高速入出力\n    cin.tie(nullptr);\n\n    int H, W;\n    cin >> H >> W;\n\n    vector<vector<int>> A(H, vector<int>(W));\n    for (int i = 0; i < H; i++)\n        for (int j = 0; j < W; j++)\n            cin >> A[i][j];\n\n    // 行の合計を計算\n    vector<long long> row(H, 0);\n    for (int i = 0; i < H; i++)\n        for (int j = 0; j < W; j++)\n            row[i] += A[i][j];\n\n    // 列の合計を計算\n    vector<long long> col(W, 0);\n    for (int i = 0; i < H; i++)\n        for (int j = 0; j < W; j++)\n            col[j] += A[i][j];\n\n    // 各マスの答えを出力\n    for (int i = 0; i < H; i++) {\n        for (int j = 0; j < W; j++) {\n            if (j > 0) cout << ' ';\n            cout << row[i] + col[j] - A[i][j];\n        }\n        cout << '\\n';\n    }\n}",
+          "steps": null
+        },
+        "perl": {
+          "code": "use strict;\nuse warnings;\n\nmy ($H, $W) = split ' ', <STDIN>;\nmy @A;\nfor (0..$H-1) {\n    push @A, [split ' ', <STDIN>];\n}\n\nmy @row = map { my $r = $_; my $s = 0; $s += $_ for @$r; $s } @A;\nmy @col = (0) x $W;\nfor my $i (0..$H-1) {\n    for my $j (0..$W-1) {\n        $col[$j] += $A[$i][$j];\n    }\n}\n\nfor my $i (0..$H-1) {\n    print join(' ', map { $row[$i] + $col[$_] - $A[$i][$_] } 0..$W-1) . \"\\n\";\n}",
+          "steps": null
+        },
+        "php": {
+          "code": "<?php\n[$H, $W] = array_map('intval', explode(' ', trim(fgets(STDIN))));\n$A = [];\nfor ($i = 0; $i < $H; $i++) {\n    $A[] = array_map('intval', explode(' ', trim(fgets(STDIN))));\n}\n\n$row = array_map('array_sum', $A);\n$col = array_fill(0, $W, 0);\nfor ($i = 0; $i < $H; $i++)\n    for ($j = 0; $j < $W; $j++)\n        $col[$j] += $A[$i][$j];\n\nfor ($i = 0; $i < $H; $i++) {\n    $line = [];\n    for ($j = 0; $j < $W; $j++) {\n        $line[] = $row[$i] + $col[$j] - $A[$i][$j];\n    }\n    echo implode(' ', $line) . \"\\n\";\n}",
+          "steps": null
+        },
+        "python": {
+          "code": "H, W = map(int, input().split())\nA = [list(map(int, input().split())) for _ in range(H)]\n\n# 行の合計\nrow = [sum(A[i]) for i in range(H)]\n\n# 列の合計\ncol = [sum(A[i][j] for i in range(H)) for j in range(W)]\n\n# 各マスの答えを出力\nfor i in range(H):\n    print(' '.join(str(row[i] + col[j] - A[i][j]) for j in range(W)))",
+          "steps": null
+        },
+        "ruby": {
+          "code": "H, W = gets.split.map(&:to_i)\nA = Array.new(H) { gets.split.map(&:to_i) }\n\nrow = A.map(&:sum)\ncol = Array.new(W, 0)\nH.times { |i| W.times { |j| col[j] += A[i][j] } }\n\nH.times do |i|\n  puts (0...W).map { |j| row[i] + col[j] - A[i][j] }.join(' ')\nend",
+          "steps": null
+        },
+        "rust": {
+          "code": "use std::io::{self, Read, Write, BufWriter};\n\nfn main() {\n    let mut input = String::new();\n    io::stdin().read_to_string(&mut input).unwrap();\n    let stdout = io::stdout();\n    let mut out = BufWriter::new(stdout.lock());\n\n    let mut iter = input.split_ascii_whitespace();\n    let h: usize = iter.next().unwrap().parse().unwrap();\n    let w: usize = iter.next().unwrap().parse().unwrap();\n\n    let mut a = vec![vec![0i64; w]; h];\n    for i in 0..h {\n        for j in 0..w {\n            a[i][j] = iter.next().unwrap().parse().unwrap();\n        }\n    }\n\n    let row: Vec<i64> = a.iter().map(|r| r.iter().sum()).collect();\n    let mut col = vec![0i64; w];\n    for i in 0..h {\n        for j in 0..w {\n            col[j] += a[i][j];\n        }\n    }\n\n    for i in 0..h {\n        for j in 0..w {\n            if j > 0 { write!(out, \" \").unwrap(); }\n            write!(out, \"{}\", row[i] + col[j] - a[i][j]).unwrap();\n        }\n        writeln!(out).unwrap();\n    }\n}",
+          "steps": null
+        },
+        "typescript": {
+          "code": "import * as readline from 'readline';\n\nconst rl = readline.createInterface({ input: process.stdin });\nconst lines: string[] = [];\nrl.on('line', (line) => lines.push(line.trim()));\nrl.on('close', () => {\n  const [H, W] = lines[0].split(' ').map(Number);\n  const A: number[][] = [];\n  for (let i = 0; i < H; i++) {\n    A.push(lines[i + 1].split(' ').map(Number));\n  }\n\n  // 行の合計\n  const row = A.map((r) => r.reduce((s, v) => s + v, 0));\n\n  // 列の合計\n  const col = Array(W).fill(0);\n  for (let i = 0; i < H; i++)\n    for (let j = 0; j < W; j++)\n      col[j] += A[i][j];\n\n  // 各マスの答えを出力\n  const out: string[] = [];\n  for (let i = 0; i < H; i++) {\n    const line: number[] = [];\n    for (let j = 0; j < W; j++) {\n      line.push(row[i] + col[j] - A[i][j]);\n    }\n    out.push(line.join(' '));\n  }\n  console.log(out.join('\\n'));\n});",
+          "steps": null
+        }
+      },
+      "added_at": "2026-05-22",
+      "bad_solutions": {
+        "python": {
+          "label": "O(HW(H+W)) 愚直解 — 各マスごとに行・列を毎回合計する",
+          "code": "H, W = map(int, input().split())\nA = [list(map(int, input().split())) for _ in range(H)]\n\nfor i in range(H):\n    row = []\n    for j in range(W):\n        # sum(A[i]) → 毎回 W 回の足し算\n        # sum(A[k][j]...) → 毎回 H 回の足し算\n        # → 1マスにつき O(H+W) かかり、全体で O(HW(H+W)) → TLE\n        # 先に行合計・列合計を計算しておけば O(HW) で済む\n        s = sum(A[i]) + sum(A[k][j] for k in range(H)) - A[i][j]\n        row.append(s)\n    print(' '.join(map(str, row)))"
+        }
+      },
+      "constraints_note": "- `2 ≤ H, W ≤ 2000`：マスは最大 2000×2000 = **400万個**。\n- 各マスごとに行・列を毎回足すと 400万 × 4000 = **160億回** の計算になり間に合わない。\n- 先に行の合計・列の合計を計算しておけば、あとは足し算・引き算3回で1マスの答えが出る。"
+    }
+  ]
+}

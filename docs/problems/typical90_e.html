@@ -120,6 +120,13 @@ pre.dcode.good{color:#cfc;border-color:#484}
 .run-out{max-height:240px;overflow-y:auto;padding:7px 11px;font-size:.86em;line-height:2;color:#4f8;white-space:pre}
 .run-err{color:#f66}
 .run-loading{color:#666}
+#tb6:not(.active){color:#ff0}
+#tb6.active{background:#ff0;color:#000}
+.viz6e-quiz{border:1px solid #444;padding:10px 14px;margin-top:8px;font-size:.9em;line-height:2;display:none}
+.viz6e-quiz.show{display:block}
+.viz6e-inp{font-family:'DotGothic16',monospace;font-size:1em;background:#000;color:#fff;border:2px solid #444;padding:4px 10px;width:80px;text-align:center}
+.viz6e-inp:focus{outline:none;border-color:#0ff}
+.viz6e-feedback{font-size:.84em;margin-top:4px;min-height:1.6em}
 </style>
 </head>
 <body>
@@ -439,6 +446,47 @@ else:
   </div>
 </div>
 
+<!-- S6: 体験 -->
+<div class="screen" id="s6">
+  <div class="topbar">
+    <a class="topbar-back" href="../"><span class="mi">arrow_back</span> もどる</a>
+    <div class="topbar-title">005 — Restricted Digits</div>
+    <div class="prog" id="p6"></div>
+  </div>
+  <div class="content">
+    <div class="slabel">■ TRY IT</div>
+    <div class="stitle">dpを予想してみよう</div>
+    <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
+      <div style="width:320px;flex-shrink:0">
+        <div style="font-size:.76em;color:#aaa;margin-bottom:4px">N=3, B=7, 使える数字={1,4,9}</div>
+        <div style="font-size:.76em;color:#0ff;margin-bottom:10px">dp[r] = 余りがrになるN桁の数の個数</div>
+        <div class="dp-table">
+          <div class="dp-tit" id="viz6e-tit">まだ始まっていない</div>
+          <div class="dp-bars" id="viz6e-bars"></div>
+        </div>
+        <div class="viz6e-quiz" id="viz6e-quiz">
+          <div id="viz6e-quiz-q"></div>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
+            <input class="viz6e-inp" type="number" id="viz6e-ans" min="0" placeholder="答え">
+            <button class="sbtn" onclick="viz6eCheck()">予測する</button>
+          </div>
+          <div class="viz6e-feedback" id="viz6e-feedback"></div>
+        </div>
+        <div class="snav" style="margin-top:8px">
+          <button class="sbtn" id="viz6e-prev" onclick="viz6eStep(-1)" disabled>◀</button>
+          <span class="sctr" id="viz6e-ctr">0 / 3</span>
+          <button class="sbtn" id="viz6e-next" onclick="viz6eStep(1)">▶ 次のステップへ</button>
+        </div>
+      </div>
+      <div style="flex:1;min-width:220px">
+        <div style="font-size:.76em;color:#888;margin-bottom:6px">遷移の仕組み</div>
+        <div id="viz6e-arrows" class="dp-arrows" style="font-size:.78em"></div>
+        <div style="font-size:.84em;color:#aaa;margin-top:10px;line-height:2;border:1px solid #333;padding:8px 12px;background:#050505" id="viz6e-desc"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div><!-- .screens -->
 
 <nav class="gnav">
@@ -448,6 +496,7 @@ else:
     <button class="tbtn" id="tb3" onclick="goTo(3)">確認</button>
     <button class="tbtn" id="tb4" onclick="goTo(4)">間違い</button>
     <button class="tbtn" id="tb5" onclick="goTo(5)">正解</button>
+    <button class="tbtn" id="tb6" onclick="goTo(6)">体験</button>
   </div>
   <div class="navrow">
     <button class="nbtn" id="gprev" onclick="goTo(cur-1)" disabled>◀ もどる</button>
@@ -458,7 +507,7 @@ else:
 
 <script src="https://cdn.jsdelivr.net/npm/pyodide@0.26.4/pyodide.js"></script>
 <script>
-var cur=1,N_SCR=5;
+var cur=1,N_SCR=6;
 
 var SAMPLES=[
   {i:'3 7 3\n1 4 9',o:'3'},
@@ -648,7 +697,79 @@ function runBad(inId,outId,timeId){
   },30);
 }
 
+// === S6 体験: DP予測 ===
+var viz6eStep_idx=0;
+var viz6eRevealed=false;
+
+function viz6eRenderBars(dp){
+  var el=document.getElementById('viz6e-bars');
+  if(!el)return;
+  el.innerHTML='';
+  var maxv=Math.max.apply(null,dp)||1;
+  for(var r=0;r<7;r++){
+    var row=document.createElement('div');row.className='dp-row';
+    var rid=document.createElement('div');rid.className='dp-rid'+(r===0?' zero':'');rid.textContent='余り'+r+(r===0?' ★':'');row.appendChild(rid);
+    var bw=document.createElement('div');bw.className='dp-bar-wrap';
+    var bf=document.createElement('div');bf.className='dp-fill';
+    var pct=dp[r]?Math.max(8,dp[r]/maxv*100):0;
+    bf.style.width=pct+'%';
+    if(r===0&&dp[r]>0)bf.style.background='#0ff';else bf.style.background=dp[r]?'#2a6':'#333';
+    bw.appendChild(bf);row.appendChild(bw);
+    var cnt=document.createElement('div');cnt.className='dp-cnt';
+    cnt.style.color=r===0&&dp[r]>0?'#0ff':dp[r]?'#fff':'#444';
+    cnt.textContent=dp[r];
+    row.appendChild(cnt);
+    el.appendChild(row);
+  }
+}
+
+function viz6eRender(){
+  var st=DP_STATES[viz6eStep_idx];
+  viz6eRenderBars(st.dp);
+  document.getElementById('viz6e-tit').textContent=st.tit;
+  var arEl=document.getElementById('viz6e-arrows');if(arEl)arEl.textContent=st.arrows;
+  var dEl=document.getElementById('viz6e-desc');if(dEl)dEl.textContent=st.desc;
+  document.getElementById('viz6e-ctr').textContent=viz6eStep_idx+' / '+(DP_STATES.length-1);
+  document.getElementById('viz6e-prev').disabled=(viz6eStep_idx===0);
+  document.getElementById('viz6e-next').disabled=(viz6eStep_idx===DP_STATES.length-1);
+
+  // Quiz: show prediction for next step's dp[0]
+  var qEl=document.getElementById('viz6e-quiz');
+  var nextIdx=viz6eStep_idx+1;
+  if(nextIdx<DP_STATES.length){
+    document.getElementById('viz6e-quiz-q').innerHTML='<strong style="color:#0ff">予測：</strong>'+nextIdx+'桁のとき、dp[0]（余り0の個数）はいくつ？';
+    qEl.className='viz6e-quiz show';
+    document.getElementById('viz6e-feedback').textContent='';
+    document.getElementById('viz6e-ans').value='';
+    viz6eRevealed=false;
+  } else {
+    qEl.className='viz6e-quiz';
+  }
+}
+
+function viz6eCheck(){
+  if(viz6eRevealed)return;
+  var nextIdx=viz6eStep_idx+1;
+  if(nextIdx>=DP_STATES.length)return;
+  var correct=DP_STATES[nextIdx].dp[0];
+  var userVal=parseInt(document.getElementById('viz6e-ans').value);
+  var fb=document.getElementById('viz6e-feedback');
+  if(isNaN(userVal)){fb.innerHTML='<span style="color:#888">数字を入力してください</span>';return;}
+  viz6eRevealed=true;
+  if(userVal===correct){
+    fb.innerHTML='<span style="color:#4f8">✓ 正解！dp[0]='+correct+'</span>';
+  }else{
+    fb.innerHTML='<span style="color:#f99">答えは '+correct+'。▶ で確認しよう</span>';
+  }
+}
+
+function viz6eStep(d){
+  viz6eStep_idx=Math.max(0,Math.min(DP_STATES.length-1,viz6eStep_idx+d));
+  viz6eRender();
+}
+
 showSamp(0,document.querySelector('#s1 .stab'));
+viz6eRender();
 renderDP(0);
 buildMatrix();
 updateProgs();

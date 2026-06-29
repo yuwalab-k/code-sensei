@@ -89,6 +89,11 @@ pre.dcode.good{color:#cfc;border-color:#484}
 .dsumi{font-size:.86em;color:#ccc;line-height:2.1;display:flex;gap:7px;margin-bottom:.1em}
 .dsumi.bad::before{content:'✗';color:#f66;flex-shrink:0}
 .dsumi.good::before{content:'✓';color:#4f8;flex-shrink:0}
+#tb6:not(.active){color:#ff0}
+#tb6.active{background:#ff0;color:#000}
+.viz6c-hint{font-size:.78em;color:#0ff;margin-bottom:10px}
+.viz6c-result{margin-top:8px;border:1px solid #444;padding:8px 12px;font-size:.84em;line-height:2;display:none}
+.viz6c-result.show{display:block}
 /* run box */
 .runbox{border:1px solid #444;display:flex;flex-direction:column;min-height:200px}
 .run-hdr{font-size:.8em;color:#888;padding:7px 11px;border-bottom:1px solid #444;background:#050505;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px;flex-shrink:0}
@@ -415,6 +420,47 @@ print(diameter + 1)  # 直径 + 追加する道1本</pre>
   </div>
 </div>
 
+<!-- S6: 体験 -->
+<div class="screen" id="s6">
+  <div class="topbar">
+    <a class="topbar-back" href="../"><span class="mi">arrow_back</span> もどる</a>
+    <div class="topbar-title">003 — Longest Circular Road</div>
+    <div class="prog" id="p6"></div>
+  </div>
+  <div class="content">
+    <div class="slabel">■ TRY IT</div>
+    <div class="stitle">直径を予想してみよう</div>
+    <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
+      <div style="flex-shrink:0">
+        <div class="viz6c-hint">▼ 2つの都市をクリックして「一番遠い2点」を予想しよう</div>
+        <canvas id="viz6c-canvas" width="300" height="240"></canvas>
+        <div style="font-size:.76em;color:#888;margin-top:6px;line-height:2">
+          <span style="color:#0ff">●</span> 1つ目の選択 &nbsp;
+          <span style="color:#ff0">●</span> 2つ目の選択 &nbsp;
+          <span style="color:#4f8">─</span> 選んだパス
+        </div>
+        <div class="viz6c-result" id="viz6c-result"></div>
+        <div style="display:flex;gap:7px;margin-top:8px">
+          <button class="sbtn" onclick="viz6cReset()">リセット</button>
+          <button class="sbtn" onclick="viz6cShowBFS()" style="border-color:#ff0;color:#ff0">BFS2回の動きを見る ▶</button>
+        </div>
+      </div>
+      <div id="viz6c-anim-area" style="display:none;flex:1;min-width:280px;flex-direction:column;gap:8px">
+        <div style="font-size:.76em;color:#888;margin-bottom:2px">BFS2回の動き（自動再生）</div>
+        <canvas id="viz6c-anim-canvas" width="300" height="240"></canvas>
+        <div style="font-size:.84em;color:#ccc;border:1px solid #333;padding:7px 10px;background:#050505;line-height:2" id="viz6c-anim-legend"></div>
+        <div class="vtit" id="viz6c-anim-tit" style="font-size:.88em"></div>
+        <div class="snav" style="margin-top:4px">
+          <button class="sbtn" id="viz6c-anim-prev" onclick="viz6cAnimPrev()" disabled>◀</button>
+          <span class="sctr" id="viz6c-anim-ctr">0 / 8</span>
+          <button class="sbtn" id="viz6c-anim-next" onclick="viz6cAnimNext()">▶</button>
+          <button class="sbtn" id="viz6c-anim-play" onclick="viz6cAnimToggle()" style="margin-left:6px;border-color:#4af;color:#4af">▶ 自動</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div><!-- .screens -->
 
 <nav class="gnav">
@@ -424,6 +470,7 @@ print(diameter + 1)  # 直径 + 追加する道1本</pre>
     <button class="tbtn" id="tb3" onclick="goTo(3)">確認</button>
     <button class="tbtn" id="tb4" onclick="goTo(4)">間違い</button>
     <button class="tbtn" id="tb5" onclick="goTo(5)">正解</button>
+    <button class="tbtn" id="tb6" onclick="goTo(6)">体験</button>
   </div>
   <div class="navrow">
     <button class="nbtn" id="gprev" onclick="goTo(cur-1)" disabled>◀ もどる</button>
@@ -434,7 +481,7 @@ print(diameter + 1)  # 直径 + 追加する道1本</pre>
 
 <script src="https://cdn.jsdelivr.net/npm/pyodide@0.26.4/pyodide.js"></script>
 <script>
-var cur=1,N_SCR=5;
+var cur=1,N_SCR=6;
 
 var SAMPLES=[
   {i:'3\n1 2\n2 3',o:'3'},
@@ -587,7 +634,7 @@ function goTo(n){
   document.getElementById('gprev').disabled=(cur===1);
   document.getElementById('gnext').disabled=(cur===N_SCR);
   updateProgs();
-  if(cur===3)drawTree(gStep);
+  if(cur===3)drawTree(gStep);if(cur===6)viz6cInit();
 }
 
 function updateProgs(){
@@ -657,6 +704,196 @@ function runBad(inId,outId,timeId){
       te.textContent='⏱ '+Math.round(performance.now()-t0)+' ms';
     }catch(e){oe.textContent='エラー: '+e;oe.className='run-out run-err';}
   },30);
+}
+
+// === S6 体験: 木の直径 ===
+var viz6cSel=[];
+var viz6cAnimIdx=0,viz6cAnimTimer=null;
+
+function viz6cInit(){
+  var canvas=document.getElementById('viz6c-canvas');
+  if(!canvas)return;
+  canvas.onclick=viz6cCanvasClick;
+  viz6cDraw();
+}
+
+function viz6cGetNodeAt(x,y){
+  var ids=Object.keys(NODES);
+  for(var i=0;i<ids.length;i++){
+    var n=NODES[ids[i]];
+    var dx=x-n.x,dy=y-n.y;
+    if(dx*dx+dy*dy<=20*20)return +ids[i];
+  }
+  return null;
+}
+
+function viz6cCanvasClick(e){
+  var rect=e.target.getBoundingClientRect();
+  var x=e.clientX-rect.left,y=e.clientY-rect.top;
+  var node=viz6cGetNodeAt(x,y);
+  if(!node)return;
+  if(viz6cSel.indexOf(node)>=0){
+    viz6cSel=viz6cSel.filter(function(n){return n!==node;});
+  }else if(viz6cSel.length<2){
+    viz6cSel.push(node);
+  }else{
+    viz6cSel=[node];
+  }
+  viz6cDraw();
+  if(viz6cSel.length===2)viz6cShowResult();
+}
+
+function viz6cBFSPath(start,end){
+  var adj={};
+  EDGES.forEach(function(e){
+    if(!adj[e[0]])adj[e[0]]=[];if(!adj[e[1]])adj[e[1]]=[];
+    adj[e[0]].push(e[1]);adj[e[1]].push(e[0]);
+  });
+  var dist={},prev={};
+  var q=[start];dist[start]=0;
+  while(q.length){
+    var v=q.shift();
+    (adj[v]||[]).forEach(function(u){
+      if(dist[u]===undefined){dist[u]=dist[v]+1;prev[u]=v;q.push(u);}
+    });
+  }
+  var path=[],cur=end;
+  while(cur!==undefined){path.unshift(cur);cur=prev[cur];}
+  return {dist:dist[end]||0,path:path};
+}
+
+function viz6cShowResult(){
+  var r=viz6cBFSPath(viz6cSel[0],viz6cSel[1]);
+  var opt=(viz6cSel.indexOf(1)>=0&&viz6cSel.indexOf(4)>=0)||(viz6cSel.indexOf(4)>=0&&viz6cSel.indexOf(1)>=0);
+  var same=(r.dist===3);
+  var el=document.getElementById('viz6c-result');
+  el.innerHTML='あなたが選んだパス：<strong style="color:#ff0">'+r.dist+'辺</strong>'
+    +(same?'&nbsp;&nbsp;<span style="color:#4f8">✓ これが直径！コース長='+(r.dist+1)+'</span>':'&nbsp;&nbsp;<span style="color:#f99">直径は3辺 → BFSで確認しよう</span>');
+  el.className='viz6c-result show';
+  viz6cDraw();
+}
+
+function viz6cReset(){
+  viz6cSel=[];
+  document.getElementById('viz6c-result').className='viz6c-result';
+  viz6cDraw();
+  document.getElementById('viz6c-anim-area').style.display='none';
+  if(viz6cAnimTimer){clearInterval(viz6cAnimTimer);viz6cAnimTimer=null;}
+}
+
+function viz6cDraw(){
+  var canvas=document.getElementById('viz6c-canvas');
+  if(!canvas)return;
+  var ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,300,240);
+  // path highlight
+  var path=[];
+  if(viz6cSel.length===2){
+    path=viz6cBFSPath(viz6cSel[0],viz6cSel[1]).path;
+    for(var i=0;i<path.length-1;i++){
+      var a=NODES[path[i]],b=NODES[path[i+1]];
+      ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
+      ctx.strokeStyle='rgba(80,255,136,0.5)';ctx.lineWidth=3;ctx.stroke();
+    }
+  }
+  // edges
+  EDGES.forEach(function(e){
+    var a=NODES[e[0]],b=NODES[e[1]];
+    ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
+    ctx.strokeStyle='#333';ctx.lineWidth=2;ctx.stroke();
+  });
+  // nodes
+  Object.keys(NODES).forEach(function(id){
+    var n=NODES[id],nid=+id;
+    ctx.beginPath();ctx.arc(n.x,n.y,16,0,Math.PI*2);
+    if(viz6cSel[0]===nid) ctx.fillStyle='rgba(0,255,255,.15)';
+    else if(viz6cSel[1]===nid) ctx.fillStyle='rgba(255,255,0,.15)';
+    else ctx.fillStyle='#0a0a0a';
+    ctx.fill();
+    ctx.strokeStyle=viz6cSel[0]===nid?'#0ff':(viz6cSel[1]===nid?'#ff0':'#444');
+    ctx.lineWidth=2;ctx.stroke();
+    ctx.fillStyle='#fff';ctx.font='bold 14px DotGothic16,monospace';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(id,n.x,n.y);
+  });
+}
+
+function viz6cShowBFS(){
+  document.getElementById('viz6c-anim-area').style.display='flex';
+  viz6cAnimIdx=0;viz6cRenderAnim();
+  if(viz6cAnimTimer)clearInterval(viz6cAnimTimer);
+  document.getElementById('viz6c-anim-play').textContent='⏸ 停止';
+  viz6cAnimTimer=setInterval(function(){
+    if(viz6cAnimIdx<G_STEPS.length-1){viz6cAnimIdx++;viz6cRenderAnim();}
+    else{clearInterval(viz6cAnimTimer);viz6cAnimTimer=null;document.getElementById('viz6c-anim-play').textContent='▶ 自動';}
+  },1600);
+}
+
+function viz6cRenderAnim(){
+  var st=G_STEPS[viz6cAnimIdx];
+  var canvas=document.getElementById('viz6c-anim-canvas');
+  if(!canvas)return;
+  var ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,300,240);
+  // diameter path
+  if(st.diameter){
+    var dpath=[[1,2],[2,3],[3,4]];
+    dpath.forEach(function(e){
+      var a=NODES[e[0]],b=NODES[e[1]];
+      ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
+      ctx.strokeStyle='rgba(80,255,136,0.5)';ctx.lineWidth=3;ctx.stroke();
+    });
+  }
+  // edges
+  EDGES.forEach(function(e){
+    var a=NODES[e[0]],b=NODES[e[1]];
+    ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);
+    ctx.strokeStyle='#333';ctx.lineWidth=2;ctx.stroke();
+  });
+  // nodes
+  Object.keys(NODES).forEach(function(id){
+    var n=NODES[id],nid=+id;
+    var inV1=st.visited1.indexOf(nid)>=0,inV2=st.visited2.indexOf(nid)>=0;
+    var isFar1=(st.farthest1===nid),isFar2=(st.farthest2===nid),isCur=(st.cur===nid);
+    ctx.beginPath();ctx.arc(n.x,n.y,16,0,Math.PI*2);
+    if(isFar1||isFar2)ctx.fillStyle='rgba(80,255,136,.2)';
+    else if(inV2)ctx.fillStyle='rgba(255,255,0,.1)';
+    else if(inV1)ctx.fillStyle='rgba(0,255,255,.1)';
+    else ctx.fillStyle='#0a0a0a';
+    ctx.fill();
+    if(isFar1||isFar2)ctx.strokeStyle='#4f8';
+    else if(isCur)ctx.strokeStyle='#fff';
+    else if(inV2)ctx.strokeStyle='#ff0';
+    else if(inV1)ctx.strokeStyle='#0ff';
+    else ctx.strokeStyle='#444';
+    ctx.lineWidth=2;ctx.stroke();
+    ctx.fillStyle='#fff';ctx.font='bold 14px DotGothic16,monospace';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(id,n.x,n.y);
+  });
+  // legend
+  var leg=document.getElementById('viz6c-anim-legend');
+  if(st.diameter){leg.innerHTML='直径=<span style="color:#4f8">3</span>（1→2→3→4）<br>答え=3+1=<span style="color:#4f8">4</span>';}
+  else if(st.farthest1){leg.innerHTML='BFS1完了: 最遠点=<span style="color:#0ff">都市'+st.farthest1+'</span>';}
+  else if(st.phase===1){leg.innerHTML='BFS1探索中 <span style="color:#0ff">■</span>訪問済';}
+  else if(st.phase===2){leg.innerHTML='BFS2探索中 <span style="color:#ff0">■</span>訪問済';}
+  else{leg.textContent='スタート';}
+  document.getElementById('viz6c-anim-tit').textContent=st.tit;
+  document.getElementById('viz6c-anim-ctr').textContent=viz6cAnimIdx+' / '+(G_STEPS.length-1);
+  document.getElementById('viz6c-anim-prev').disabled=(viz6cAnimIdx===0);
+  document.getElementById('viz6c-anim-next').disabled=(viz6cAnimIdx===G_STEPS.length-1);
+}
+
+function viz6cAnimPrev(){if(viz6cAnimTimer){clearInterval(viz6cAnimTimer);viz6cAnimTimer=null;document.getElementById('viz6c-anim-play').textContent='▶ 自動';}if(viz6cAnimIdx>0){viz6cAnimIdx--;viz6cRenderAnim();}}
+function viz6cAnimNext(){if(viz6cAnimTimer){clearInterval(viz6cAnimTimer);viz6cAnimTimer=null;document.getElementById('viz6c-anim-play').textContent='▶ 自動';}if(viz6cAnimIdx<G_STEPS.length-1){viz6cAnimIdx++;viz6cRenderAnim();}}
+function viz6cAnimToggle(){
+  if(viz6cAnimTimer){clearInterval(viz6cAnimTimer);viz6cAnimTimer=null;document.getElementById('viz6c-anim-play').textContent='▶ 自動';}
+  else{
+    if(viz6cAnimIdx>=G_STEPS.length-1){viz6cAnimIdx=0;viz6cRenderAnim();}
+    document.getElementById('viz6c-anim-play').textContent='⏸ 停止';
+    viz6cAnimTimer=setInterval(function(){
+      if(viz6cAnimIdx<G_STEPS.length-1){viz6cAnimIdx++;viz6cRenderAnim();}
+      else{clearInterval(viz6cAnimTimer);viz6cAnimTimer=null;document.getElementById('viz6c-anim-play').textContent='▶ 自動';}
+    },1600);
+  }
 }
 
 showSamp(0,document.querySelector('#s1 .stab'));

@@ -124,6 +124,17 @@ pre.dcode.good{color:#cfc;border-color:#484}
 .run-out{max-height:240px;overflow-y:auto;padding:7px 11px;font-size:.86em;line-height:2;color:#4f8;white-space:pre}
 .run-err{color:#f66}
 .run-loading{color:#666}
+#tb6:not(.active){color:#ff0}
+#tb6.active{background:#ff0;color:#000}
+.bviz-btn{font-family:'DotGothic16',monospace;font-size:1.05em;border:2px solid;background:#000;padding:7px 18px;cursor:pointer;transition:.15s;margin-right:6px}
+.bviz-btn.open-btn{border-color:#0ff;color:#0ff}
+.bviz-btn.open-btn:hover:not(:disabled){background:#0ff;color:#000}
+.bviz-btn.close-btn{border-color:#ff0;color:#ff0}
+.bviz-btn.close-btn:hover:not(:disabled){background:#ff0;color:#000}
+.bviz-btn:disabled{opacity:.25;cursor:default}
+.bviz-found-item{font-size:.88em;padding:3px 10px;border:1px solid #4f8;color:#4f8;font-family:'Google Sans Code',monospace}
+.bviz-celebrate{font-size:.9em;color:#ff0;border:2px solid #ff0;padding:8px 14px;margin-top:10px;display:none}
+.bviz-celebrate.show{display:block}
 </style>
 </head>
 <body>
@@ -400,6 +411,51 @@ if N % 2 == 0:         # 奇数のとき正しいカッコ列は存在しない
   </div>
 </div>
 
+<!-- S6: 体験 -->
+<div class="screen" id="s6">
+  <div class="topbar">
+    <a class="topbar-back" href="../"><span class="mi">arrow_back</span> もどる</a>
+    <div class="topbar-title">002 — Encyclopedia of Parentheses</div>
+    <div class="prog" id="p6"></div>
+  </div>
+  <div class="content">
+    <div class="slabel">■ TRY IT</div>
+    <div class="stitle">カッコ列を作ってみよう</div>
+    <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
+      <div style="width:340px;flex-shrink:0">
+        <div style="font-size:.76em;color:#aaa;margin-bottom:6px">N=4 ／ 正しいカッコ列を全部（2通り）見つけよう</div>
+        <div style="font-size:.76em;color:#0ff;margin-bottom:10px">ボタンで1文字ずつ置いていこう</div>
+        <div class="bv-string" id="viz6b-string" style="margin-bottom:10px"></div>
+        <div class="bv-state" id="viz6b-state" style="margin-bottom:10px"></div>
+        <div>
+          <button class="bviz-btn open-btn" id="viz6b-open" onclick="viz6bPlace('(')">( を置く</button>
+          <button class="bviz-btn close-btn" id="viz6b-close" onclick="viz6bPlace(')')">） を置く</button>
+          <button class="sbtn" onclick="viz6bBack()" style="margin-left:8px">↩ 1つ戻る</button>
+        </div>
+        <div style="font-size:.84em;color:#888;margin:8px 0" id="viz6b-progress">見つけた: 0 / 2</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px" id="viz6b-found"></div>
+        <div class="bviz-celebrate" id="viz6b-celebrate">🎉 全通り見つけた！これがバックトラッキング！</div>
+        <div style="margin-top:10px">
+          <button class="sbtn" onclick="viz6bShowAnim()" style="border-color:#ff0;color:#ff0">再帰の動きを見る ▶</button>
+        </div>
+      </div>
+      <div id="viz6b-anim-area" style="display:none;flex:1;min-width:280px;flex-direction:column;gap:8px">
+        <div style="font-size:.76em;color:#888;margin-bottom:2px">再帰の動き（自動再生）</div>
+        <div class="bv-string" id="viz6b-anim-string" style="margin-bottom:8px"></div>
+        <div class="bv-state" id="viz6b-anim-state"></div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px" id="viz6b-anim-found"></div>
+        <div class="vtit" id="viz6b-anim-tit" style="font-size:.88em;margin-top:4px"></div>
+        <div class="snav" style="margin-top:4px">
+          <button class="sbtn" id="viz6b-anim-prev" onclick="viz6bAnimPrev()" disabled>◀</button>
+          <span class="sctr" id="viz6b-anim-ctr">0 / 8</span>
+          <button class="sbtn" id="viz6b-anim-next" onclick="viz6bAnimNext()">▶</button>
+          <button class="sbtn" id="viz6b-anim-play" onclick="viz6bAnimToggle()" style="margin-left:6px;border-color:#4af;color:#4af">▶ 自動</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div><!-- .screens -->
 
 <nav class="gnav">
@@ -409,6 +465,7 @@ if N % 2 == 0:         # 奇数のとき正しいカッコ列は存在しない
     <button class="tbtn" id="tb3" onclick="goTo(3)">確認</button>
     <button class="tbtn" id="tb4" onclick="goTo(4)">間違い</button>
     <button class="tbtn" id="tb5" onclick="goTo(5)">正解</button>
+    <button class="tbtn" id="tb6" onclick="goTo(6)">体験</button>
   </div>
   <div class="navrow">
     <button class="nbtn" id="gprev" onclick="goTo(cur-1)" disabled>◀ もどる</button>
@@ -419,7 +476,7 @@ if N % 2 == 0:         # 奇数のとき正しいカッコ列は存在しない
 
 <script src="https://cdn.jsdelivr.net/npm/pyodide@0.26.4/pyodide.js"></script>
 <script>
-var cur=1,N_SCR=5;
+var cur=1,N_SCR=6;
 var SAMPLES=[
   {i:'2',o:'()'},
   {i:'3',o:''},
@@ -641,6 +698,121 @@ function runBadCode(inId,outId,timeId){
   },30);
 }
 
+// === S6 体験: ブラケット ===
+var viz6bStr='',viz6bL=0,viz6bR=0,viz6bFound=[];
+var viz6bAnimIdx=0,viz6bAnimTimer=null;
+
+function viz6bRender(){
+  var N=4,el=document.getElementById('viz6b-string');
+  el.innerHTML='';
+  for(var i=0;i<viz6bStr.length;i++){
+    var c=document.createElement('div');
+    c.className='bv-char '+(viz6bStr[i]==='('?'open':'close');
+    c.textContent=viz6bStr[i];el.appendChild(c);
+  }
+  for(var i=viz6bStr.length;i<N;i++){
+    var c=document.createElement('div');
+    c.style.cssText='width:38px;height:44px;border:2px dashed #333;display:flex;align-items:center;justify-content:center;color:#333;font-size:1.4em';
+    c.textContent='?';el.appendChild(c);
+  }
+  var html='<div class="bv-row"><span class="bv-lbl" style="color:#0ff">l（左カッコ）</span><div class="bv-bar"><div class="bv-fill" style="width:'+(viz6bL/2*100)+'%;background:#0ff;opacity:.4"></div></div><span class="bv-val" style="color:#0ff">'+viz6bL+'/2</span></div>';
+  html+='<div class="bv-row"><span class="bv-lbl" style="color:#ff0">r（右カッコ）</span><div class="bv-bar"><div class="bv-fill" style="width:'+(viz6bR/2*100)+'%;background:#ff0;opacity:.4"></div></div><span class="bv-val" style="color:#ff0">'+viz6bR+'/2</span></div>';
+  html+='<div style="margin-top:5px;font-size:.78em;color:#666">';
+  html+=(viz6bL<2?'<span style="color:#0ff">✓ ( を置ける</span>':'<span style="color:#444">✗ ( はもう置けない</span>');
+  html+=' &nbsp; ';
+  html+=(viz6bR<viz6bL?'<span style="color:#ff0">✓ ) を置ける</span>':'<span style="color:#444">✗ ) は置けない</span>');
+  html+='</div>';
+  document.getElementById('viz6b-state').innerHTML=html;
+  document.getElementById('viz6b-open').disabled=(viz6bL>=2);
+  document.getElementById('viz6b-close').disabled=(viz6bR>=viz6bL);
+}
+
+function viz6bPlace(c){
+  if(c==='('&&viz6bL>=2)return;
+  if(c===')'&&viz6bR>=viz6bL)return;
+  viz6bStr+=c;
+  if(c==='(')viz6bL++;else viz6bR++;
+  viz6bRender();
+  if(viz6bStr.length===4){
+    // Complete!
+    var found=viz6bStr;
+    if(viz6bFound.indexOf(found)<0){
+      viz6bFound.push(found);
+      var fe=document.getElementById('viz6b-found');
+      fe.innerHTML='<div style="font-size:.76em;color:#4f8;width:100%;margin-bottom:4px">見つけた列：</div>';
+      viz6bFound.forEach(function(f){var d=document.createElement('div');d.className='bviz-found-item';d.textContent=f;fe.appendChild(d);});
+    }
+    document.getElementById('viz6b-progress').textContent='見つけた: '+viz6bFound.length+' / 2';
+    if(viz6bFound.length>=2)document.getElementById('viz6b-celebrate').className='bviz-celebrate show';
+    viz6bStr='';viz6bL=0;viz6bR=0;
+    setTimeout(viz6bRender,80);
+  }
+}
+
+function viz6bBack(){
+  if(viz6bStr.length>0){
+    var c=viz6bStr[viz6bStr.length-1];
+    if(c==='(')viz6bL--;else viz6bR--;
+    viz6bStr=viz6bStr.slice(0,-1);
+  }
+  viz6bRender();
+}
+
+function viz6bShowAnim(){
+  document.getElementById('viz6b-anim-area').style.display='flex';
+  viz6bAnimIdx=0;viz6bRenderAnim();
+  if(viz6bAnimTimer)clearInterval(viz6bAnimTimer);
+  document.getElementById('viz6b-anim-play').textContent='⏸ 停止';
+  viz6bAnimTimer=setInterval(function(){
+    if(viz6bAnimIdx<G_STEPS.length-1){viz6bAnimIdx++;viz6bRenderAnim();}
+    else{clearInterval(viz6bAnimTimer);viz6bAnimTimer=null;document.getElementById('viz6b-anim-play').textContent='▶ 自動';}
+  },1600);
+}
+
+function viz6bRenderAnim(){
+  var st=G_STEPS[viz6bAnimIdx];
+  var N=4,el=document.getElementById('viz6b-anim-string');
+  el.innerHTML='';
+  for(var i=0;i<st.s.length;i++){
+    var c=document.createElement('div');
+    c.className='bv-char '+(st.found.length>0?'done':(st.s[i]==='('?'open':'close'));
+    c.textContent=st.s[i];el.appendChild(c);
+  }
+  for(var i=st.s.length;i<N;i++){
+    var c=document.createElement('div');
+    c.style.cssText='width:38px;height:44px;border:2px dashed #333;display:flex;align-items:center;justify-content:center;color:#333;font-size:1.4em';
+    c.textContent='?';el.appendChild(c);
+  }
+  var html='<div class="bv-row"><span class="bv-lbl" style="color:#0ff">l</span><div class="bv-bar"><div class="bv-fill" style="width:'+(st.l/2*100)+'%;background:#0ff;opacity:.4"></div></div><span class="bv-val" style="color:#0ff">'+st.l+'/2</span></div>';
+  html+='<div class="bv-row"><span class="bv-lbl" style="color:#ff0">r</span><div class="bv-bar"><div class="bv-fill" style="width:'+(st.r/2*100)+'%;background:#ff0;opacity:.4"></div></div><span class="bv-val" style="color:#ff0">'+st.r+'/2</span></div>';
+  document.getElementById('viz6b-anim-state').innerHTML=html;
+  var fe=document.getElementById('viz6b-anim-found');
+  fe.innerHTML='';
+  if(st.found.length>0){
+    var lbl=document.createElement('div');lbl.style.cssText='font-size:.76em;color:#4f8;width:100%';lbl.textContent='見つけた：';fe.appendChild(lbl);
+    st.found.forEach(function(f){var d=document.createElement('div');d.className='bv-result';d.textContent=f;fe.appendChild(d);});
+  }
+  document.getElementById('viz6b-anim-tit').textContent=st.tit;
+  document.getElementById('viz6b-anim-ctr').textContent=viz6bAnimIdx+' / '+(G_STEPS.length-1);
+  document.getElementById('viz6b-anim-prev').disabled=(viz6bAnimIdx===0);
+  document.getElementById('viz6b-anim-next').disabled=(viz6bAnimIdx===G_STEPS.length-1);
+}
+
+function viz6bAnimPrev(){if(viz6bAnimTimer){clearInterval(viz6bAnimTimer);viz6bAnimTimer=null;document.getElementById('viz6b-anim-play').textContent='▶ 自動';}if(viz6bAnimIdx>0){viz6bAnimIdx--;viz6bRenderAnim();}}
+function viz6bAnimNext(){if(viz6bAnimTimer){clearInterval(viz6bAnimTimer);viz6bAnimTimer=null;document.getElementById('viz6b-anim-play').textContent='▶ 自動';}if(viz6bAnimIdx<G_STEPS.length-1){viz6bAnimIdx++;viz6bRenderAnim();}}
+function viz6bAnimToggle(){
+  if(viz6bAnimTimer){clearInterval(viz6bAnimTimer);viz6bAnimTimer=null;document.getElementById('viz6b-anim-play').textContent='▶ 自動';}
+  else{
+    if(viz6bAnimIdx>=G_STEPS.length-1){viz6bAnimIdx=0;viz6bRenderAnim();}
+    document.getElementById('viz6b-anim-play').textContent='⏸ 停止';
+    viz6bAnimTimer=setInterval(function(){
+      if(viz6bAnimIdx<G_STEPS.length-1){viz6bAnimIdx++;viz6bRenderAnim();}
+      else{clearInterval(viz6bAnimTimer);viz6bAnimTimer=null;document.getElementById('viz6b-anim-play').textContent='▶ 自動';}
+    },1600);
+  }
+}
+
+viz6bRender();
 renderStep(G_STEPS[0]);
 buildBFGrid();
 showSamp(0,document.querySelector('#s1 .stab'));

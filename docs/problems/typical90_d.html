@@ -174,6 +174,18 @@ pre.dcode.good{color:#cfc;border-color:#484}
 .big-test-btn:hover:not(:disabled){background:#ff0;color:#000}
 .big-test-btn:disabled{border-color:#444;color:#555;cursor:default;opacity:.5}
 .run-note{font-size:.7em;color:#888;flex-basis:100%;line-height:1.7}
+
+/* ── S6 体験 ── */
+#gtab6:not(.active){color:#ff0}
+#gtab6.active{background:#ff0;color:#000}
+.viz6d-cell{width:52px;height:52px;border:2px solid #444;display:flex;align-items:center;justify-content:center;font-size:1.1em;cursor:pointer;transition:.15s;position:relative}
+.viz6d-cell:hover{border-color:#888}
+.viz6d-cell.sel{border-color:#ff0;background:rgba(255,255,0,.12)}
+.viz6d-cell.hi-r{background:rgba(0,255,255,.08);border-color:#0ff}
+.viz6d-cell.hi-c{background:rgba(0,255,255,.05);border-color:#0aa}
+.viz6d-formula{font-size:.84em;color:#4af;border:1px solid #4af;padding:7px 12px;margin-top:8px;line-height:2;font-family:'Google Sans Code',monospace;white-space:pre;display:none}
+.viz6d-formula.show{display:block}
+.viz6d-score{font-size:1.1em;color:#ff0;font-weight:bold;margin:4px 0}
 </style>
 </head>
 <body>
@@ -483,6 +495,43 @@ for i in range(H):
     </div>
   </div>
 
+<!-- S6: 体験 -->
+<div class="screen" id="s6">
+  <div class="topbar">
+    <a class="topbar-back" href="../"><span class="mi">arrow_back</span> もどる</a>
+    <div class="topbar-title">004 — Cross Sum</div>
+    <div class="prog" id="p6"></div>
+  </div>
+  <div class="content">
+    <div class="slabel">■ TRY IT</div>
+    <div class="stitle">クロスサムを感じてみよう</div>
+    <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">
+      <div style="flex-shrink:0">
+        <div style="font-size:.76em;color:#0ff;margin-bottom:10px">▼ マスをクリックしてクロスサムを確認しよう</div>
+        <div id="viz6d-grid" style="display:inline-block;border:1px solid #333"></div>
+        <div style="font-size:.72em;color:#888;margin-top:6px;line-height:1.8">
+          <span style="background:rgba(0,255,255,.08);border:1px solid #0ff;padding:1px 6px">■</span> 同じ行・列
+          &nbsp;
+          <span style="background:rgba(255,255,0,.12);border:1px solid #ff0;padding:1px 6px">■</span> 選択セル
+        </div>
+        <div class="viz6d-formula" id="viz6d-formula"></div>
+        <div class="viz6d-score" id="viz6d-score"></div>
+        <button class="sbtn" onclick="viz6dReset()" style="margin-top:8px">リセット</button>
+      </div>
+      <div style="flex:1;min-width:220px">
+        <div style="font-size:.76em;color:#888;margin-bottom:6px">行・列の合計（前計算）</div>
+        <div id="viz6d-sums" style="font-size:.84em;line-height:2.2;border:1px solid #333;padding:8px 12px;background:#050505"></div>
+        <div style="font-size:.76em;color:#aaa;margin-top:8px;line-height:2">
+          <strong style="color:#ff0">ポイント：</strong><br>
+          各マスのクロスサムは<br>
+          row[i] + col[j] - A[i][j]<br>
+          で O(1) で求まる！
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div><!-- /screens -->
 
 <nav class="gnav">
@@ -492,6 +541,7 @@ for i in range(H):
     <button class="tbtn" id="gtab3" onclick="goTo(3)">③ 確認</button>
     <button class="tbtn" id="gtab4" onclick="goTo(4)">④ 間違い</button>
     <button class="tbtn" id="gtab5" onclick="goTo(5)">⑤ 正解</button>
+    <button class="tbtn" id="gtab6" onclick="goTo(6)">体験</button>
   </div>
   <div class="navrow">
     <button class="nbtn" id="gprev" onclick="goTo(cur-1)" disabled>◀ もどる</button>
@@ -502,8 +552,8 @@ for i in range(H):
 
 <script>
 // ── Navigation ───────────────────────────────────────
-var TOTAL=5, cur=1;
-var pids=['p1','p2','p3','p4','p5'];
+var TOTAL=6, cur=1;
+var pids=['p1','p2','p3','p4','p5','p6'];
 pids.forEach(function(id){
   var el=document.getElementById(id); if(!el)return;
   for(var i=1;i<=TOTAL;i++){var d=document.createElement('div');d.className='pd';d.id=id+'-'+i;el.appendChild(d);}
@@ -644,6 +694,60 @@ renderStep(0,gS,'vgrid','vrsums','vcsums','gcell','rcell','ccell','vtit','vdesc'
 renderStep(0,bS,'bgrid','bgrsums','bgcsums','cgcell','crcell','cccell',null,'bvdesc','bveq','bvops','bvprev','bvnext','bvctr',true);
 renderStep(0,gS,'cgrid','cgrsums','cgcsums','cgcell','crcell','cccell',null,'cvdesc','cveq','cvops','cvprev','cvnext','cvctr',false);
 
+// === S6 体験: Cross Sum ===
+var VIZ6D_G=[[1,1,1],[1,1,1],[1,1,1]];
+var VIZ6D_ROW=[3,3,3],VIZ6D_COL=[3,3,3];
+var viz6dSel=null;
+
+function viz6dBuild(){
+  var el=document.getElementById('viz6d-grid');
+  if(!el)return;
+  el.innerHTML='';
+  for(var i=0;i<3;i++){
+    var row=document.createElement('div');row.style.display='flex';
+    for(var j=0;j<3;j++){
+      var cell=document.createElement('div');
+      cell.className='viz6d-cell';
+      if(viz6dSel){
+        var si=viz6dSel[0],sj=viz6dSel[1];
+        if(i===si&&j===sj) cell.className='viz6d-cell sel';
+        else if(i===si||j===sj) cell.className='viz6d-cell hi-r';
+      }
+      cell.textContent=VIZ6D_G[i][j];
+      cell.addEventListener('click',(function(ii,jj){return function(){viz6dClick(ii,jj);};})(i,j));
+      row.appendChild(cell);
+    }
+    el.appendChild(row);
+  }
+  // sums
+  var sumsEl=document.getElementById('viz6d-sums');
+  if(sumsEl){
+    var html='<div style="color:#555;font-size:.78em;margin-bottom:4px">行合計 (row)</div>';
+    for(var i=0;i<3;i++) html+='row['+i+'] = '+VIZ6D_ROW[i]+'<br>';
+    html+='<div style="color:#555;font-size:.78em;margin:8px 0 4px">列合計 (col)</div>';
+    for(var j=0;j<3;j++) html+='col['+j+'] = '+VIZ6D_COL[j]+'<br>';
+    sumsEl.innerHTML=html;
+  }
+}
+
+function viz6dClick(i,j){
+  viz6dSel=[i,j];
+  viz6dBuild();
+  var val=VIZ6D_ROW[i]+VIZ6D_COL[j]-VIZ6D_G[i][j];
+  var fml=document.getElementById('viz6d-formula');
+  fml.textContent='row['+i+'] + col['+j+'] - A['+i+']['+j+']\n= '+VIZ6D_ROW[i]+' + '+VIZ6D_COL[j]+' - '+VIZ6D_G[i][j]+'\n= '+val;
+  fml.className='viz6d-formula show';
+  document.getElementById('viz6d-score').textContent='クロスサム: '+val;
+}
+
+function viz6dReset(){
+  viz6dSel=null;
+  document.getElementById('viz6d-formula').className='viz6d-formula';
+  document.getElementById('viz6d-score').textContent='';
+  viz6dBuild();
+}
+
+viz6dBuild();
 // ── Pyodide ───────────────────────────────────────────
 var pyodide=null, pyLoaded=false, pyLoading=false;
 var GOOD_CODE=[

@@ -6,156 +6,293 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Yokan Party | 競プロ教材</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css">
-<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Code:wght@400;700&family=DotGothic16&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
   onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],ignoredTags:['script','noscript','style','pre','code']})"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#000;color:#fff;font-family:'DotGothic16',monospace;font-size:17px;line-height:2}
+a{color:inherit;text-decoration:none}
+.mi{font-family:'Material Symbols Outlined';font-weight:normal;font-style:normal;font-size:1.25em;display:inline-block;vertical-align:-.2em;line-height:1;letter-spacing:normal;text-transform:none;white-space:nowrap;font-feature-settings:'liga';-webkit-font-smoothing:antialiased}
+pre,code,textarea{font-family:'Google Sans Code','DotGothic16',monospace !important}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.06) 3px,rgba(0,0,0,.06) 4px)}
+.screens{padding-bottom:120px}
+.screen{display:none;flex-direction:column;min-height:calc(100vh - 90px)}
+.screen.active{display:flex}
+.gnav{position:fixed;bottom:0;left:0;right:0;height:90px;border-top:2px solid #444;background:#050505;z-index:100}
+.tabstrip{height:46px;display:flex;border-bottom:1px solid #444}
+.tbtn{flex:1;font-family:'DotGothic16',monospace;font-size:.88em;background:#000;color:#666;border:none;border-right:1px solid #444;cursor:pointer;transition:.1s}
+.tbtn:last-child{border-right:none}
+.tbtn:hover{color:#fff;background:#0a0a0a}
+.tbtn.active{background:#fff;color:#000}
+.navrow{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 18px}
+.hint{font-size:.6em;color:#444}
+.nbtn{font-family:'DotGothic16',monospace;font-size:.88em;border:1px solid #555;background:#000;color:#888;padding:5px 18px;cursor:pointer;transition:.1s;display:flex;align-items:center;gap:5px}
+.nbtn:hover:not(:disabled){border-color:#fff;color:#fff}
+.nbtn:disabled{opacity:.2;cursor:default}
+.nbtn.go{border-color:#0ff;color:#0ff}
+.nbtn.go:hover{background:#0ff;color:#000}
+.topbar{border-bottom:2px solid #444;padding:0 18px;height:46px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:#050505}
+.topbar-back{font-size:.9em;color:#888;display:flex;align-items:center;gap:5px;cursor:pointer}
+.topbar-back:hover{color:#fff}
+.topbar-title{font-size:.84em;color:#888}
+.prog{display:flex;gap:6px;align-items:center}
+.pd{width:10px;height:10px;background:#0a0a0a;border:1px solid #444;transition:.2s}
+.pd.done{background:#0ff;border-color:#0ff;opacity:.4}
+.pd.active{background:#0ff;border-color:#0ff;box-shadow:0 0 6px #0ff}
+.content{display:flex;flex-direction:column;padding:12px 20px 0}
+.slabel{font-size:.76em;color:#0ff;margin-bottom:4px;letter-spacing:.15em}
+.stitle{font-size:1.35em;color:#fff;margin-bottom:10px;line-height:2}
+.playout{display:flex;gap:20px;min-height:240px}
+.pstmt{flex:1;font-size:.97em;line-height:2.2;color:#ccc}
+.pstmt p{margin-bottom:.6em}
+.psamp{width:220px;flex-shrink:0;display:flex;flex-direction:column}
+.samp-tabs{display:flex;border:1px solid #444;border-bottom:none;flex-shrink:0}
+.stab{flex:1;font-family:'DotGothic16',monospace;font-size:.76em;background:#000;color:#666;border:none;border-right:1px solid #444;padding:5px 0;cursor:pointer;transition:.1s}
+.stab:last-child{border-right:none}
+.stab:hover{color:#fff}
+.stab.active{background:#0ff;color:#000}
+.sbox{border:1px solid #444;padding:10px;display:flex;flex-direction:column;gap:8px}
+.slbl{font-size:.72em;color:#0ff;margin-bottom:2px}
+.spre{font-size:.86em;color:#ccc;white-space:pre;line-height:1.9}
+.dbadge{font-size:.82em;border:1px solid #ff9800;color:#ff9800;padding:2px 8px;margin-right:6px}
+.ctag{font-size:.82em;border:1px solid #444;color:#888;padding:2px 8px;margin-right:4px}
+.atcoder-link{display:inline-flex;align-items:center;gap:5px;font-size:.82em;color:#0ff;border:1px solid #0ff;padding:5px 11px;margin-top:10px}
+.atcoder-link:hover{background:#0ff;color:#000}
+.elayout{display:flex;gap:14px;min-height:240px}
+.ecol{flex:1;display:flex;flex-direction:column;gap:8px}
+.ecard{border:1px solid #444;padding:12px;flex:1;overflow-y:auto}
+.ect{font-size:.8em;color:#888;margin-bottom:8px;border-bottom:1px solid #444;padding-bottom:5px}
+.ecard p{font-size:.92em;line-height:2.2;color:#ccc;margin-bottom:.3em}
+.ecard strong{color:#ff0}
+.ecard.bad{border-color:#f66}.ecard.bad .ect{color:#f66}
+.ecard.good{border-color:#4f8}.ecard.good .ect{color:#4f8}
+.etbl{border-collapse:collapse;font-size:.84em;margin:.6em 0;width:100%}
+.etbl th,.etbl td{border:1px solid #444;padding:4px 8px;text-align:center;line-height:1.9}
+.etbl th{background:#111;color:#0ff}
+.vlayout{display:flex;gap:20px;min-height:240px;align-items:flex-start}
+.vright{flex:1;display:flex;flex-direction:column;gap:8px}
+.vtit{font-size:.94em;color:#0ff;line-height:2}
+.vdesc{font-size:.84em;color:#aaa;line-height:2;white-space:pre-wrap}
+.veq{font-size:.82em;line-height:2;padding:7px 11px;border:1px solid #4af;background:#050505;white-space:pre;color:#4af;font-family:'Google Sans Code',monospace !important}
+.snav{display:flex;gap:7px;align-items:center;margin-top:8px}
+.sctr{font-size:.76em;color:#888}
+.sbtn{font-family:'DotGothic16',monospace;font-size:.82em;border:1px solid #555;background:#000;color:#888;padding:5px 11px;cursor:pointer;transition:.1s}
+.sbtn:hover:not(:disabled){border-color:#0ff;color:#0ff}
+.sbtn:disabled{opacity:.25;cursor:default}
+.yokan-wrap{width:340px;flex-shrink:0}
+.yokan-title{font-size:.76em;color:#888;margin-bottom:8px;line-height:1.8}
+.yokan-outer{position:relative;height:76px;margin-bottom:6px}
+.yokan-bar{position:absolute;top:22px;left:0;right:0;height:26px;background:#5D3A1A;border:1px solid #8B5E3C;border-radius:2px}
+.yokan-mark{position:absolute;top:0;width:2px;height:76px;background:#0ff;opacity:.5}
+.yokan-cut{position:absolute;top:8px;width:3px;height:58px;background:#ff0;z-index:2}
+.yokan-label{position:absolute;top:-16px;font-size:.65em;color:#0ff;transform:translateX(-50%);white-space:nowrap}
+.yokan-cut-label{position:absolute;top:-16px;font-size:.65em;color:#ff0;transform:translateX(-50%);white-space:nowrap}
+.yokan-end-label{position:absolute;bottom:-18px;font-size:.65em;color:#888}
+.bs-state{border:1px solid #333;padding:8px 12px;font-size:.84em;background:#050505}
+.bs-row{display:flex;gap:8px;align-items:center;margin-bottom:3px}
+.bs-lbl{width:34px;font-size:.78em}
+.bs-bar{flex:1;height:10px;background:#111;border:1px solid #222;position:relative;overflow:hidden}
+.bs-fill{position:absolute;top:0;height:100%;transition:width .3s}
+.bs-mid-mk{position:absolute;top:-1px;width:2px;height:12px}
+.bs-val{font-size:.8em;width:26px;text-align:right}
+.bs-result{font-size:1em;font-weight:bold;margin-top:4px;padding-top:4px;border-top:1px solid #333}
+.bs-result.ok{color:#4f8}
+.bs-result.ng{color:#f66}
+.duallayout{display:flex;gap:16px;min-height:240px}
+.dcol{flex:1;display:flex;flex-direction:column;gap:8px}
+pre.dcode{font-size:.84em;overflow-x:auto;overflow-y:auto;white-space:pre;line-height:2;padding:10px;max-height:200px;flex-shrink:0;background:#050505;border:1px solid #444;max-width:100%;min-width:0}
+pre.dcode.bad{color:#f99;border-color:#844}
+pre.dcode.good{color:#cfc;border-color:#484}
+.dsummary{border:1px solid #444;padding:11px;flex-shrink:0}
+.dstit{font-size:.76em;color:#888;margin-bottom:7px}
+.dsumi{font-size:.86em;color:#ccc;line-height:2.1;display:flex;gap:7px;margin-bottom:.1em}
+.dsumi.bad::before{content:'✗';color:#f66;flex-shrink:0}
+.dsumi.good::before{content:'✓';color:#4f8;flex-shrink:0}
+.runbox{border:1px solid #444;display:flex;flex-direction:column;min-height:200px}
+.run-hdr{font-size:.8em;color:#888;padding:7px 11px;border-bottom:1px solid #444;background:#050505;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px;flex-shrink:0}
+.samp-btns{display:flex;gap:4px;flex-wrap:wrap}
+.samp-btn{font-family:'DotGothic16',monospace;font-size:.76em;border:1px solid #555;background:#000;color:#888;padding:3px 8px;cursor:pointer;transition:.1s}
+.samp-btn:hover{border-color:#0ff;color:#0ff}
+.run-input{width:100%;background:#000;color:#ccc;border:none;border-bottom:1px solid #444;padding:7px 11px;font-size:.88em;line-height:1.9;resize:none;outline:none;height:68px;flex-shrink:0}
+.run-footer{display:flex;align-items:center;gap:8px;padding:5px 10px;border-top:1px solid #444;background:#050505;flex-shrink:0;flex-wrap:wrap}
+.run-btn{font-family:'DotGothic16',monospace;font-size:.86em;border:2px solid #0ff;background:#000;color:#0ff;padding:5px 14px;cursor:pointer;transition:.1s}
+.run-btn:hover:not(:disabled){background:#0ff;color:#000}
+.run-btn:disabled{border-color:#444;color:#555;cursor:default}
+.run-time{font-size:1.2em;color:#ff0;font-weight:700}
+.run-out{max-height:240px;overflow-y:auto;padding:7px 11px;font-size:.86em;line-height:2;color:#4f8;white-space:pre}
+.run-err{color:#f66}
+.run-loading{color:#666}
+.big-test-btn{font-family:'DotGothic16',monospace;font-size:.75em;border:1px solid #ff0;background:#000;color:#ff0;padding:4px 8px;cursor:pointer;transition:.1s}
+.big-test-btn:hover:not(:disabled){background:#ff0;color:#000}
+.big-test-btn:disabled{border-color:#444;color:#555;cursor:default;opacity:.5}
+.run-note{font-size:.7em;color:#888;flex-basis:100%;line-height:1.7}
+</style>
 </head>
 <body>
-<script>(function(){var H="__VIEW_PASSWORD__";if(H.indexOf('__')===0)return;if(sessionStorage.getItem('cps')===H)return;var o=document.createElement('div');o.style='position:fixed;inset:0;background:#1565c0;display:flex;align-items:center;justify-content:center;z-index:9999';o.innerHTML='<div style="background:#fff;border-radius:12px;padding:32px;max-width:320px;width:90%;text-align:center"><div style="font-size:1.4rem;font-weight:700;margin-bottom:8px">競プロ教材</div><div style="color:#666;font-size:.85rem;margin-bottom:20px">パスワードを入力してください</div><input type="password" id="pwi" style="width:100%;border:1.5px solid #ccc;border-radius:8px;padding:10px;font-size:1rem;margin-bottom:10px;box-sizing:border-box" placeholder="パスワード"><div id="pwe" style="color:#f44336;font-size:.8rem;height:1.2em;margin-bottom:8px"></div><button id="pwb" style="background:#1565c0;color:#fff;border:none;border-radius:8px;padding:10px 32px;font-size:1rem;cursor:pointer;width:100%">入る</button></div>';document.body.appendChild(o);function chk(){var v=document.getElementById('pwi').value;if(v===H){sessionStorage.setItem('cps',H);o.remove();}else document.getElementById('pwe').textContent='パスワードが違います';}document.getElementById('pwb').addEventListener('click',chk);document.getElementById('pwi').addEventListener('keydown',function(e){if(e.key==='Enter')chk();});})();</script>
-<header class="header">
-  <div class="header-inner">
-    <a class="back-btn" href="../"><span class="mi">arrow_back</span> もどる</a>
-    <a class="header-logo" href="../"><span class="mi">school</span> 競プロ教材</a>
-    
-  </div>
-</header>
+<script>(function(){var H="__VIEW_PASSWORD__";if(H.indexOf('__')===0)return;if(sessionStorage.getItem('cps')===H)return;var o=document.createElement('div');o.style='position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;z-index:9999';o.innerHTML='<div style="border:2px solid #fff;padding:32px;max-width:340px;width:90%;text-align:center"><div style="font-family:\'DotGothic16\',monospace;font-size:1.1rem;margin-bottom:14px;color:#fff">競プロ教材</div><div style="font-family:\'DotGothic16\',monospace;color:#888;font-size:.88rem;margin-bottom:18px">パスワードを入力してください</div><input type="password" id="pwi" style="width:100%;border:1px solid #666;background:#000;color:#fff;padding:10px;font-family:\'DotGothic16\',monospace;font-size:.88rem;margin-bottom:10px;box-sizing:border-box" placeholder="password"><div id="pwe" style="font-family:\'DotGothic16\',monospace;color:#f55;font-size:.82rem;height:1.5em;margin-bottom:8px"></div><button id="pwb" style="background:#fff;color:#000;border:none;padding:10px 32px;font-family:\'DotGothic16\',monospace;font-size:.88rem;cursor:pointer;width:100%">→ 入る</button></div>';document.body.appendChild(o);function chk(){var v=document.getElementById('pwi').value;if(v===H){sessionStorage.setItem('cps',H);o.remove();}else document.getElementById('pwe').textContent='パスワードが違います';}document.getElementById('pwb').addEventListener('click',chk);document.getElementById('pwi').addEventListener('keydown',function(e){if(e.key==='Enter')chk();});})()</script>
 
-<main class="detail-view">
-  <div class="detail-contest">典型90問 001</div>
-  <h1 class="detail-title">Yokan Party</h1>
-  <div class="detail-meta"><span class="diff-badge" style="background:#ff9800">★4</span> <span class="tag">二分探索</span><span class="tag">貪欲</span> <a class="atcoder-link" href="https://atcoder.jp/contests/typical90/tasks/typical90_a" target="_blank" rel="noopener"><span class="mi">open_in_new</span> AtCoderで見る</a> <a class="print-link" href="../print/typical90_a.html" target="_blank"><span class="mi">print</span> 印刷用</a> <a class="cr-link" href="../code_reading.html"><span class="mi">menu_book</span> プログラムの読み方</a></div>
-  <div class="glossary-refs"><span style="font-size:.8rem;color:#666"><span class="mi">psychology</span> 使う考え方：</span><a class="glossary-ref-link" href="../glossary/binary_search.html"><span class="mi">book_2</span> 二分探索（バイナリサーチ）</a><a class="glossary-ref-link" href="../glossary/greedy.html"><span class="mi">book_2</span> 貪欲法（グリーディ）</a><a class="glossary-ref-link" href="../glossary/check_function.html"><span class="mi">book_2</span> 判定問題・チェック関数</a></div>
-  <section class="detail-section">
-    <h2 class="section-title"><span class="mi">description</span> 問題文</h2>
-    <div class="statement-box"><p>左右の長さが $L$ cm のようかんがあります。<br>
-$N$ 個の切れ目が付けられており、左から $i$ 番目の切れ目は左から $A_i$ cm の位置にあります。</p>
-<p>あなたは $N$ 個の切れ目のうち $K$ 個を選び、ようかんを $K+1$ 個のピースに分割したいです。</p>
-<p>このとき、以下の値を <strong>スコア</strong> とします。</p>
-<blockquote>
-<p>$K+1$ 個のピースのうち、最も短いものの長さ</p>
-</blockquote>
-<p>スコアが最大となるように分割する場合に得られるスコアを求めてください。</p>
+<div class="screens">
+
+<!-- S1: 問題 -->
+<div class="screen active" id="s1">
+  <div class="topbar">
+    <a class="topbar-back" href="../"><span class="mi">arrow_back</span> もどる</a>
+    <div class="topbar-title">001 — Yokan Party</div>
+    <div class="prog" id="p1"></div>
+  </div>
+  <div class="content">
+    <div class="slabel">■ STAGE 1 / 5</div>
+    <div class="stitle">問題</div>
+    <div class="playout">
+      <div class="pstmt">
+        <p style="margin-bottom:12px"><span class="dbadge">★4</span><span class="ctag">二分探索</span><span class="ctag">貪欲</span></p>
+        <p>左右の長さが $L$ cm のようかんがあります。</p>
+        <p>$N$ 個の切れ目が付いていて、左から $i$ 番目は左端から $A_i$ cm の位置にあります。</p>
+        <p>$N$ 個の切れ目のうち <strong style="color:#ff0">$K$ 個を選んで</strong>ようかんを $K+1$ 個のピースに分けます。</p>
+        <p><strong style="color:#ff0">スコア</strong> ＝ $K+1$ 個のピースの中で最も短いものの長さ</p>
+        <p>スコアが最大になるようにしたときのスコアを答えてください。</p>
+        <p style="margin-top:12px;color:#aaa;font-size:.88em">制約：$1 \leq K \leq N \leq 10^5$，$L \leq 10^9$，整数</p>
+        <a class="atcoder-link" href="https://atcoder.jp/contests/typical90/tasks/typical90_a" target="_blank" rel="noopener">
+          <span class="mi">open_in_new</span> AtCoder で問題を見る
+        </a>
+      </div>
+      <div class="psamp">
+        <div class="samp-tabs">
+          <button class="stab active" onclick="showSamp(0,this)">例1</button>
+          <button class="stab" onclick="showSamp(1,this)">例2</button>
+          <button class="stab" onclick="showSamp(2,this)">例3</button>
+        </div>
+        <div class="sbox">
+          <div><div class="slbl">入力</div><pre class="spre" id="samp-in"></pre></div>
+          <div><div class="slbl">出力</div><pre class="spre" id="samp-out"></pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-    <div class="constraints-box"><strong>制約</strong><ul>
-<li>$1 \leq K \leq N \leq 100000$</li>
-<li>$0 &lt; A_1 &lt; A_2 &lt; \cdots &lt; A_N &lt; L \leq 10^9$</li>
-<li>入力はすべて整数</li>
-</ul>
+
+<!-- S2: 解説 -->
+<div class="screen" id="s2">
+  <div class="topbar">
+    <a class="topbar-back" href="../"><span class="mi">arrow_back</span> もどる</a>
+    <div class="topbar-title">001 — Yokan Party</div>
+    <div class="prog" id="p2"></div>
+  </div>
+  <div class="content">
+    <div class="slabel">■ STAGE 2 / 5</div>
+    <div class="stitle">解説</div>
+    <div class="elayout">
+      <div class="ecol">
+        <div class="ecard bad">
+          <div class="ect">❌ 遅い方法：1cm から全部試す</div>
+          <p>「1cm 以上にできる？」「2cm 以上にできる？」… と L cm まで全部試す。</p>
+          <p>L は最大 <strong>10億</strong>。10億回も試すと何時間もかかる。</p>
+          <table class="etbl">
+            <tr><th>L の大きさ</th><th>試す回数</th></tr>
+            <tr><td>1,000</td><td>1,000 回</td></tr>
+            <tr><td>100万</td><td>100万 回</td></tr>
+            <tr><td>10億</td><td style="color:#f66">10億 回（TLE!）</td></tr>
+          </table>
+        </div>
+        <div class="ecard good">
+          <div class="ect">✓ 速い方法：二分探索（真ん中から試す）</div>
+          <p>「全ピースを <strong>○cm 以上</strong> にできる？」に変える。</p>
+          <p>○が大きすぎると「できない」、小さすぎると「できる」。</p>
+          <p>→ <strong>境目</strong> を真ん中から探せば <strong>約30回</strong> で終わる！</p>
+          <table class="etbl">
+            <tr><th>試す回数</th><th>残り範囲</th></tr>
+            <tr><td>1回</td><td>10億 → 5億</td></tr>
+            <tr><td>10回</td><td>5億 → 約50万</td></tr>
+            <tr><td style="color:#4f8">30回</td><td style="color:#4f8">→ 答え！</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="ecol">
+        <div class="ecard" style="flex:none">
+          <div class="ect">🍡 例1：L=34cm、切れ目=8・13・26cm、K=1</div>
+          <p>❓「17cm 以上にできる？」→ <strong style="color:#f66">できない</strong>（どこで切っても片方が足りない）</p>
+          <p>❓「8cm 以上にできる？」→ <strong style="color:#4f8">できる</strong>（8cmで切ると 8cm と 26cm）</p>
+          <p>❓「12cm 以上にできる？」→ <strong style="color:#4f8">できる</strong>（13cmで切ると 13cm と 21cm）</p>
+          <p>❓「14cm 以上にできる？」→ <strong style="color:#f66">できない</strong></p>
+          <p>❓「13cm 以上にできる？」→ <strong style="color:#4f8">できる</strong>（13cmで切ると 13cm と 21cm）</p>
+          <p style="border-top:1px solid #333;margin-top:6px;padding-top:6px">「できる」の最大 ＝ <strong style="color:#ff0">13cm</strong> → 答え！</p>
+        </div>
+        <div class="ecard" style="flex:none;margin-top:0">
+          <div class="ect">🔑 「できるか」の確認方法（貪欲法）</div>
+          <p>「全ピースを <strong>○cm 以上</strong> にできるか？」は左から順番にチェック。</p>
+          <p>切れ目を左から見て、<strong>○cm 以上になったらすぐ切る</strong>。</p>
+          <p>K 回切れたら「できる」、K 回未満なら「できない」。</p>
+          <p style="color:#888;font-size:.88em">「早めに切る」のが最善。後ろに余裕が残るから。</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-    <h2 class="section-title" style="margin-top:20px"><span class="mi">quiz</span> 入力・出力の例</h2>
-    
-<div class="sample-block">
-  <div class="sample-row">
-    <div class="sample-col"><div class="sample-label">入力 1</div><pre class="sample-pre">3 34
+
+<!-- S3: 確認（正しいアルゴリズム）-->
+<div class="screen" id="s3">
+  <div class="topbar">
+    <a class="topbar-back" href="../"><span class="mi">arrow_back</span> もどる</a>
+    <div class="topbar-title">001 — Yokan Party</div>
+    <div class="prog" id="p3"></div>
+  </div>
+  <div class="content">
+    <div class="slabel">■ STAGE 3 / 5</div>
+    <div class="stitle">二分探索の動き</div>
+    <div class="vlayout">
+      <div class="yokan-wrap">
+        <div class="yokan-title">例1：L=34cm　切れ目：8・13・26cm　K=1</div>
+        <div class="yokan-outer" id="yokan-vis"></div>
+        <div class="bs-state" id="bs-state"></div>
+        <div class="snav">
+          <button class="sbtn" id="sprev3" onclick="stepG(-1)" disabled>◀</button>
+          <span class="sctr" id="sctr3">0 / 6</span>
+          <button class="sbtn" id="snext3" onclick="stepG(1)">▶</button>
+        </div>
+      </div>
+      <div class="vright">
+        <div class="vtit" id="vtit3"></div>
+        <div class="vdesc" id="vdesc3"></div>
+        <div class="veq" id="veq3"></div>
+        <div class="runbox">
+          <div class="run-hdr">
+            <span>▶ 自分でも試そう（正しいコード）</span>
+            <div class="samp-btns">
+              <button class="samp-btn" onclick="setSamp('run3-in',0)">例1</button>
+              <button class="samp-btn" onclick="setSamp('run3-in',1)">例2</button>
+              <button class="samp-btn" onclick="setSamp('run3-in',2)">例3</button>
+            </div>
+          </div>
+          <textarea class="run-input" id="run3-in" spellcheck="false">3 34
 1
-8 13 26</pre></div>
-    <div class="sample-col"><div class="sample-label">出力 1</div><pre class="sample-pre">13</pre></div>
+8 13 26</textarea>
+          <div class="run-footer">
+            <button class="run-btn" id="run3-btn" onclick="runCode('good','run3-in','run3-out','run3-time')" disabled>▶ 実行</button>
+            <span class="run-time" id="run3-time"></span>
+          </div>
+          <div class="run-out run-loading" id="run3-out">Pyodide を読み込み中...</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-<div class="sample-block">
-  <div class="sample-row">
-    <div class="sample-col"><div class="sample-label">入力 2</div><pre class="sample-pre">7 45
-2
-7 11 16 20 28 34 38</pre></div>
-    <div class="sample-col"><div class="sample-label">出力 2</div><pre class="sample-pre">12</pre></div>
+
+<!-- S4: 間違い -->
+<div class="screen" id="s4">
+  <div class="topbar">
+    <a class="topbar-back" href="../"><span class="mi">arrow_back</span> もどる</a>
+    <div class="topbar-title">001 — Yokan Party</div>
+    <div class="prog" id="p4"></div>
   </div>
-</div>
-<div class="sample-block">
-  <div class="sample-row">
-    <div class="sample-col"><div class="sample-label">入力 3</div><pre class="sample-pre">3 100
-1
-28 54 81</pre></div>
-    <div class="sample-col"><div class="sample-label">出力 3</div><pre class="sample-pre">46</pre></div>
-  </div>
-</div>
-<div class="sample-block">
-  <div class="sample-row">
-    <div class="sample-col"><div class="sample-label">入力 4</div><pre class="sample-pre">3 100
-2
-28 54 81</pre></div>
-    <div class="sample-col"><div class="sample-label">出力 4</div><pre class="sample-pre">26</pre></div>
-  </div>
-</div>
-<div class="sample-block">
-  <div class="sample-row">
-    <div class="sample-col"><div class="sample-label">入力 5</div><pre class="sample-pre">20 1000
-4
-51 69 102 127 233 295 350 388 417 466 469 523 553 587 720 739 801 855 926 954</pre></div>
-    <div class="sample-col"><div class="sample-label">出力 5</div><pre class="sample-pre">170</pre></div>
-  </div>
-</div>
-    <div class="statement-note"><span class="statement-note-badge"><span class="mi">info</span> かんたん解説</span><h2>どんな問題？</h2>
-<p>ようかんを <strong>K か所</strong> で切って、できたピースが<strong>なるべく短くならない</strong>ようにしたい。</p>
-<p>たとえば 34cm のようかん、切れ目は 3 か所（8cm・13cm・26cm）、1 か所だけ切る。</p>
-<table>
-<thead>
-<tr>
-<th>切る場所</th>
-<th>できるピース</th>
-<th>短い方</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>8cm</td>
-<td>8cm と 26cm</td>
-<td><strong>8cm</strong></td>
-</tr>
-<tr>
-<td><strong>13cm</strong></td>
-<td><strong>13cm と 21cm</strong></td>
-<td><strong>13cm</strong> ← 最大！</td>
-</tr>
-<tr>
-<td>26cm</td>
-<td>26cm と 8cm</td>
-<td><strong>8cm</strong></td>
-</tr>
-</tbody>
-</table>
-<p>13cm で切るのがいちばんよく、答えは <strong>13</strong>。</p>
-<hr>
-<h2>全部の切り方を試せばいいんじゃないの？</h2>
-<p>切れ目が 3 か所しかないときは全部試せる。<br>
-でもようかんの長さは最大 <strong>10 億 cm</strong> になることがある。</p>
-<p>「1cm で切ったら？」「2cm で切ったら？」… と 10 億回試すと、<br>
-コンピューターでも <strong>何時間もかかってしまう</strong>。</p>
-<hr>
-<h2>「できる？できない？」で考えると速くなる！</h2>
-<p>「<strong>全部のピースを〇cm 以上にできる？</strong>」という質問に変える。</p>
-<ul>
-<li>「全部 10cm 以上にできる？」→ できる</li>
-<li>「全部 13cm 以上にできる？」→ できる</li>
-<li>「全部 14cm 以上にできる？」→ できない</li>
-</ul>
-<p><strong>「できる」の最大が答え！</strong></p>
-<p>この境目を探すには、1 から順に試さなくていい。<br>
-「真ん中を試して、できたら上半分、できなければ下半分だけ調べる」をくり返すと、<br>
-10 億回が <strong>たった 30 回ほど</strong> で終わる（<strong>二分探索</strong>）。</p>
-<hr>
-<h2>「〇cm 以上にできるか」をどう調べるの？</h2>
-<p>左から順に見ていって、<strong>ちょうど〇cm 以上になったらすぐ切る</strong>。<br>
-それが K 回できたら「できる」、K 回できなかったら「できない」。</p>
-</div>
-    <div class="constraints-note"><span class="constraints-note-badge"><span class="mi">help</span> 制約の読み方</span><ul>
-<li><code>1 ≤ K ≤ N ≤ 100000</code>：切れ目は最大<strong>10万個</strong>。選ぶ数 K もそれ以下。</li>
-<li><code>L ≤ 10^9</code>：ようかんの長さは最大<strong>10億 cm</strong>。</li>
-<li>ようかんが 10 億 cm もあるので、「1cm から順に全部試す」と 10 億回以上かかってしまう。コンピューターでも何時間もかかるので間に合わない。二分探索を使えば <strong>約 30 回</strong> で答えが見つかる。</li>
-</ul>
-</div>
-  </section>
-  
-<section class="detail-section">
-  <h2 class="section-title"><span class="mi">code</span> 解答コード</h2>
-  
-<div class="bad-solutions">
-  <div class="bad-solutions-title"><span class="mi">sentiment_dissatisfied</span> 悪い例（結果は合ってるけど…）</div>
-  <div class="bad-lang-tabs" id="bltabs"><button class="bad-lang-tab active" data-lang="bad-python">Python</button></div>
-  <div class="bad-code-panel active" id="panel-bad-python"><pre class="code-block-bad language-python"><code class="language-python">N, L = map(int, input().split())
+  <div class="content">
+    <div class="slabel">■ STAGE 4 / 5</div>
+    <div class="stitle">まちがい：1から全部試す（遅い）</div>
+    <div class="duallayout">
+      <div class="dcol">
+        <pre class="dcode bad">N, L = map(int, input().split())
 K = int(input())
 A = list(map(int, input().split()))
 
@@ -163,283 +300,359 @@ def can_cut(min_len):
     prev = 0
     cuts = 0
     for a in A:
-        if a - prev &gt;= min_len and L - a &gt;= min_len:
+        if a - prev >= min_len and L - a >= min_len:
             cuts += 1
             prev = a
-    return cuts &gt;= K
+    return cuts >= K
 
 ans = 0
-# L が最大10^9なのに1から全部試している → TLE
-# 二分探索を使えば O(N log L) で済む
+# ↓ L が最大10億なのに1から全部試す → TLE
 for x in range(1, L + 1):
     if can_cut(x):
         ans = x
-print(ans)</code></pre></div>
+print(ans)</pre>
+        <div class="dsummary">
+          <div class="dstit">このコードの問題点</div>
+          <div class="dsumi bad">1, 2, 3 … と L まで全部試す</div>
+          <div class="dsumi bad">L=10億のとき 10億回ループする</div>
+          <div class="dsumi bad">コンピューターでも数時間かかる（TLE）</div>
+          <div class="dsumi good">二分探索なら同じ問題を約30回で解ける</div>
+        </div>
+      </div>
+      <div class="dcol">
+        <div class="runbox" style="flex:none">
+          <div class="run-hdr"><span>速度テスト（L=1,000,000）</span></div>
+          <div class="run-footer" style="flex-wrap:wrap">
+            <button class="big-test-btn" id="bad-btn" onclick="runSpeedTest('bad')" disabled>❌ 悪いコード（L=100万）</button>
+            <button class="big-test-btn" id="good-btn2" onclick="runSpeedTest('good')" disabled style="border-color:#4f8;color:#4f8">✓ 正しいコード（L=10億）</button>
+            <div class="run-note">悪いコードは L=100万でも数秒かかる。正しいコードは L=10億でも一瞬！</div>
+          </div>
+          <div class="run-out" id="speed-out" style="min-height:60px">実行ボタンを押してください</div>
+        </div>
+        <div class="dsummary" style="margin-top:8px">
+          <div class="dstit">比較</div>
+          <div class="dsumi bad">全探索：L=10億 → 10億回の計算（何時間も）</div>
+          <div class="dsumi good">二分探索：L=10億 → <strong style="color:#4f8">約30回</strong>の計算（一瞬）</div>
+          <div class="dsumi good"><strong style="color:#ff0">3000万倍</strong>以上速い！</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<script>
-document.getElementById('bltabs').addEventListener('click',function(e){
-  var b=e.target.closest('.bad-lang-tab'); if(!b)return;
-  document.querySelectorAll('.bad-lang-tab').forEach(function(x){x.classList.remove('active');});
-  document.querySelectorAll('.bad-code-panel').forEach(function(x){x.classList.remove('active');});
-  b.classList.add('active');
-  var p=document.getElementById('panel-'+b.dataset.lang); if(p)p.classList.add('active');
-});
-</script>
-  <div class="good-solutions-title"><span class="mi">check_circle</span> 正しいコード</div>
-  <div class="lang-tabs" id="ltabs"><button class="lang-tab active" data-lang="python">Python</button><button class="lang-tab" data-lang="cpp">C++</button><button class="lang-tab" data-lang="typescript">TypeScript</button><button class="lang-tab" data-lang="ruby">Ruby</button><button class="lang-tab" data-lang="php">PHP</button><button class="lang-tab" data-lang="rust">Rust</button><button class="lang-tab" data-lang="perl">Perl</button></div>
-  <div class="code-panel active" id="panel-python"><pre class="code-block language-python"><code class="language-python">N, L = map(int, input().split())  # 切れ目の数 N、ようかんの長さ L を読み込む
-K = int(input())                  # 選ぶ切れ目の数 K を読み込む
-A = list(map(int, input().split()))  # 各切れ目の位置をリストで読み込む
 
-# 「全ピースを x cm 以上にできるか？」を判定する関数
+<!-- S5: 正解 -->
+<div class="screen" id="s5">
+  <div class="topbar">
+    <a class="topbar-back" href="../"><span class="mi">arrow_back</span> もどる</a>
+    <div class="topbar-title">001 — Yokan Party</div>
+    <div class="prog" id="p5"></div>
+  </div>
+  <div class="content">
+    <div class="slabel">■ STAGE 5 / 5</div>
+    <div class="stitle">正解コード</div>
+    <div class="duallayout">
+      <div class="dcol">
+        <pre class="dcode good">N, L = map(int, input().split())
+K = int(input())
+A = list(map(int, input().split()))
+
+# 「全ピースを x cm 以上にできるか」を確認する関数
 def check(x):
-    prev = 0  # 直前に切った位置（最初は左端 = 0）
-    cnt = 0   # 実際に切った回数
-
+    prev = 0   # 直前に切った位置
+    cnt = 0    # 切った回数
     for a in A:
-        # a - prev &gt;= x : 今切るとこのピースが x 以上
-        # L - a &gt;= x   : 残り（右端まで）も x 以上
-        if a - prev &gt;= x and L - a &gt;= x:
-            cnt += 1  # 切る
-            prev = a  # 切った位置を更新
+        # a-prev：このピースの長さ
+        # L-a：最後のピースの長さ
+        if a - prev >= x and L - a >= x:
+            cnt += 1   # 切る
+            prev = a   # 位置を更新
+    return cnt >= K    # K回以上切れればOK
 
-    return cnt &gt;= K  # K 回以上切れれば OK
+low = 0       # できる側（この値以上は確実に可能）
+high = L + 1  # できない側（この値以上は不可能）
 
-low = 0      # low は「この値なら確実にできる」
-high = L + 1 # high は「この値ではできない」
-
-# 二分探索：low と high の差が 1 になるまで繰り返す
-while high - low &gt; 1:
-    mid = (low + high) // 2  # 真ん中の値を試す（// は整数除算）
-
+# 二分探索：範囲が 1 になるまで絞る
+while high - low > 1:
+    mid = (low + high) // 2
     if check(mid):
-        low = mid   # mid でできた → もっと大きくできるかも
+        low = mid    # できた → もっと大きい値を試す
     else:
-        high = mid  # mid ではできない → 小さくする
+        high = mid   # できない → 小さい値を試す
 
-print(low)  # low が答え（最大スコア）</code></pre></div><div class="code-panel" id="panel-cpp"><pre class="code-block language-cpp"><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
-using namespace std;
-using ll = long long;  // long long を ll と短く書けるようにする（大きな数に対応）
+print(low)   # low が答え（最大スコア）</pre>
+        <div class="dsummary">
+          <div class="dstit">ポイント</div>
+          <div class="dsumi good">check(x)：貪欲に左から切っていく</div>
+          <div class="dsumi good">二分探索：low〜high を半分ずつ絞る</div>
+          <div class="dsumi good">計算量：O(N log L) — 最大約 170万回</div>
+        </div>
+      </div>
+      <div class="dcol">
+        <div class="runbox">
+          <div class="run-hdr">
+            <span>▶ 自分でも試そう</span>
+            <div class="samp-btns">
+              <button class="samp-btn" onclick="setSamp('run5-in',0)">例1</button>
+              <button class="samp-btn" onclick="setSamp('run5-in',1)">例2</button>
+              <button class="samp-btn" onclick="setSamp('run5-in',2)">例3</button>
+            </div>
+          </div>
+          <textarea class="run-input" id="run5-in" spellcheck="false">3 34
+1
+8 13 26</textarea>
+          <div class="run-footer">
+            <button class="run-btn" id="run5-btn" onclick="runCode('good','run5-in','run5-out','run5-time')" disabled>▶ 実行</button>
+            <span class="run-time" id="run5-time"></span>
+            <button class="big-test-btn" id="big5-btn" onclick="runBig5()" disabled>⚡ L=10億テスト</button>
+            <span class="run-time" id="big5-time" style="color:#4f8;font-size:.9em"></span>
+          </div>
+          <div class="run-out run-loading" id="run5-out">Pyodide を読み込み中...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-int main() {
-    int N, K;
-    ll L;
+</div><!-- .screens -->
 
-    cin &gt;&gt; N &gt;&gt; L;  // 切れ目の数 N と ようかんの長さ L を読み込む
-    cin &gt;&gt; K;       // 選ぶ切れ目の数 K を読み込む
+<nav class="gnav">
+  <div class="tabstrip">
+    <button class="tbtn active" id="tb1" onclick="goTo(1)">問題</button>
+    <button class="tbtn" id="tb2" onclick="goTo(2)">解説</button>
+    <button class="tbtn" id="tb3" onclick="goTo(3)">確認</button>
+    <button class="tbtn" id="tb4" onclick="goTo(4)">間違い</button>
+    <button class="tbtn" id="tb5" onclick="goTo(5)">正解</button>
+  </div>
+  <div class="navrow">
+    <button class="nbtn" id="gprev" onclick="goTo(cur-1)" disabled>◀ もどる</button>
+    <div class="hint">本サイトは個人学習目的のみで使用し、商用利用・公開配布はしていません。</div>
+    <button class="nbtn go" id="gnext" onclick="goTo(cur+1)">つぎへ ▶</button>
+  </div>
+</nav>
 
-    vector&lt;ll&gt; A(N);  // 切れ目の位置を N 個分用意する
-
-    for (int i = 0; i &lt; N; i++) {
-        cin &gt;&gt; A[i];  // 各切れ目の位置を読み込む
-    }
-
-    // 「全ピースを x cm 以上にできるか？」を判定する関数
-    // できれば true、できなければ false を返す
-    auto check = [&amp;](ll x) {
-        ll prev = 0;  // 直前に切った位置（最初は左端 = 0）
-        int cnt = 0;  // 実際に切った回数
-
-        for (int i = 0; i &lt; N; i++) {
-            // A[i] - prev &gt;= x : 今切るとこのピースが x 以上になる
-            // L - A[i] &gt;= x   : 最後のピース（右端まで）も x 以上になる
-            if (A[i] - prev &gt;= x &amp;&amp; L - A[i] &gt;= x) {
-                cnt++;        // 切る
-                prev = A[i];  // 切った位置を更新
-            }
-        }
-
-        return cnt &gt;= K;  // K 回以上切れれば OK
-    };
-
-    ll low = 0;      // low は「この値なら確実にできる」（答えの候補）
-    ll high = L + 1; // high は「この値ではできない」
-
-    // 二分探索：low と high の差が 1 になるまで繰り返す
-    while (high - low &gt; 1) {
-        ll mid = (low + high) / 2;  // 真ん中の値を試す
-
-        if (check(mid)) {
-            low = mid;   // mid でできた → もっと大きくできるかも
-        } else {
-            high = mid;  // mid ではできない → 小さくする
-        }
-    }
-
-    cout &lt;&lt; low &lt;&lt; endl;  // low が答え（最大スコア）
-}</code></pre></div><div class="code-panel" id="panel-typescript"><pre class="code-block language-typescript"><code class="language-typescript">import * as readline from &#39;readline&#39;;
-
-// 標準入力を1行ずつ受け取る（AtCoder の Node.js 典型パターン）
-const rl = readline.createInterface({ input: process.stdin });
-const lines: string[] = [];
-rl.on(&#39;line&#39;, (line) =&gt; lines.push(line.trim()));  // 1行読むたびに配列に追加
-rl.on(&#39;close&#39;, () =&gt; {
-  // 全行読み終わったら処理開始
-  const [N, L] = lines[0].split(&#39; &#39;).map(Number);  // 1行目：N と L
-  const K = Number(lines[1]);                       // 2行目：K
-  const A = lines[2].split(&#39; &#39;).map(Number);        // 3行目：切れ目の位置リスト
-
-  // 「全ピースを x cm 以上にできるか？」を判定する関数
-  // number 型の x を受け取り、boolean（true/false）を返す
-  const check = (x: number): boolean =&gt; {
-    let prev = 0, cnt = 0;  // prev：直前に切った位置、cnt：切った回数
-    for (const a of A) {
-      // このピース(a - prev)が x 以上 かつ 残り(L - a)が x 以上なら切る
-      if (a - prev &gt;= x &amp;&amp; L - a &gt;= x) {
-        cnt++;
-        prev = a;
-      }
-    }
-    return cnt &gt;= K;  // K 回以上切れれば OK
-  };
-
-  let low = 0, high = L + 1;  // 二分探索の範囲を初期化
-  while (high - low &gt; 1) {
-    const mid = Math.floor((low + high) / 2);  // 整数で真ん中を計算
-    if (check(mid)) low = mid;   // できた → low を上げる
-    else high = mid;             // できない → high を下げる
-  }
-  console.log(low);  // 答えを出力
-});</code></pre></div><div class="code-panel" id="panel-ruby"><pre class="code-block language-ruby"><code class="language-ruby">N, L = gets.split.map(&amp;:to_i)  # 1行目：N と L（文字列 → 整数に変換）
-K = gets.to_i                  # 2行目：K
-A = gets.split.map(&amp;:to_i)     # 3行目：切れ目の位置リスト
-
-# 「全ピースを x cm 以上にできるか？」を判定するラムダ（無名関数）
-check = -&gt;(x) {
-  prev = 0  # 直前に切った位置
-  cnt = 0   # 切った回数
-  A.each do |a|
-    # このピース(a - prev)が x 以上 かつ 残り(L - a)が x 以上なら切る
-    if a - prev &gt;= x &amp;&amp; L - a &gt;= x
-      cnt += 1
-      prev = a
-    end
-  end
-  cnt &gt;= K  # Ruby では最後の式が return 値になる
-}
-
-low = 0      # low：できる側の境界
-high = L + 1 # high：できない側の境界
-while high - low &gt; 1
-  mid = (low + high) / 2  # 真ん中を試す
-  if check.call(mid)      # ラムダは .call() で呼び出す
-    low = mid   # できた → low を上げる
-  else
-    high = mid  # できない → high を下げる
-  end
-end
-puts low  # 答えを出力</code></pre></div><div class="code-panel" id="panel-php"><pre class="code-block language-php"><code class="language-php">&lt;?php
-// 1行目を読んで空白で分割し、整数に変換して N と L に代入
-[$N, $L] = array_map(&#39;intval&#39;, explode(&#39; &#39;, trim(fgets(STDIN))));
-$K = (int)trim(fgets(STDIN));                                    // 2行目：K
-$A = array_map(&#39;intval&#39;, explode(&#39; &#39;, trim(fgets(STDIN))));      // 3行目：切れ目リスト
-
-// 「全ピースを x cm 以上にできるか？」を判定する関数
-// PHP は関数内から外の変数を直接使えないので $A, $L, $K を引数で渡す
-function check($A, $L, $K, $x) {
-    $prev = 0;  // 直前に切った位置
-    $cnt = 0;   // 切った回数
-    foreach ($A as $a) {
-        // このピース($a - $prev)が x 以上 かつ 残り($L - $a)が x 以上なら切る
-        if ($a - $prev &gt;= $x &amp;&amp; $L - $a &gt;= $x) {
-            $cnt++;
-            $prev = $a;
-        }
-    }
-    return $cnt &gt;= $K;  // K 回以上切れれば true
-}
-
-$low = 0;       // できる側の境界
-$high = $L + 1; // できない側の境界
-while ($high - $low &gt; 1) {
-    $mid = intdiv($low + $high, 2);  // intdiv で整数除算（切り捨て）
-    if (check($A, $L, $K, $mid)) $low = $mid;   // できた → low を上げる
-    else $high = $mid;                           // できない → high を下げる
-}
-echo $low . &#34;\n&#34;;  // 答えを出力</code></pre></div><div class="code-panel" id="panel-rust"><pre class="code-block language-rust"><code class="language-rust">use std::io::{self, BufRead};  // 標準入力を読むためにインポート
-
-// 「全ピースを x cm 以上にできるか？」を判定する関数
-// &amp;[i64] はスライス（配列の参照）、-&gt; bool は返り値の型
-fn check(a: &amp;[i64], l: i64, k: usize, x: i64) -&gt; bool {
-    let mut prev = 0i64;    // 直前に切った位置（i64 型で初期化）
-    let mut cnt = 0usize;   // 切った回数（usize は配列添字などに使う符号なし整数）
-    for &amp;ai in a {          // a の各要素を ai として取り出す（&amp; でコピー）
-        // このピース(ai - prev)が x 以上 かつ 残り(l - ai)が x 以上なら切る
-        if ai - prev &gt;= x &amp;&amp; l - ai &gt;= x {
-            cnt += 1;
-            prev = ai;
-        }
-    }
-    cnt &gt;= k  // Rust では最後の式がセミコロンなしだと return 値になる
-}
-
-fn main() {
-    let stdin = io::stdin();
-    let mut lines = stdin.lock().lines();  // 標準入力を行単位で読む
-
-    // 1行目：空白区切りで N と L を読み込む
-    // unwrap() はエラーがないと仮定して値を取り出す（競プロでは通常 OK）
-    let line1: Vec&lt;i64&gt; = lines.next().unwrap().unwrap()
-        .split_whitespace().map(|s| s.parse().unwrap()).collect();
-    let (_n, l) = (line1[0] as usize, line1[1]);  // N は使わないので _ を付ける
-
-    // 2行目：K を読み込む
-    let k: usize = lines.next().unwrap().unwrap().trim().parse().unwrap();
-
-    // 3行目：切れ目の位置リストを読み込む
-    let a: Vec&lt;i64&gt; = lines.next().unwrap().unwrap()
-        .split_whitespace().map(|s| s.parse().unwrap()).collect();
-
-    let mut low = 0i64;   // できる側の境界
-    let mut high = l + 1; // できない側の境界
-    while high - low &gt; 1 {
-        let mid = (low + high) / 2;  // 真ん中を試す
-        // Rust の if は式なので、結果を直接代入できる
-        if check(&amp;a, l, k, mid) { low = mid; } else { high = mid; }
-    }
-    println!(&#34;{}&#34;, low);  // 答えを出力
-}</code></pre></div><div class="code-panel" id="panel-perl"><pre class="code-block language-perl"><code class="language-perl">use strict;    # 変数宣言を強制（バグを防ぐ）
-use warnings;  # 警告を有効化（バグを見つけやすくする）
-
-# 1行目：空白で分割して N と L に代入
-my ($N, $L) = split &#39; &#39;, &lt;STDIN&gt;;
-my $K = int(&lt;STDIN&gt;);        # 2行目：K（int で整数に変換）
-my @A = split &#39; &#39;, &lt;STDIN&gt;;  # 3行目：切れ目リスト（@ は配列の印）
-
-# 「全ピースを x cm 以上にできるか？」を判定するサブルーチン
-sub check {
-    my ($x) = @_;           # 引数 x を受け取る（Perl の引数は @_ 経由）
-    my ($prev, $cnt) = (0, 0);  # 直前に切った位置と切った回数を 0 で初期化
-    for my $a (@A) {
-        # このピース($a - $prev)が x 以上 かつ 残り($L - $a)が x 以上なら切る
-        if ($a - $prev &gt;= $x &amp;&amp; $L - $a &gt;= $x) {
-            $cnt++;
-            $prev = $a;
-        }
-    }
-    return $cnt &gt;= $K;  # K 回以上切れれば 1（true）を返す
-}
-
-my ($low, $high) = (0, $L + 1);  # 二分探索の範囲を初期化
-while ($high - $low &gt; 1) {
-    my $mid = int(($low + $high) / 2);  # int で整数除算
-    if (check($mid)) { $low = $mid; }   # できた → low を上げる
-    else             { $high = $mid; }  # できない → high を下げる
-}
-print &#34;$low\n&#34;;  # 答えを出力</code></pre></div>
-</section>
+<script src="https://cdn.jsdelivr.net/npm/pyodide@0.26.4/pyodide.js"></script>
 <script>
-document.getElementById('ltabs').addEventListener('click',function(e){
-  var b=e.target.closest('.lang-tab'); if(!b)return;
-  document.querySelectorAll('.lang-tab').forEach(function(x){x.classList.remove('active');});
-  document.querySelectorAll('.code-panel').forEach(function(x){x.classList.remove('active');});
-  b.classList.add('active');
-  var p=document.getElementById('panel-'+b.dataset.lang); if(p)p.classList.add('active');
-});
+var cur=1, N_SCR=5;
+var SAMPLES=[
+  {i:'3 34\n1\n8 13 26', o:'13'},
+  {i:'7 45\n2\n7 11 16 20 28 34 38', o:'12'},
+  {i:'3 100\n1\n28 54 81', o:'46'}
+];
+
+var GOOD_CODE='N, L = map(int, input().split())\nK = int(input())\nA = list(map(int, input().split()))\ndef check(x):\n    prev = 0\n    cnt = 0\n    for a in A:\n        if a - prev >= x and L - a >= x:\n            cnt += 1\n            prev = a\n    return cnt >= K\nlow = 0\nhigh = L + 1\nwhile high - low > 1:\n    mid = (low + high) // 2\n    if check(mid): low = mid\n    else: high = mid\nprint(low)';
+
+var BAD_CODE='N, L = map(int, input().split())\nK = int(input())\nA = list(map(int, input().split()))\ndef can_cut(min_len):\n    prev = 0\n    cuts = 0\n    for a in A:\n        if a - prev >= min_len and L - a >= min_len:\n            cuts += 1\n            prev = a\n    return cuts >= K\nans = 0\nfor x in range(1, L + 1):\n    if can_cut(x): ans = x\nprint(ans)';
+
+// Binary search steps: example 1 (L=34, K=1, A=[8,13,26])
+var L_VIS=34, MARKS=[8,13,26];
+var G_STEPS=[
+  {low:0,high:35,mid:null,cutAt:null,res:null,
+   tit:'スタート：目標を設定',
+   desc:'L=34cm のようかん\n切れ目：8・13・26cm\nK=1か所切る\n\n「何cm 以上にできるか」を二分探索で探す',
+   eq:'low = 0     （できる側の境界）\nhigh = 35   （できない側の境界）'},
+  {low:0,high:35,mid:17,cutAt:null,res:false,
+   tit:'mid=17：17cm 以上にできる？',
+   desc:'8cm：13-0=8 < 17 → スキップ\n13cm：13-0=13 < 17 → スキップ\n26cm：26≥17 だが 34-26=8 < 17 → ダメ\n→ 1回も切れない → できない',
+   eq:'mid = (0+35)//2 = 17\ncheck(17) → False\nhigh = 17'},
+  {low:0,high:17,mid:8,cutAt:8,res:true,
+   tit:'mid=8：8cm 以上にできる？',
+   desc:'8cmで切ると：\n  左ピース = 8cm ≥ 8 ✓\n  右ピース = 34-8 = 26cm ≥ 8 ✓\n→ 1回切れた → できる！',
+   eq:'mid = (0+17)//2 = 8\ncheck(8) → True\nlow = 8'},
+  {low:8,high:17,mid:12,cutAt:13,res:true,
+   tit:'mid=12：12cm 以上にできる？',
+   desc:'8cm：スキップ（8 < 12）\n13cmで切ると：\n  左ピース = 13cm ≥ 12 ✓\n  右ピース = 34-13 = 21cm ≥ 12 ✓\n→ できる！',
+   eq:'mid = (8+17)//2 = 12\ncheck(12) → True\nlow = 12'},
+  {low:12,high:17,mid:14,cutAt:null,res:false,
+   tit:'mid=14：14cm 以上にできる？',
+   desc:'8cm：スキップ（13 < 14）\n13cm：スキップ（13 < 14）\n26cm：26≥14 だが 34-26=8 < 14 → ダメ\n→ できない',
+   eq:'mid = (12+17)//2 = 14\ncheck(14) → False\nhigh = 14'},
+  {low:12,high:14,mid:13,cutAt:13,res:true,
+   tit:'mid=13：13cm 以上にできる？',
+   desc:'13cmで切ると：\n  左ピース = 13cm ≥ 13 ✓\n  右ピース = 34-13 = 21cm ≥ 13 ✓\n→ できる！',
+   eq:'mid = (12+14)//2 = 13\ncheck(13) → True\nlow = 13'},
+  {low:13,high:14,mid:null,cutAt:13,res:null,ans:13,
+   tit:'完成！high - low = 1 → 終了',
+   desc:'high - low = 14 - 13 = 1\nもう絞れない → low = 13 が答え\n\n「13cm 以上」は可能\n「14cm 以上」は不可能\n→ 最大スコアは 13cm',
+   eq:'答え: low = 13'}
+];
+var gStep=0;
+
+function goTo(n){
+  if(n<1||n>N_SCR)return;
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('tb'+cur).classList.remove('active');
+  cur=n;
+  document.getElementById('s'+cur).classList.add('active');
+  document.getElementById('tb'+cur).classList.add('active');
+  document.getElementById('gprev').disabled=(cur===1);
+  document.getElementById('gnext').disabled=(cur===N_SCR);
+  updateProgs();
+}
+
+function updateProgs(){
+  for(var i=1;i<=N_SCR;i++){
+    var el=document.getElementById('p'+i);if(!el)continue;
+    el.innerHTML='';
+    for(var j=1;j<=N_SCR;j++){
+      var d=document.createElement('div');
+      d.className='pd'+(j<i?' done':j===i?' active':'');
+      el.appendChild(d);
+    }
+  }
+}
+
+function showSamp(i,btn){
+  document.querySelectorAll('#s1 .stab').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+  document.getElementById('samp-in').textContent=SAMPLES[i].i;
+  document.getElementById('samp-out').textContent=SAMPLES[i].o;
+}
+
+function setSamp(id,i){document.getElementById(id).value=SAMPLES[i].i;}
+
+function buildYokan(){
+  var el=document.getElementById('yokan-vis');
+  el.innerHTML='';
+  var bar=document.createElement('div');bar.className='yokan-bar';el.appendChild(bar);
+  var ll=document.createElement('div');
+  ll.className='yokan-end-label';ll.style.left='0';ll.textContent='0';el.appendChild(ll);
+  var rl=document.createElement('div');
+  rl.className='yokan-end-label';rl.style.right='0';rl.textContent=L_VIS+'cm';el.appendChild(rl);
+  MARKS.forEach(function(m){
+    var mk=document.createElement('div');mk.className='yokan-mark';mk.style.left=(m/L_VIS*100)+'%';
+    var lb=document.createElement('div');lb.className='yokan-label';lb.style.left=(m/L_VIS*100)+'%';lb.textContent=m+'cm';
+    el.appendChild(mk);el.appendChild(lb);
+  });
+}
+
+function renderStep(s){
+  buildYokan();
+  var el=document.getElementById('yokan-vis');
+  if(s.mid!==null){
+    var sh=document.createElement('div');
+    sh.style.cssText='position:absolute;top:22px;left:0;height:26px;background:rgba(255,255,0,.08)';
+    sh.style.width=(s.mid/L_VIS*100)+'%';
+    el.appendChild(sh);
+  }
+  if(s.cutAt!==null){
+    var cut=document.createElement('div');cut.className='yokan-cut';cut.style.left=(s.cutAt/L_VIS*100)+'%';
+    var cl=document.createElement('div');cl.className='yokan-cut-label';cl.style.left=(s.cutAt/L_VIS*100)+'%';cl.textContent='✂ '+s.cutAt;
+    el.appendChild(cut);el.appendChild(cl);
+  }
+  var pct=function(v){return Math.max(0,Math.min(100,(v/L_VIS*100)));};
+  var html='<div style="font-size:.76em;color:#555;margin-bottom:5px">二分探索の状態</div>';
+  html+='<div class="bs-row"><span class="bs-lbl" style="color:#0ff">low</span><div class="bs-bar"><div class="bs-fill" style="width:'+pct(s.low)+'%;background:#0ff;opacity:.3"></div></div><span class="bs-val" style="color:#0ff">'+s.low+'</span></div>';
+  if(s.mid!==null){
+    html+='<div class="bs-row"><span class="bs-lbl" style="color:#ff0">mid</span><div class="bs-bar"><div class="bs-fill" style="width:'+pct(s.mid)+'%;background:#ff0;opacity:.2"></div><div class="bs-mid-mk" style="left:'+pct(s.mid)+'%;background:#ff0"></div></div><span class="bs-val" style="color:#ff0">'+s.mid+'</span></div>';
+  }
+  html+='<div class="bs-row"><span class="bs-lbl" style="color:#f66">high</span><div class="bs-bar"><div class="bs-fill" style="width:'+pct(Math.min(s.high,L_VIS))+'%;background:#f66;opacity:.15"></div></div><span class="bs-val" style="color:#f66">'+s.high+'</span></div>';
+  if(s.res===true)html+='<div class="bs-result ok">✓ できる！→ low = '+s.mid+'</div>';
+  else if(s.res===false)html+='<div class="bs-result ng">✗ できない → high = '+s.mid+'</div>';
+  else if(s.ans!==undefined)html+='<div class="bs-result ok" style="font-size:1.1em">🎉 答え：'+s.ans+'cm</div>';
+  document.getElementById('bs-state').innerHTML=html;
+  document.getElementById('vtit3').textContent=s.tit;
+  document.getElementById('vdesc3').textContent=s.desc;
+  document.getElementById('veq3').textContent=s.eq;
+  document.getElementById('sctr3').textContent=gStep+' / '+(G_STEPS.length-1);
+  document.getElementById('sprev3').disabled=(gStep===0);
+  document.getElementById('snext3').disabled=(gStep===G_STEPS.length-1);
+}
+
+function stepG(d){gStep=Math.max(0,Math.min(G_STEPS.length-1,gStep+d));renderStep(G_STEPS[gStep]);}
+
+var pyLoaded=false,py=null;
+async function initPy(){
+  try{
+    py=await loadPyodide();
+    pyLoaded=true;
+    ['run3-btn','run5-btn','bad-btn','good-btn2','big5-btn'].forEach(function(id){var e=document.getElementById(id);if(e)e.disabled=false;});
+    ['run3-out','run5-out'].forEach(function(id){var e=document.getElementById(id);e.textContent='';e.className='run-out';});
+  }catch(err){
+    ['run3-out','run5-out'].forEach(function(id){var e=document.getElementById(id);if(e){e.textContent='読み込みに失敗: '+err;e.className='run-out run-err';}});
+  }
+}
+
+function runCode(which,inId,outId,timeId){
+  if(!pyLoaded)return;
+  var code=(which==='good')?GOOD_CODE:BAD_CODE;
+  var inp=document.getElementById(inId).value.trim();
+  var oe=document.getElementById(outId),te=document.getElementById(timeId);
+  oe.textContent='計算中...';oe.className='run-out run-loading';te.textContent='';
+  setTimeout(function(){
+    var lines=inp.split('\n'),idx=0;
+    var t0=performance.now();
+    try{
+      py.setStdin({stdin:function(){return lines[idx++]||'';}});
+      var out='';py.setStdout({batched:function(s){out+=s+'\n';}});
+      py.runPython(code);
+      oe.textContent=out.trim();oe.className='run-out';
+      te.textContent='⏱ '+Math.round(performance.now()-t0)+' ms';
+    }catch(e){oe.textContent='エラー: '+e;oe.className='run-out run-err';te.textContent='';}
+  },30);
+}
+
+function genInput(L,N,K){
+  var st=Math.floor(L/(N+1)),pos=[];
+  for(var i=1;i<=N;i++)pos.push(i*st);
+  return (N+' '+L+'\n'+K+'\n'+pos.join(' '));
+}
+
+var speedResults={bad:null,good:null};
+function runSpeedTest(which){
+  if(!pyLoaded)return;
+  var L=(which==='bad')?1000000:1000000000;
+  var code=(which==='bad')?BAD_CODE:GOOD_CODE;
+  var btnId=(which==='bad')?'bad-btn':'good-btn2';
+  var outEl=document.getElementById('speed-out');
+  document.getElementById(btnId).disabled=true;
+  var label=(which==='bad')?'❌ 悪いコード（L=100万）':'✓ 正しいコード（L=10億）';
+  outEl.textContent='計算中... ('+L.toLocaleString()+'cm のようかん)';
+  outEl.className='run-out run-loading';
+  setTimeout(function(){
+    var inp=genInput(L,100,10);
+    var lines=inp.split('\n'),idx=0;
+    var t0=performance.now();
+    try{
+      py.setStdin({stdin:function(){return lines[idx++]||'';}});
+      var out='';py.setStdout({batched:function(s){out+=s+'\n';}});
+      py.runPython(code);
+      var ms=Math.round(performance.now()-t0);
+      speedResults[which]=ms;
+      var txt=label+': '+out.trim()+'\n⏱ '+ms+' ms';
+      if(speedResults.bad&&speedResults.good){
+        var ratio=Math.round(speedResults.bad/speedResults.good);
+        txt+='\n\n速度差: '+ratio+'倍！';
+      }
+      outEl.textContent=txt;outEl.className='run-out';
+    }catch(e){outEl.textContent='エラー: '+e;outEl.className='run-out run-err';}
+    document.getElementById(btnId).disabled=false;
+  },50);
+}
+
+function runBig5(){
+  if(!pyLoaded)return;
+  var outEl=document.getElementById('run5-out'),te=document.getElementById('big5-time');
+  document.getElementById('big5-btn').disabled=true;
+  outEl.textContent='計算中... (L=10億)';outEl.className='run-out run-loading';te.textContent='';
+  setTimeout(function(){
+    var inp=genInput(1000000000,100,10);
+    var lines=inp.split('\n'),idx=0;
+    var t0=performance.now();
+    try{
+      py.setStdin({stdin:function(){return lines[idx++]||'';}});
+      var out='';py.setStdout({batched:function(s){out+=s+'\n';}});
+      py.runPython(GOOD_CODE);
+      var ms=Math.round(performance.now()-t0);
+      outEl.textContent='L=10億 → 答え: '+out.trim();outEl.className='run-out';
+      te.textContent='⚡ '+ms+' ms';
+    }catch(e){outEl.textContent='エラー: '+e;outEl.className='run-out run-err';}
+    document.getElementById('big5-btn').disabled=false;
+  },50);
+}
+
+buildYokan();renderStep(G_STEPS[0]);
+showSamp(0,document.querySelector('#s1 .stab'));
+updateProgs();initPy();
 </script>
-</main>
-<script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-core.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/autoloader/prism-autoloader.min.js"></script>
-<footer style="text-align:center;padding:24px 16px;color:#999;font-size:.78rem;border-top:1px solid #eee;margin-top:40px">本サイトは個人学習目的のみで使用し、商用利用・公開配布はしていません。</footer>
 </body>
 </html>

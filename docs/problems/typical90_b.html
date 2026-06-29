@@ -6,327 +6,646 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Encyclopedia of Parentheses | 競プロ教材</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css">
-<link rel="stylesheet" href="../style.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
-  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],ignoredTags:['script','noscript','style','pre','code']})"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Code:wght@400;700&family=DotGothic16&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#000;color:#fff;font-family:'DotGothic16',monospace;font-size:17px;line-height:2}
+a{color:inherit;text-decoration:none}
+.mi{font-family:'Material Symbols Outlined';font-weight:normal;font-style:normal;font-size:1.25em;display:inline-block;vertical-align:-.2em;line-height:1;letter-spacing:normal;text-transform:none;white-space:nowrap;font-feature-settings:'liga';-webkit-font-smoothing:antialiased}
+pre,code,textarea{font-family:'Google Sans Code','DotGothic16',monospace !important}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.06) 3px,rgba(0,0,0,.06) 4px)}
+.screens{padding-bottom:120px}
+.screen{display:none;flex-direction:column;min-height:calc(100vh - 90px)}
+.screen.active{display:flex}
+.gnav{position:fixed;bottom:0;left:0;right:0;height:90px;border-top:2px solid #444;background:#050505;z-index:100}
+.tabstrip{height:46px;display:flex;border-bottom:1px solid #444}
+.tbtn{flex:1;font-family:'DotGothic16',monospace;font-size:.88em;background:#000;color:#666;border:none;border-right:1px solid #444;cursor:pointer;transition:.1s}
+.tbtn:last-child{border-right:none}
+.tbtn:hover{color:#fff;background:#0a0a0a}
+.tbtn.active{background:#fff;color:#000}
+.navrow{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 18px}
+.hint{font-size:.6em;color:#444}
+.nbtn{font-family:'DotGothic16',monospace;font-size:.88em;border:1px solid #555;background:#000;color:#888;padding:5px 18px;cursor:pointer;transition:.1s;display:flex;align-items:center;gap:5px}
+.nbtn:hover:not(:disabled){border-color:#fff;color:#fff}
+.nbtn:disabled{opacity:.2;cursor:default}
+.nbtn.go{border-color:#0ff;color:#0ff}
+.nbtn.go:hover{background:#0ff;color:#000}
+.topbar{border-bottom:2px solid #444;padding:0 18px;height:46px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:#050505}
+.topbar-back{font-size:.9em;color:#888;display:flex;align-items:center;gap:5px}
+.topbar-back:hover{color:#fff}
+.topbar-title{font-size:.84em;color:#888}
+.prog{display:flex;gap:6px;align-items:center}
+.pd{width:10px;height:10px;background:#0a0a0a;border:1px solid #444;transition:.2s}
+.pd.done{background:#0ff;border-color:#0ff;opacity:.4}
+.pd.active{background:#0ff;border-color:#0ff;box-shadow:0 0 6px #0ff}
+.content{display:flex;flex-direction:column;padding:12px 20px 0}
+.slabel{font-size:.76em;color:#0ff;margin-bottom:4px;letter-spacing:.15em}
+.stitle{font-size:1.35em;color:#fff;margin-bottom:10px;line-height:2}
+.playout{display:flex;gap:20px;min-height:240px}
+.pstmt{flex:1;font-size:.97em;line-height:2.2;color:#ccc}
+.pstmt p{margin-bottom:.6em}
+.psamp{width:220px;flex-shrink:0;display:flex;flex-direction:column}
+.samp-tabs{display:flex;border:1px solid #444;border-bottom:none;flex-shrink:0}
+.stab{flex:1;font-family:'DotGothic16',monospace;font-size:.76em;background:#000;color:#666;border:none;border-right:1px solid #444;padding:5px 0;cursor:pointer;transition:.1s}
+.stab:last-child{border-right:none}
+.stab:hover{color:#fff}
+.stab.active{background:#0ff;color:#000}
+.sbox{border:1px solid #444;padding:10px;display:flex;flex-direction:column;gap:8px}
+.slbl{font-size:.72em;color:#0ff;margin-bottom:2px}
+.spre{font-size:.86em;color:#ccc;white-space:pre;line-height:1.9}
+.dbadge{font-size:.82em;border:1px solid #2196f3;color:#2196f3;padding:2px 8px;margin-right:6px}
+.ctag{font-size:.82em;border:1px solid #444;color:#888;padding:2px 8px;margin-right:4px}
+.atcoder-link{display:inline-flex;align-items:center;gap:5px;font-size:.82em;color:#0ff;border:1px solid #0ff;padding:5px 11px;margin-top:10px}
+.atcoder-link:hover{background:#0ff;color:#000}
+.elayout{display:flex;gap:14px;min-height:240px}
+.ecol{flex:1;display:flex;flex-direction:column;gap:8px}
+.ecard{border:1px solid #444;padding:12px}
+.ect{font-size:.8em;color:#888;margin-bottom:8px;border-bottom:1px solid #444;padding-bottom:5px}
+.ecard p{font-size:.92em;line-height:2.2;color:#ccc;margin-bottom:.3em}
+.ecard strong{color:#ff0}
+.ecard.bad{border-color:#f66}.ecard.bad .ect{color:#f66}
+.ecard.good{border-color:#4f8}.ecard.good .ect{color:#4f8}
+/* S3 viz */
+.vlayout{display:flex;gap:20px;min-height:240px;align-items:flex-start}
+.vright{flex:1;display:flex;flex-direction:column;gap:8px}
+.vtit{font-size:.94em;color:#0ff;line-height:2}
+.vdesc{font-size:.84em;color:#aaa;line-height:2;white-space:pre-wrap}
+.veq{font-size:.82em;line-height:2;padding:7px 11px;border:1px solid #4af;background:#050505;white-space:pre;color:#4af;font-family:'Google Sans Code',monospace !important}
+.snav{display:flex;gap:7px;align-items:center;margin-top:8px}
+.sctr{font-size:.76em;color:#888}
+.sbtn{font-family:'DotGothic16',monospace;font-size:.82em;border:1px solid #555;background:#000;color:#888;padding:5px 11px;cursor:pointer;transition:.1s}
+.sbtn:hover:not(:disabled){border-color:#0ff;color:#0ff}
+.sbtn:disabled{opacity:.25;cursor:default}
+/* Bracket viz */
+.bviz{width:340px;flex-shrink:0}
+.bviz-title{font-size:.76em;color:#888;margin-bottom:10px;line-height:1.8}
+.bv-string{display:flex;gap:4px;margin-bottom:12px;min-height:52px;align-items:center;flex-wrap:wrap}
+.bv-char{width:38px;height:44px;border:2px solid #444;display:flex;align-items:center;justify-content:center;font-size:1.4em;color:#fff;transition:all .2s;font-family:'Google Sans Code',monospace}
+.bv-char.open{border-color:#0ff;color:#0ff;background:rgba(0,255,255,.1)}
+.bv-char.close{border-color:#ff0;color:#ff0;background:rgba(255,255,0,.07)}
+.bv-char.done{border-color:#4f8;color:#4f8;background:rgba(80,255,136,.07)}
+.bv-state{border:1px solid #333;padding:8px 12px;font-size:.84em;background:#050505}
+.bv-row{display:flex;gap:10px;align-items:center;margin-bottom:3px}
+.bv-lbl{width:80px;font-size:.8em;color:#666}
+.bv-bar{flex:1;height:10px;background:#111;border:1px solid #222;position:relative;overflow:hidden}
+.bv-fill{position:absolute;top:0;height:100%;transition:width .3s}
+.bv-val{font-size:.88em;width:28px;text-align:right}
+.bv-found{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.bv-result{font-size:.88em;padding:3px 10px;border:1px solid #4f8;color:#4f8;font-family:'Google Sans Code',monospace}
+.bv-action{font-size:.88em;margin-top:6px;padding:5px 10px;border:1px solid #444;background:#050505;line-height:1.8}
+/* S4 */
+.duallayout{display:flex;gap:16px;min-height:240px}
+.dcol{flex:1;display:flex;flex-direction:column;gap:8px}
+pre.dcode{font-size:.84em;overflow-x:auto;overflow-y:auto;white-space:pre;line-height:2;padding:10px;max-height:200px;flex-shrink:0;background:#050505;border:1px solid #444;max-width:100%;min-width:0}
+pre.dcode.bad{color:#f99;border-color:#844}
+pre.dcode.good{color:#cfc;border-color:#484}
+.dsummary{border:1px solid #444;padding:11px;flex-shrink:0}
+.dstit{font-size:.76em;color:#888;margin-bottom:7px}
+.dsumi{font-size:.86em;color:#ccc;line-height:2.1;display:flex;gap:7px;margin-bottom:.1em}
+.dsumi.bad::before{content:'✗';color:#f66;flex-shrink:0}
+.dsumi.good::before{content:'✓';color:#4f8;flex-shrink:0}
+/* brute-force grid */
+.bf-grid{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.bf-item{font-size:.8em;padding:3px 8px;border:1px solid #333;color:#555;font-family:'Google Sans Code',monospace;transition:all .2s}
+.bf-item.ok{border-color:#4f8;color:#4f8}
+.bf-item.ng{border-color:#f66;color:#f66;text-decoration:line-through;opacity:.4}
+/* run box */
+.runbox{border:1px solid #444;display:flex;flex-direction:column;min-height:200px}
+.run-hdr{font-size:.8em;color:#888;padding:7px 11px;border-bottom:1px solid #444;background:#050505;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px;flex-shrink:0}
+.samp-btns{display:flex;gap:4px;flex-wrap:wrap}
+.samp-btn{font-family:'DotGothic16',monospace;font-size:.76em;border:1px solid #555;background:#000;color:#888;padding:3px 8px;cursor:pointer;transition:.1s}
+.samp-btn:hover{border-color:#0ff;color:#0ff}
+.run-input{width:100%;background:#000;color:#ccc;border:none;border-bottom:1px solid #444;padding:7px 11px;font-size:.88em;line-height:1.9;resize:none;outline:none;height:42px;flex-shrink:0}
+.run-footer{display:flex;align-items:center;gap:8px;padding:5px 10px;border-top:1px solid #444;background:#050505;flex-shrink:0}
+.run-btn{font-family:'DotGothic16',monospace;font-size:.86em;border:2px solid #0ff;background:#000;color:#0ff;padding:5px 14px;cursor:pointer;transition:.1s}
+.run-btn:hover:not(:disabled){background:#0ff;color:#000}
+.run-btn:disabled{border-color:#444;color:#555;cursor:default}
+.run-time{font-size:1.2em;color:#ff0;font-weight:700}
+.run-out{max-height:240px;overflow-y:auto;padding:7px 11px;font-size:.86em;line-height:2;color:#4f8;white-space:pre}
+.run-err{color:#f66}
+.run-loading{color:#666}
+</style>
 </head>
 <body>
-<script>(function(){var H="__VIEW_PASSWORD__";if(H.indexOf('__')===0)return;if(sessionStorage.getItem('cps')===H)return;var o=document.createElement('div');o.style='position:fixed;inset:0;background:#1565c0;display:flex;align-items:center;justify-content:center;z-index:9999';o.innerHTML='<div style="background:#fff;border-radius:12px;padding:32px;max-width:320px;width:90%;text-align:center"><div style="font-size:1.4rem;font-weight:700;margin-bottom:8px">競プロ教材</div><div style="color:#666;font-size:.85rem;margin-bottom:20px">パスワードを入力してください</div><input type="password" id="pwi" style="width:100%;border:1.5px solid #ccc;border-radius:8px;padding:10px;font-size:1rem;margin-bottom:10px;box-sizing:border-box" placeholder="パスワード"><div id="pwe" style="color:#f44336;font-size:.8rem;height:1.2em;margin-bottom:8px"></div><button id="pwb" style="background:#1565c0;color:#fff;border:none;border-radius:8px;padding:10px 32px;font-size:1rem;cursor:pointer;width:100%">入る</button></div>';document.body.appendChild(o);function chk(){var v=document.getElementById('pwi').value;if(v===H){sessionStorage.setItem('cps',H);o.remove();}else document.getElementById('pwe').textContent='パスワードが違います';}document.getElementById('pwb').addEventListener('click',chk);document.getElementById('pwi').addEventListener('keydown',function(e){if(e.key==='Enter')chk();});})();</script>
-<header class="header">
-  <div class="header-inner">
-    <a class="back-btn" href="../"><span class="mi">arrow_back</span> もどる</a>
-    <a class="header-logo" href="../"><span class="mi">school</span> 競プロ教材</a>
-    
-  </div>
-</header>
+<script>(function(){var H="__VIEW_PASSWORD__";if(H.indexOf('__')===0)return;if(sessionStorage.getItem('cps')===H)return;var o=document.createElement('div');o.style='position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;z-index:9999';o.innerHTML='<div style="border:2px solid #fff;padding:32px;max-width:340px;width:90%;text-align:center"><div style="font-family:\'DotGothic16\',monospace;font-size:1.1rem;margin-bottom:14px;color:#fff">競プロ教材</div><div style="font-family:\'DotGothic16\',monospace;color:#888;font-size:.88rem;margin-bottom:18px">パスワードを入力してください</div><input type="password" id="pwi" style="width:100%;border:1px solid #666;background:#000;color:#fff;padding:10px;font-family:\'DotGothic16\',monospace;font-size:.88rem;margin-bottom:10px;box-sizing:border-box" placeholder="password"><div id="pwe" style="font-family:\'DotGothic16\',monospace;color:#f55;font-size:.82rem;height:1.5em;margin-bottom:8px"></div><button id="pwb" style="background:#fff;color:#000;border:none;padding:10px 32px;font-family:\'DotGothic16\',monospace;font-size:.88rem;cursor:pointer;width:100%">→ 入る</button></div>';document.body.appendChild(o);function chk(){var v=document.getElementById('pwi').value;if(v===H){sessionStorage.setItem('cps',H);o.remove();}else document.getElementById('pwe').textContent='パスワードが違います';}document.getElementById('pwb').addEventListener('click',chk);document.getElementById('pwi').addEventListener('keydown',function(e){if(e.key==='Enter')chk();});})()</script>
 
-<main class="detail-view">
-  <div class="detail-contest">典型90問 002</div>
-  <h1 class="detail-title">Encyclopedia of Parentheses</h1>
-  <div class="detail-meta"><span class="diff-badge" style="background:#2196f3">★3</span> <span class="tag">再帰</span><span class="tag">バックトラッキング</span><span class="tag">全探索</span><span class="tag">括弧列</span> <a class="atcoder-link" href="https://atcoder.jp/contests/typical90/tasks/typical90_b" target="_blank" rel="noopener"><span class="mi">open_in_new</span> AtCoderで見る</a> <a class="print-link" href="../print/typical90_b.html" target="_blank"><span class="mi">print</span> 印刷用</a> <a class="cr-link" href="../code_reading.html"><span class="mi">menu_book</span> プログラムの読み方</a></div>
-  <div class="glossary-refs"><span style="font-size:.8rem;color:#666"><span class="mi">psychology</span> 使う考え方：</span><a class="glossary-ref-link" href="../glossary/recursion.html"><span class="mi">book_2</span> 再帰・バックトラッキング</a></div>
-  <section class="detail-section">
-    <h2 class="section-title"><span class="mi">description</span> 問題文</h2>
-    <div class="statement-box"><p>長さ $N$ の正しいカッコ列をすべて、辞書順に出力してください。</p>
-<p>ただし、正しいカッコ列は次のように定義されています：</p>
-<ul>
-<li><code>()</code> は正しいカッコ列である</li>
-<li>$S$ が正しいカッコ列であるとき、<code>(</code> + $S$ + <code>)</code> は正しいカッコ列である</li>
-<li>$S$, $T$ が正しいカッコ列であるとき、$S$ + $T$ は正しいカッコ列である</li>
-<li>それ以外の文字列はすべて、正しいカッコ列でない</li>
-</ul>
-<p>また、<code>(</code> の方が <code>)</code> よりも辞書順で早いものとします。</p>
-</div>
-    <div class="constraints-box"><strong>制約</strong><ul>
-<li>$1 \leq N \leq 20$</li>
-<li>$N$ は整数</li>
-</ul>
-</div>
-    <h2 class="section-title" style="margin-top:20px"><span class="mi">quiz</span> 入力・出力の例</h2>
-    
-<div class="sample-block">
-  <div class="sample-row">
-    <div class="sample-col"><div class="sample-label">入力 1</div><pre class="sample-pre">2</pre></div>
-    <div class="sample-col"><div class="sample-label">出力 1</div><pre class="sample-pre">()</pre></div>
+<div class="screens">
+
+<!-- S1: 問題 -->
+<div class="screen active" id="s1">
+  <div class="topbar">
+    <a class="topbar-back" href="../"><span class="mi">arrow_back</span> もどる</a>
+    <div class="topbar-title">002 — Encyclopedia of Parentheses</div>
+    <div class="prog" id="p1"></div>
+  </div>
+  <div class="content">
+    <div class="slabel">■ STAGE 1 / 5</div>
+    <div class="stitle">問題</div>
+    <div class="playout">
+      <div class="pstmt">
+        <p style="margin-bottom:12px"><span class="dbadge">★3</span><span class="ctag">再帰</span><span class="ctag">バックトラッキング</span><span class="ctag">全探索</span></p>
+        <p>長さ $N$ の <strong style="color:#ff0">正しいカッコ列</strong> をすべて、辞書順に出力してください。</p>
+        <p style="margin-top:8px"><strong style="color:#0ff">「正しいカッコ列」の条件：</strong></p>
+        <p>① 左から読んで、いつでも <code style="background:#111;padding:1px 6px">(</code> の数 ≥ <code style="background:#111;padding:1px 6px">)</code> の数</p>
+        <p>② 最後に <code style="background:#111;padding:1px 6px">(</code> の数 ＝ <code style="background:#111;padding:1px 6px">)</code> の数</p>
+        <p style="margin-top:8px;color:#ccc">つまり、カッコが全部ちゃんと対応していること。</p>
+        <p style="margin-top:8px;color:#aaa;font-size:.88em">制約：$1 \leq N \leq 20$（N が奇数のとき出力なし）</p>
+        <a class="atcoder-link" href="https://atcoder.jp/contests/typical90/tasks/typical90_b" target="_blank" rel="noopener">
+          <span class="mi">open_in_new</span> AtCoder で問題を見る
+        </a>
+      </div>
+      <div class="psamp">
+        <div class="samp-tabs">
+          <button class="stab active" onclick="showSamp(0,this)">N=2</button>
+          <button class="stab" onclick="showSamp(1,this)">N=3</button>
+          <button class="stab" onclick="showSamp(2,this)">N=4</button>
+          <button class="stab" onclick="showSamp(3,this)">N=10</button>
+        </div>
+        <div class="sbox">
+          <div><div class="slbl">入力</div><pre class="spre" id="samp-in"></pre></div>
+          <div><div class="slbl">出力</div><pre class="spre" id="samp-out" style="max-height:200px;overflow-y:auto"></pre></div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-<div class="sample-block">
-  <div class="sample-row">
-    <div class="sample-col"><div class="sample-label">入力 2</div><pre class="sample-pre">3</pre></div>
-    <div class="sample-col"><div class="sample-label">出力 2</div><pre class="sample-pre"></pre></div>
+
+<!-- S2: 解説 -->
+<div class="screen" id="s2">
+  <div class="topbar">
+    <a class="topbar-back" href="../"><span class="mi">arrow_back</span> もどる</a>
+    <div class="topbar-title">002 — Encyclopedia of Parentheses</div>
+    <div class="prog" id="p2"></div>
+  </div>
+  <div class="content">
+    <div class="slabel">■ STAGE 2 / 5</div>
+    <div class="stitle">解説</div>
+    <div class="elayout">
+      <div class="ecol">
+        <div class="ecard good">
+          <div class="ect">💡 考え方：1文字ずつ左から決める</div>
+          <p>N=4 のとき、4文字を左から1文字ずつ選ぶ。</p>
+          <p><code style="background:#111;padding:0 5px">(</code> を置ける条件：まだ N/2 個未満しか置いていない</p>
+          <p><code style="background:#111;padding:0 5px">)</code> を置ける条件：今まで置いた <code style="background:#111;padding:0 5px">(</code> より少ない</p>
+          <p>これ以外の場合は <strong>行き止まり</strong> → 引き返して別の選択を試す</p>
+          <p style="margin-top:6px;color:#888;font-size:.88em">（「引き返して試す」のが<strong style="color:#ff0">バックトラッキング</strong>）</p>
+        </div>
+        <div class="ecard" style="border-color:#444">
+          <div class="ect">🌳 N=4 の探索ツリー</div>
+          <p style="font-family:'Google Sans Code',monospace;font-size:.84em;color:#ccc;line-height:2.2">
+            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0ff">''</span> (l=0, r=0)<br>
+            &nbsp;&nbsp;&nbsp;↓ '(' を置く<br>
+            &nbsp;&nbsp;<span style="color:#0ff">'('</span> (l=1, r=0)<br>
+            &nbsp;&nbsp;↙&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↘<br>
+            '((' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'()'<br>
+            &nbsp;&nbsp;↓ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↙<br>
+            '(()' &nbsp;&nbsp;&nbsp;&nbsp;'()('<br>
+            &nbsp;&nbsp;↓ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+            <span style="color:#4f8">'(())'</span>✓ &nbsp;&nbsp;<span style="color:#4f8">'()()'</span>✓
+          </p>
+        </div>
+      </div>
+      <div class="ecol">
+        <div class="ecard bad">
+          <div class="ect">❌ 悪い方法：全パターン生成してからチェック</div>
+          <p>N=4 なら <strong>2<sup>4</sup>=16 通り</strong> すべて生成してから正しいか確認。</p>
+          <p>N=20 なら <strong>2<sup>20</sup>=約100万通り</strong>。無駄が多い。</p>
+          <p>最初から正しい列だけ作れば、無駄なく速い。</p>
+        </div>
+        <div class="ecard good" style="margin-top:0">
+          <div class="ect">✓ 再帰で「正しい列だけ」を作る</div>
+          <p>正しくなれないと分かった時点で引き返す。</p>
+          <p>N=4 の答えは <strong>2通り</strong> だけ。16通りのうち14通りは無駄。</p>
+          <p>再帰を使えば最初から2通りだけ生成できる！</p>
+          <p style="margin-top:6px;color:#888;font-size:.88em">N=20 の答えも 48620 通り（約5万）= 高速に動作</p>
+        </div>
+        <div class="ecard" style="border-color:#444;margin-top:0">
+          <div class="ect">🔑 アルゴリズムのポイント</div>
+          <p>変数 l（左カッコの数）と r（右カッコの数）を持ち歩く。</p>
+          <p><strong>l &lt; N/2</strong> なら <code style="background:#111;padding:0 5px">(</code> を足して再帰</p>
+          <p><strong>r &lt; l</strong> なら <code style="background:#111;padding:0 5px">)</code> を足して再帰</p>
+          <p>長さ N になったら出力</p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-<div class="sample-block">
-  <div class="sample-row">
-    <div class="sample-col"><div class="sample-label">入力 3</div><pre class="sample-pre">4</pre></div>
-    <div class="sample-col"><div class="sample-label">出力 3</div><pre class="sample-pre">(())
-()()</pre></div>
+
+<!-- S3: 確認（正しいアルゴリズム）-->
+<div class="screen" id="s3">
+  <div class="topbar">
+    <a class="topbar-back" href="../"><span class="mi">arrow_back</span> もどる</a>
+    <div class="topbar-title">002 — Encyclopedia of Parentheses</div>
+    <div class="prog" id="p3"></div>
+  </div>
+  <div class="content">
+    <div class="slabel">■ STAGE 3 / 5</div>
+    <div class="stitle">再帰の動き（N=4）</div>
+    <div class="vlayout">
+      <div class="bviz">
+        <div class="bviz-title">現在作っている文字列（N=4、N/2=2ペア）</div>
+        <div class="bv-string" id="bv-string"></div>
+        <div class="bv-state" id="bv-state"></div>
+        <div class="bv-found" id="bv-found" style="margin-top:10px"></div>
+        <div class="bv-action" id="bv-action"></div>
+        <div class="snav">
+          <button class="sbtn" id="sprev3" onclick="stepG(-1)" disabled>◀</button>
+          <span class="sctr" id="sctr3">0 / 9</span>
+          <button class="sbtn" id="snext3" onclick="stepG(1)">▶</button>
+        </div>
+      </div>
+      <div class="vright">
+        <div class="vtit" id="vtit3"></div>
+        <div class="vdesc" id="vdesc3"></div>
+        <div class="veq" id="veq3"></div>
+        <div class="runbox">
+          <div class="run-hdr">
+            <span>▶ 自分でも試そう</span>
+            <div class="samp-btns">
+              <button class="samp-btn" onclick="setRun('run3-in','2')">N=2</button>
+              <button class="samp-btn" onclick="setRun('run3-in','4')">N=4</button>
+              <button class="samp-btn" onclick="setRun('run3-in','6')">N=6</button>
+            </div>
+          </div>
+          <textarea class="run-input" id="run3-in" spellcheck="false" style="height:36px">4</textarea>
+          <div class="run-footer">
+            <button class="run-btn" id="run3-btn" onclick="runCode('run3-in','run3-out','run3-time')" disabled>▶ 実行</button>
+            <span class="run-time" id="run3-time"></span>
+          </div>
+          <div class="run-out run-loading" id="run3-out">Pyodide を読み込み中...</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-<div class="sample-block">
-  <div class="sample-row">
-    <div class="sample-col"><div class="sample-label">入力 4</div><pre class="sample-pre">10</pre></div>
-    <div class="sample-col"><div class="sample-label">出力 4</div><pre class="sample-pre">((((()))))
-(((()())))
-(((())()))
-(((()))())
-(((())))()
-((()(())))
-((()()()))
-((()())())
-((()()))()
-((())(()))
-((())()())
-((())())()
-((()))(())
-((()))()()
-(()((())))
-(()(()()))
-(()(())())
-(()(()))()
-(()()(()))
-(()()()())
-(()()())()
-(()())(())
-(()())()()
-(())((()))
-(())(()())
-(())(())()
-(())()(())
-(())()()()
-()(((())))
-()((()()))
-()((())())
-()((()))()
-()(()(()))
-()(()()())
-()(()())()
-()(())(())
-()(())()()
-()()((()))
-()()(()())
-()()(())()
-()()()(())
-()()()()()</pre></div>
+
+<!-- S4: 間違い -->
+<div class="screen" id="s4">
+  <div class="topbar">
+    <a class="topbar-back" href="../"><span class="mi">arrow_back</span> もどる</a>
+    <div class="topbar-title">002 — Encyclopedia of Parentheses</div>
+    <div class="prog" id="p4"></div>
   </div>
-</div>
-    <div class="statement-note"><span class="statement-note-badge"><span class="mi">info</span> かんたん解説</span><h2>どんな問題？</h2>
-<p><code>(</code> と <code>)</code> だけを使って、ちゃんと対応しているカッコ列をすべて出す。</p>
-<p>「ちゃんと対応している」とは：</p>
-<ul>
-<li>左から読んで、いつでも <code>(</code> の数が <code>)</code> の数以上</li>
-<li>最後に <code>(</code> と <code>)</code> の数がぴったり同じ</li>
-</ul>
-<p>たとえば長さ 4（N=2）なら、答えは <code>(())</code> と <code>()()</code> の2つ。</p>
-<hr>
-<h2>どうやって全部見つけるの？</h2>
-<p>1文字ずつ左から決めていく。</p>
-<ul>
-<li><code>(</code> は、まだ N 個未満しか使っていなければ置ける</li>
-<li><code>)</code> は、今まで置いた <code>(</code> より少ないなら置ける</li>
-<li>それ以外は行き止まりとして諦める</li>
-</ul>
-<p>これを全パターン試すと、条件を満たすカッコ列だけが集まる。N が最大 8 と小さいので、全パターン試しても速い。</p>
-<hr>
-<h2>なぜ全部試せるの？</h2>
-<p>N = 8 のとき最大でも 1430 通り程度しかない。コンピューターにはあっという間。</p>
-</div>
-    <div class="constraints-note"><span class="constraints-note-badge"><span class="mi">help</span> 制約の読み方</span><ul>
-<li><code>1 ≤ N ≤ 8</code>：N は最大 <strong>8</strong>。カッコ列の長さは最大 16文字。</li>
-<li>N が小さいので、全パターン試しても問題なく間に合う。</li>
-<li>N が 20 や 30 になると爆発的に増えるが、N ≤ 8 ならその心配はない。</li>
-</ul>
-</div>
-  </section>
-  
-<section class="detail-section">
-  <h2 class="section-title"><span class="mi">code</span> 解答コード</h2>
-  
-<div class="bad-solutions">
-  <div class="bad-solutions-title"><span class="mi">sentiment_dissatisfied</span> 悪い例（結果は合ってるけど…）</div>
-  <div class="bad-lang-tabs" id="bltabs"><button class="bad-lang-tab active" data-lang="bad-python">Python</button></div>
-  <div class="bad-code-panel active" id="panel-bad-python"><pre class="code-block-bad language-python"><code class="language-python">from itertools import product
+  <div class="content">
+    <div class="slabel">■ STAGE 4 / 5</div>
+    <div class="stitle">まちがい：全パターン生成してチェック（無駄が多い）</div>
+    <div class="duallayout">
+      <div class="dcol">
+        <pre class="dcode bad">from itertools import product
 N = int(input())
-for n in range(1, N + 1):
-    # 2^(2n) 通りの文字列をすべて生成してから判定
-    # n=8 のとき 2^16 = 65536 通り → ギリギリ間に合うが無駄が多い
-    # 再帰で「最初から正しい括弧列だけ」を作れば余分な生成がない
-    for bits in product(&#39;()&#39;, repeat=2*n):
-        s = &#39;&#39;.join(bits)
-        d = 0
-        ok = True
-        for c in s:
-            d += 1 if c == &#39;(&#39; else -1
-            if d &lt; 0:  # 途中でマイナスになったら無効
-                ok = False
-                break
-        if ok and d == 0:  # 最後に0になれば有効
-            print(s)</code></pre></div>
+# 全パターン（2^N 通り）生成してからチェック
+for bits in product('()', repeat=N):
+    s = ''.join(bits)
+    depth = 0
+    ok = True
+    for c in s:
+        depth += 1 if c == '(' else -1
+        if depth &lt; 0:  # 途中でマイナスになったら無効
+            ok = False
+            break
+    if ok and depth == 0:
+        print(s)</pre>
+        <div class="dsummary">
+          <div class="dstit">N=4 のとき：2<sup>4</sup>=16 通りを全部生成</div>
+          <div class="dsumi bad">無効な "((((" なども生成してから捨てる</div>
+          <div class="dsumi bad">N=20 なら 2<sup>20</sup>=約100万通りを生成</div>
+          <div class="dsumi good">再帰なら最初から有効な列だけ生成できる</div>
+        </div>
+      </div>
+      <div class="dcol">
+        <div style="font-size:.82em;color:#888;margin-bottom:6px">N=4 の全16通り（再帰なら2通りしか生成しない）</div>
+        <div class="bf-grid" id="bf-grid"></div>
+        <div class="dsummary" style="margin-top:8px">
+          <div class="dstit">比較</div>
+          <div class="dsumi bad">全列挙：16通り生成 → 14通り捨てる → 2通りが答え</div>
+          <div class="dsumi good">再帰：最初から2通りだけ生成</div>
+          <div class="dsumi good">N=20：全列挙100万通り → 再帰は <strong style="color:#4f8">48620通り</strong></div>
+        </div>
+        <div class="runbox" style="flex:none;margin-top:8px">
+          <div class="run-hdr">
+            <span>▶ 悪いコードも試してみよう</span>
+            <div class="samp-btns">
+              <button class="samp-btn" onclick="setRun('run4-in','4')">N=4</button>
+              <button class="samp-btn" onclick="setRun('run4-in','8')">N=8</button>
+            </div>
+          </div>
+          <textarea class="run-input" id="run4-in" spellcheck="false" style="height:36px">4</textarea>
+          <div class="run-footer">
+            <button class="run-btn" id="run4-btn" onclick="runBadCode('run4-in','run4-out','run4-time')" disabled>▶ 実行</button>
+            <span class="run-time" id="run4-time"></span>
+          </div>
+          <div class="run-out" id="run4-out" style="min-height:60px">実行ボタンを押してください</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<script>
-document.getElementById('bltabs').addEventListener('click',function(e){
-  var b=e.target.closest('.bad-lang-tab'); if(!b)return;
-  document.querySelectorAll('.bad-lang-tab').forEach(function(x){x.classList.remove('active');});
-  document.querySelectorAll('.bad-code-panel').forEach(function(x){x.classList.remove('active');});
-  b.classList.add('active');
-  var p=document.getElementById('panel-'+b.dataset.lang); if(p)p.classList.add('active');
-});
-</script>
-  <div class="good-solutions-title"><span class="mi">check_circle</span> 正しいコード</div>
-  <div class="lang-tabs" id="ltabs"><button class="lang-tab active" data-lang="python">Python</button><button class="lang-tab" data-lang="cpp">C++</button><button class="lang-tab" data-lang="typescript">TypeScript</button><button class="lang-tab" data-lang="ruby">Ruby</button><button class="lang-tab" data-lang="php">PHP</button><button class="lang-tab" data-lang="rust">Rust</button><button class="lang-tab" data-lang="perl">Perl</button></div>
-  <div class="code-panel active" id="panel-python"><pre class="code-block language-python"><code class="language-python">N = int(input())  # カッコ列の長さを読み込む
+
+<!-- S5: 正解 -->
+<div class="screen" id="s5">
+  <div class="topbar">
+    <a class="topbar-back" href="../"><span class="mi">arrow_back</span> もどる</a>
+    <div class="topbar-title">002 — Encyclopedia of Parentheses</div>
+    <div class="prog" id="p5"></div>
+  </div>
+  <div class="content">
+    <div class="slabel">■ STAGE 5 / 5</div>
+    <div class="stitle">正解コード</div>
+    <div class="duallayout">
+      <div class="dcol">
+        <pre class="dcode good">N = int(input())
 
 # s: 今まで作った文字列
-# l: 置いた &#39;(&#39; の数
-# r: 置いた &#39;)&#39; の数
+# l: 置いた '(' の数
+# r: 置いた ')' の数
 def solve(s, l, r):
-    if len(s) == N:      # 長さが N になったら出力
+    if len(s) == N:    # 長さがNになったら出力
         print(s)
         return
-    if l &lt; N // 2:       # まだ &#39;(&#39; を置ける（合計 N/2 個まで）
-        solve(s + &#39;(&#39;, l + 1, r)
-    if r &lt; l:            # 閉じていない &#39;(&#39; があるので &#39;)&#39; を置ける
-        solve(s + &#39;)&#39;, l, r + 1)
+    if l &lt; N // 2:     # まだ '(' を置ける
+        solve(s + '(', l + 1, r)
+    if r &lt; l:          # 閉じていない '(' があれば ')' を置ける
+        solve(s + ')', l, r + 1)
 
-if N % 2 == 0:           # 奇数のときは正しいカッコ列が存在しない
-    solve(&#39;&#39;, 0, 0)</code></pre></div><div class="code-panel" id="panel-cpp"><pre class="code-block language-cpp"><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
-using namespace std;
+if N % 2 == 0:         # 奇数のとき正しいカッコ列は存在しない
+    solve('', 0, 0)</pre>
+        <div class="dsummary">
+          <div class="dstit">ポイント</div>
+          <div class="dsumi good">l &lt; N//2 のとき '(' を追加して再帰</div>
+          <div class="dsumi good">r &lt; l のとき ')' を追加して再帰</div>
+          <div class="dsumi good">条件が満たせなければ自動的に引き返す</div>
+          <div class="dsumi good">辞書順：'(' の方が ')' より前なので自然に達成</div>
+        </div>
+      </div>
+      <div class="dcol">
+        <div class="runbox">
+          <div class="run-hdr">
+            <span>▶ 自分でも試そう</span>
+            <div class="samp-btns">
+              <button class="samp-btn" onclick="setRun('run5-in','2')">N=2</button>
+              <button class="samp-btn" onclick="setRun('run5-in','4')">N=4</button>
+              <button class="samp-btn" onclick="setRun('run5-in','6')">N=6</button>
+              <button class="samp-btn" onclick="setRun('run5-in','10')">N=10</button>
+            </div>
+          </div>
+          <textarea class="run-input" id="run5-in" spellcheck="false" style="height:36px">4</textarea>
+          <div class="run-footer">
+            <button class="run-btn" id="run5-btn" onclick="runCode('run5-in','run5-out','run5-time')" disabled>▶ 実行</button>
+            <span class="run-time" id="run5-time"></span>
+          </div>
+          <div class="run-out run-loading" id="run5-out">Pyodide を読み込み中...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-int N;  // カッコ列の長さ（グローバル変数として共有）
+</div><!-- .screens -->
 
-// s: 今まで作った文字列
-// l: 置いた &#39;(&#39; の数
-// r: 置いた &#39;)&#39; の数
-void solve(string s, int l, int r) {
-    if ((int)s.size() == N) {  // 長さが N になったら出力
-        cout &lt;&lt; s &lt;&lt; &#39;\n&#39;;
-        return;
-    }
-    if (l &lt; N / 2)  // まだ &#39;(&#39; を置ける（合計 N/2 個まで）
-        solve(s + &#39;(&#39;, l + 1, r);
-    if (r &lt; l)      // 閉じていない &#39;(&#39; があるので &#39;)&#39; を置ける
-        solve(s + &#39;)&#39;, l, r + 1);
-}
+<nav class="gnav">
+  <div class="tabstrip">
+    <button class="tbtn active" id="tb1" onclick="goTo(1)">問題</button>
+    <button class="tbtn" id="tb2" onclick="goTo(2)">解説</button>
+    <button class="tbtn" id="tb3" onclick="goTo(3)">確認</button>
+    <button class="tbtn" id="tb4" onclick="goTo(4)">間違い</button>
+    <button class="tbtn" id="tb5" onclick="goTo(5)">正解</button>
+  </div>
+  <div class="navrow">
+    <button class="nbtn" id="gprev" onclick="goTo(cur-1)" disabled>◀ もどる</button>
+    <div class="hint">本サイトは個人学習目的のみで使用し、商用利用・公開配布はしていません。</div>
+    <button class="nbtn go" id="gnext" onclick="goTo(cur+1)">つぎへ ▶</button>
+  </div>
+</nav>
 
-int main() {
-    cin &gt;&gt; N;
-    if (N % 2 == 0)  // 奇数のときは正しいカッコ列が存在しない
-        solve(&#34;&#34;, 0, 0);
-}</code></pre></div><div class="code-panel" id="panel-typescript"><pre class="code-block language-typescript"><code class="language-typescript">import * as readline from &#39;readline&#39;;
-
-const rl = readline.createInterface({ input: process.stdin });
-rl.on(&#39;line&#39;, (line) =&gt; {
-    const N = parseInt(line.trim());  // カッコ列の長さを読み込む
-    const results: string[] = [];    // 結果を一旦配列にためる
-
-    // s: 今まで作った文字列、l: &#39;(&#39; の数、r: &#39;)&#39; の数
-    function solve(s: string, l: number, r: number): void {
-        if (s.length === N) {   // 長さが N になったら結果に追加
-            results.push(s);
-            return;
-        }
-        if (l &lt; N / 2)          // まだ &#39;(&#39; を置ける
-            solve(s + &#39;(&#39;, l + 1, r);
-        if (r &lt; l)              // 閉じていない &#39;(&#39; があるので &#39;)&#39; を置ける
-            solve(s + &#39;)&#39;, l, r + 1);
-    }
-
-    if (N % 2 === 0)            // 奇数のときは何もしない
-        solve(&#39;&#39;, 0, 0);
-    if (results.length &gt; 0)
-        console.log(results.join(&#39;\n&#39;));
-    rl.close();
-});</code></pre></div><div class="code-panel" id="panel-ruby"><pre class="code-block language-ruby"><code class="language-ruby">N = gets.to_i  # カッコ列の長さを読み込む
-
-# s: 今まで作った文字列、l: &#39;(&#39; の数、r: &#39;)&#39; の数、n: 目標の長さ
-def solve(s, l, r, n)
-  if s.length == n   # 長さが n になったら出力
-    puts s
-    return
-  end
-  solve(s + &#39;(&#39;, l + 1, r, n) if l &lt; n / 2  # まだ &#39;(&#39; を置ける
-  solve(s + &#39;)&#39;, l, r + 1, n) if r &lt; l       # 閉じていない &#39;(&#39; がある
-end
-
-solve(&#39;&#39;, 0, 0, N) if N % 2 == 0  # 奇数のときは何もしない</code></pre></div><div class="code-panel" id="panel-php"><pre class="code-block language-php"><code class="language-php">&lt;?php
-$N = (int)trim(fgets(STDIN));  // カッコ列の長さを読み込む
-
-// s: 今まで作った文字列、l: &#39;(&#39; の数、r: &#39;)&#39; の数
-function solve($s, $l, $r, $N) {
-    if (strlen($s) == $N) {   // 長さが N になったら出力
-        echo $s . &#34;\n&#34;;
-        return;
-    }
-    if ($l &lt; $N / 2)          // まだ &#39;(&#39; を置ける（合計 N/2 個まで）
-        solve($s . &#39;(&#39;, $l + 1, $r, $N);
-    if ($r &lt; $l)              // 閉じていない &#39;(&#39; があるので &#39;)&#39; を置ける
-        solve($s . &#39;)&#39;, $l, $r + 1, $N);
-}
-
-if ($N % 2 == 0)              // 奇数のときは正しいカッコ列が存在しない
-    solve(&#39;&#39;, 0, 0, $N);</code></pre></div><div class="code-panel" id="panel-rust"><pre class="code-block language-rust"><code class="language-rust">use std::io;
-
-// s: 今まで作った文字列（String を借用して変更・戻しを繰り返す）
-// l: 置いた &#39;(&#39; の数、r: 置いた &#39;)&#39; の数、n: 目標の長さ
-fn solve(s: &amp;mut String, l: usize, r: usize, n: usize) {
-    if s.len() == n {          // 長さが n になったら出力
-        println!(&#34;{}&#34;, s);
-        return;
-    }
-    if l &lt; n / 2 {             // まだ &#39;(&#39; を置ける
-        s.push(&#39;(&#39;);           // 文字を追加
-        solve(s, l + 1, r, n);
-        s.pop();               // 再帰から戻ったら元に戻す（バックトラック）
-    }
-    if r &lt; l {                 // 閉じていない &#39;(&#39; があるので &#39;)&#39; を置ける
-        s.push(&#39;)&#39;);
-        solve(s, l, r + 1, n);
-        s.pop();               // 同様にバックトラック
-    }
-}
-
-fn main() {
-    let mut input = String::new();
-    io::stdin().read_line(&amp;mut input).unwrap();
-    let n: usize = input.trim().parse().unwrap();  // N を読み込む
-    if n % 2 == 0 {            // 奇数のときは何もしない
-        let mut s = String::new();
-        solve(&amp;mut s, 0, 0, n);
-    }
-}</code></pre></div><div class="code-panel" id="panel-perl"><pre class="code-block language-perl"><code class="language-perl">use strict;
-use warnings;
-
-my $N = int(&lt;STDIN&gt;);  # カッコ列の長さを読み込む
-
-# s: 今まで作った文字列、l: &#39;(&#39; の数、r: &#39;)&#39; の数
-sub solve {
-    my ($s, $l, $r) = @_;
-    if (length($s) == $N) {  # 長さが N になったら出力
-        print &#34;$s\n&#34;;
-        return;
-    }
-    solve($s . &#39;(&#39;, $l + 1, $r) if $l &lt; $N / 2;  # まだ &#39;(&#39; を置ける
-    solve($s . &#39;)&#39;, $l, $r + 1) if $r &lt; $l;       # 閉じていない &#39;(&#39; がある
-}
-
-solve(&#39;&#39;, 0, 0) if $N % 2 == 0;  # 奇数のときは何もしない</code></pre></div>
-</section>
+<script src="https://cdn.jsdelivr.net/npm/pyodide@0.26.4/pyodide.js"></script>
 <script>
-document.getElementById('ltabs').addEventListener('click',function(e){
-  var b=e.target.closest('.lang-tab'); if(!b)return;
-  document.querySelectorAll('.lang-tab').forEach(function(x){x.classList.remove('active');});
-  document.querySelectorAll('.code-panel').forEach(function(x){x.classList.remove('active');});
-  b.classList.add('active');
-  var p=document.getElementById('panel-'+b.dataset.lang); if(p)p.classList.add('active');
-});
+var cur=1,N_SCR=5;
+var SAMPLES=[
+  {i:'2',o:'()'},
+  {i:'3',o:''},
+  {i:'4',o:'(())\n()()'},
+  {i:'10',o:'((((()))))\n(((()())))\n(((())()))\n(((()))())\n(((())))()\n((()(())))\n((()()()))\n((()())())\n((()()))()\n((())(()))\n((())()())\n((())())()\n((()))(())\n((()))()()\n(()((())))\n(()(()()))\n(()(())())\n(()(()))()\n(()()(()))\n(()()()())\n(()()())()\n(()())(())\n(()())()()\n(())((()))\n(())(()())\n(())(())()\n(())()(())\n(())()()()\n()(((())))\n()((()()))\n()((())())\n()((()))()\n()(()(()))\n()(()()())\n()(()())()\n()(())(())\n()(())()()\n()()((()))\n()()(()())\n()()(())()\n()()()(())\n()()()()()'}
+];
+
+var GOOD_CODE='N = int(input())\ndef solve(s, l, r):\n    if len(s) == N:\n        print(s)\n        return\n    if l < N // 2:\n        solve(s + \'(\', l + 1, r)\n    if r < l:\n        solve(s + \')\', l, r + 1)\nif N % 2 == 0:\n    solve(\'\', 0, 0)';
+
+var BAD_CODE='from itertools import product\nN = int(input())\nfor bits in product(\'()\', repeat=N):\n    s = \'\'.join(bits)\n    d = 0\n    ok = True\n    for c in s:\n        d += 1 if c == \'(\' else -1\n        if d < 0:\n            ok = False\n            break\n    if ok and d == 0:\n        print(s)';
+
+// Recursion steps for N=4
+var G_STEPS=[
+  {s:'',l:0,r:0,found:[],action:'スタート',
+   tit:'スタート：空の文字列から始める',
+   desc:'N=4 なので N//2=2 ペアのカッコを作る\nl=0（左カッコの数）、r=0（右カッコの数）\n1文字ずつ左から決めていく',
+   eq:'solve(\'\', l=0, r=0)'},
+  {s:'(',l:1,r:0,found:[],action:"'(' を置く（l=1 < N//2=2）",
+   tit:"'(' を置く",
+   desc:"l=0 < N//2=2 なのでまだ '(' を置ける\n→ '(' を追加して次のステップへ",
+   eq:"l=1 < 2  → '(' を置ける\nsolve('(', l=1, r=0)"},
+  {s:'((',l:2,r:0,found:[],action:"'(' を置く（l=2=N//2, もう置けない）",
+   tit:"もう1つ '(' を置く",
+   desc:"l=1 < N//2=2 なのでまだ '(' を置ける\n→ もう1つ '(' を追加",
+   eq:"l=1 < 2  → '(' を置ける\nsolve('((', l=2, r=0)"},
+  {s:'(()',l:2,r:1,found:[],action:"')' を置く（r=0 < l=2）",
+   tit:"'(' は置けない → ')' を置く",
+   desc:"l=2 = N//2=2 なのでもう '(' は置けない\nr=0 < l=2 なので ')' は置ける\n→ ')' を追加",
+   eq:"l=2 = 2  → '(' は置けない\nr=0 < 2  → ')' を置ける\nsolve('(()', l=2, r=1)"},
+  {s:'(())',l:2,r:2,found:['(())'],action:"長さ4！→ 出力: '(())'",
+   tit:"完成！'(())' を出力",
+   desc:"len('(())') = 4 = N\n→ 出力！\n\nそしてバックトラック（引き返し）して\n次の選択肢を探す",
+   eq:"len(s)=4=N → print('(())')\n→ バックトラック"},
+  {s:'()',l:1,r:1,found:['(())'],action:"バックトラック → ')' を置く（r=0 < l=1）",
+   tit:"バックトラックして '()' から続ける",
+   desc:"'((' の枝が終わった\n→ '(' に戻り、今度は ')' を選ぶ\nr=0 < l=1 なので ')' を置ける",
+   eq:"solve('(', l=1, r=0) に戻る\nr=0 < 1  → ')' を置ける\nsolve('()', l=1, r=1)"},
+  {s:'()(',l:2,r:1,found:['(())'],action:"'(' を置く（l=1 < N//2=2）",
+   tit:"'()' に '(' を追加",
+   desc:"l=1 < N//2=2 なのでまだ '(' を置ける\n→ '(' を追加",
+   eq:"l=1 < 2  → '(' を置ける\nsolve('()(', l=2, r=1)"},
+  {s:'()()',l:2,r:2,found:['(())','()()'],action:"長さ4！→ 出力: '()()'",
+   tit:"完成！'()()' を出力",
+   desc:"len('()()') = 4 = N\n→ 出力！\n\nこれで全パターン探索完了",
+   eq:"len(s)=4=N → print('()()')\n全探索完了！"},
+  {s:'',l:0,r:0,found:['(())','()()'],action:"完成！",
+   tit:"全探索完了！",
+   desc:"N=4 の正しいカッコ列は 2通り：\n  (())\n  ()()\n\nバックトラックのおかげで\n無駄なく全パターンを探せた",
+   eq:"答え:\n(())\n()()"}
+];
+var gStep=0;
+
+function goTo(n){
+  if(n<1||n>N_SCR)return;
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('tb'+cur).classList.remove('active');
+  cur=n;
+  document.getElementById('s'+cur).classList.add('active');
+  document.getElementById('tb'+cur).classList.add('active');
+  document.getElementById('gprev').disabled=(cur===1);
+  document.getElementById('gnext').disabled=(cur===N_SCR);
+  updateProgs();
+}
+
+function updateProgs(){
+  for(var i=1;i<=N_SCR;i++){
+    var el=document.getElementById('p'+i);if(!el)continue;
+    el.innerHTML='';
+    for(var j=1;j<=N_SCR;j++){
+      var d=document.createElement('div');
+      d.className='pd'+(j<i?' done':j===i?' active':'');
+      el.appendChild(d);
+    }
+  }
+}
+
+function showSamp(i,btn){
+  document.querySelectorAll('#s1 .stab').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+  document.getElementById('samp-in').textContent=SAMPLES[i].i;
+  document.getElementById('samp-out').textContent=SAMPLES[i].o;
+}
+
+function setRun(id,v){document.getElementById(id).value=v;}
+
+function renderStep(st){
+  // string display
+  var el=document.getElementById('bv-string');
+  el.innerHTML='';
+  var s=st.s;
+  var l_count=0,r_count=0;
+  for(var i=0;i<s.length;i++){
+    var c=document.createElement('div');
+    c.className='bv-char '+(s[i]==='('?'open':'close');
+    if(st.found.length>0&&i<s.length)c.className='bv-char done';
+    c.textContent=s[i];
+    el.appendChild(c);
+  }
+  // placeholder chars
+  var N=4;
+  for(var i=s.length;i<N;i++){
+    var c=document.createElement('div');
+    c.style.cssText='width:38px;height:44px;border:2px dashed #333;display:flex;align-items:center;justify-content:center;color:#333;font-size:1.4em';
+    c.textContent='?';
+    el.appendChild(c);
+  }
+
+  // state
+  var html='<div class="bv-row"><span class="bv-lbl" style="color:#0ff">l（左カッコ数）</span><div class="bv-bar"><div class="bv-fill" style="width:'+(st.l/2*100)+'%;background:#0ff;opacity:.4"></div></div><span class="bv-val" style="color:#0ff">'+st.l+'/2</span></div>';
+  html+='<div class="bv-row"><span class="bv-lbl" style="color:#ff0">r（右カッコ数）</span><div class="bv-bar"><div class="bv-fill" style="width:'+(st.r/2*100)+'%;background:#ff0;opacity:.4"></div></div><span class="bv-val" style="color:#ff0">'+st.r+'/2</span></div>';
+  html+='<div style="margin-top:5px;font-size:.78em;color:#666">';
+  html+=(st.l<2?'<span style="color:#0ff">✓ まだ ( を置ける</span>':'<span style="color:#444">✗ ( はもう置けない (l=2)</span>');
+  html+=' &nbsp; ';
+  html+=(st.r<st.l?'<span style="color:#ff0">✓ ) を置ける</span>':'<span style="color:#444">✗ ) は置けない</span>');
+  html+='</div>';
+  document.getElementById('bv-state').innerHTML=html;
+
+  // found
+  var fEl=document.getElementById('bv-found');
+  fEl.innerHTML='';
+  if(st.found.length>0){
+    var lbl=document.createElement('div');
+    lbl.style.cssText='font-size:.76em;color:#4f8;margin-bottom:4px';
+    lbl.textContent='見つかった列：';
+    fEl.appendChild(lbl);
+    st.found.forEach(function(f){
+      var d=document.createElement('div');
+      d.className='bv-result';
+      d.textContent=f;
+      fEl.appendChild(d);
+    });
+  }
+
+  // action
+  document.getElementById('bv-action').innerHTML='<span style="font-size:.76em;color:#888">操作：</span> '+st.action;
+  document.getElementById('vtit3').textContent=st.tit;
+  document.getElementById('vdesc3').textContent=st.desc;
+  document.getElementById('veq3').textContent=st.eq;
+  document.getElementById('sctr3').textContent=gStep+' / '+(G_STEPS.length-1);
+  document.getElementById('sprev3').disabled=(gStep===0);
+  document.getElementById('snext3').disabled=(gStep===G_STEPS.length-1);
+}
+
+function stepG(d){gStep=Math.max(0,Math.min(G_STEPS.length-1,gStep+d));renderStep(G_STEPS[gStep]);}
+
+// Build brute-force grid for N=4
+function buildBFGrid(){
+  var el=document.getElementById('bf-grid');
+  el.innerHTML='';
+  var combos=['((((','((()','(()(','(())','()((','()()','()))','()))','((()',
+    // generate all 2^4 combos
+  ];
+  // generate properly
+  var all=[];
+  function gen(s){
+    if(s.length===4){all.push(s);return;}
+    gen(s+'(');gen(s+')');
+  }
+  gen('');
+  all.forEach(function(s){
+    var d=0,ok=true;
+    for(var i=0;i<s.length;i++){
+      d+=(s[i]==='('?1:-1);
+      if(d<0){ok=false;break;}
+    }
+    var valid=ok&&d===0;
+    var item=document.createElement('div');
+    item.className='bf-item '+(valid?'ok':'ng');
+    item.textContent=s;
+    el.appendChild(item);
+  });
+}
+
+var pyLoaded=false,py=null;
+async function initPy(){
+  try{
+    py=await loadPyodide();
+    pyLoaded=true;
+    ['run3-btn','run4-btn','run5-btn'].forEach(function(id){var e=document.getElementById(id);if(e)e.disabled=false;});
+    ['run3-out','run5-out'].forEach(function(id){var e=document.getElementById(id);e.textContent='';e.className='run-out';});
+  }catch(err){
+    ['run3-out','run5-out'].forEach(function(id){var e=document.getElementById(id);if(e){e.textContent='読み込みに失敗: '+err;e.className='run-out run-err';}});
+  }
+}
+
+function runCode(inId,outId,timeId){
+  if(!pyLoaded)return;
+  var inp=document.getElementById(inId).value.trim();
+  var oe=document.getElementById(outId),te=document.getElementById(timeId);
+  oe.textContent='計算中...';oe.className='run-out run-loading';te.textContent='';
+  setTimeout(function(){
+    var lines=[inp],idx=0;
+    var t0=performance.now();
+    try{
+      py.setStdin({stdin:function(){return lines[idx++]||'';}});
+      var out='';py.setStdout({batched:function(s){out+=s+'\n';}});
+      py.runPython(GOOD_CODE);
+      oe.textContent=out.trim()||'（出力なし）';oe.className='run-out';
+      te.textContent='⏱ '+Math.round(performance.now()-t0)+' ms';
+    }catch(e){oe.textContent='エラー: '+e;oe.className='run-out run-err';}
+  },30);
+}
+
+function runBadCode(inId,outId,timeId){
+  if(!pyLoaded)return;
+  var inp=document.getElementById(inId).value.trim();
+  var oe=document.getElementById(outId),te=document.getElementById(timeId);
+  oe.textContent='計算中...';oe.className='run-out run-loading';te.textContent='';
+  setTimeout(function(){
+    var lines=[inp],idx=0;
+    var t0=performance.now();
+    try{
+      py.setStdin({stdin:function(){return lines[idx++]||'';}});
+      var out='';py.setStdout({batched:function(s){out+=s+'\n';}});
+      py.runPython(BAD_CODE);
+      oe.textContent=out.trim()||'（出力なし）';oe.className='run-out';
+      te.textContent='⏱ '+Math.round(performance.now()-t0)+' ms';
+    }catch(e){oe.textContent='エラー: '+e;oe.className='run-out run-err';}
+  },30);
+}
+
+renderStep(G_STEPS[0]);
+buildBFGrid();
+showSamp(0,document.querySelector('#s1 .stab'));
+updateProgs();
+initPy();
 </script>
-</main>
-<script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-core.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/autoloader/prism-autoloader.min.js"></script>
-<footer style="text-align:center;padding:24px 16px;color:#999;font-size:.78rem;border-top:1px solid #eee;margin-top:40px">本サイトは個人学習目的のみで使用し、商用利用・公開配布はしていません。</footer>
 </body>
 </html>

@@ -13,7 +13,7 @@
   onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],ignoredTags:['script','noscript','style','pre','code']})"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{background:#000;color:#fff;
+html,body{background:#fff;color:#111;
   font-family:'DotGothic16',monospace;font-size:17px;line-height:2;
 }
 a{color:inherit;text-decoration:none}
@@ -26,7 +26,7 @@ a{color:inherit;text-decoration:none}
 pre,code,textarea{font-family:'Google Sans Code','DotGothic16',monospace !important}
 body::after{
   content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;
-  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.06) 3px,rgba(0,0,0,.06) 4px);
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.03) 3px,rgba(0,0,0,.03) 4px);
 }
 
 /* ── Screen system ── */
@@ -35,95 +35,102 @@ body::after{
 .screen.active{display:flex}
 
 /* ── Global nav ── */
-.gnav{position:fixed;bottom:0;left:0;right:0;height:90px;border-top:2px solid #444;background:#050505;z-index:100}
-.tabstrip{height:46px;display:flex;border-bottom:1px solid #444}
-.tbtn{flex:1;font-family:'DotGothic16',monospace;font-size:.88em;background:#000;color:#666;border:none;border-right:1px solid #444;cursor:pointer;transition:.1s}
+.gnav{position:fixed;bottom:0;left:0;right:0;height:90px;border-top:2px solid #ddd;background:#f5f5f5;z-index:100}
+.tabstrip{height:46px;display:flex;border-bottom:1px solid #ddd}
+.tbtn{flex:1;font-family:'DotGothic16',monospace;font-size:.88em;background:#fff;color:#666;border:none;border-right:1px solid #ddd;cursor:pointer;transition:.1s}
 .tbtn:last-child{border-right:none}
-.tbtn:hover{color:#fff;background:#0a0a0a}
-.tbtn.active{background:#fff;color:#000}
+.tbtn:hover{color:#000;background:#eee}
+.tbtn.active{background:#1565c0;color:#fff}
 .navrow{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 18px}
 .hint{font-size:.78em;color:#666}
-.nbtn{font-family:'DotGothic16',monospace;font-size:.88em;border:1px solid #555;background:#000;color:#888;padding:5px 18px;cursor:pointer;transition:.1s;display:flex;align-items:center;gap:5px}
-.nbtn:hover:not(:disabled){border-color:#fff;color:#fff}
+.nbtn{font-family:'DotGothic16',monospace;font-size:.88em;border:1px solid #ccc;background:#fff;color:#888;padding:5px 18px;cursor:pointer;transition:.1s;display:flex;align-items:center;gap:5px}
+.nbtn:hover:not(:disabled){border-color:#000;color:#000}
 .nbtn:disabled{opacity:.2;cursor:default}
-.nbtn.go{border-color:#0ff;color:#0ff}
-.nbtn.go:hover{background:#0ff;color:#000}
+.nbtn.go{border-color:#1565c0;color:#1565c0}
+.nbtn.go:hover{background:#1565c0;color:#fff}
 
 /* ── Topbar ── */
-.topbar{border-bottom:2px solid #444;padding:0 18px;height:46px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:#050505}
+.topbar{border-bottom:2px solid #ddd;padding:0 18px;height:46px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:#f5f5f5}
 .topbar-back{font-size:.9em;color:#888;display:flex;align-items:center;gap:5px;cursor:pointer}
-.topbar-back:hover{color:#fff}
+.topbar-back:hover{color:#000}
 .topbar-title{font-size:.84em;color:#888}
 .prog{display:flex;gap:6px;align-items:center}
-.pd{width:10px;height:10px;background:#0a0a0a;border:1px solid #444;transition:.2s}
-.pd.done{background:#0ff;border-color:#0ff;opacity:.4}
-.pd.active{background:#0ff;border-color:#0ff;box-shadow:0 0 6px #0ff}
+.pd{width:10px;height:10px;background:#eee;border:1px solid #ccc;transition:.2s}
+.pd.done{background:#1565c0;border-color:#1565c0;opacity:.4}
+.pd.active{background:#1565c0;border-color:#1565c0;box-shadow:0 0 6px #1565c0}
 
 /* ── Content ── */
 .content{display:flex;flex-direction:column;padding:12px 20px 0}
-.slabel{font-size:.76em;color:#0ff;margin-bottom:4px;letter-spacing:.15em}
-.stitle{font-size:1.35em;color:#fff;margin-bottom:10px;line-height:2}
+.slabel{font-size:.76em;color:#1565c0;margin-bottom:4px;letter-spacing:.15em}
+.stitle{font-size:1.35em;color:#111;margin-bottom:10px;line-height:2}
 
 /* ── S1 ── */
 .playout{display:flex;gap:20px;min-height:240px}
-.pstmt{flex:1;font-size:.97em;line-height:2.2;color:#ccc}
+.pstmt{flex:1;font-size:.97em;line-height:2.2;color:#333}
 .pstmt p{margin-bottom:.6em}
 .psamp{width:220px;flex-shrink:0;display:flex;flex-direction:column}
-.samp-tabs{display:flex;border:1px solid #444;border-bottom:none;flex-shrink:0}
-.stab{flex:1;font-family:'DotGothic16',monospace;font-size:.76em;background:#000;color:#666;border:none;border-right:1px solid #444;padding:5px 0;cursor:pointer;transition:.1s}
+.samp-tabs{display:flex;border:1px solid #ddd;border-bottom:none;flex-shrink:0}
+.stab{flex:1;font-family:'DotGothic16',monospace;font-size:.76em;background:#fff;color:#666;border:none;border-right:1px solid #ddd;padding:5px 0;cursor:pointer;transition:.1s}
 .stab:last-child{border-right:none}
-.stab:hover{color:#fff}
-.stab.active{background:#0ff;color:#000}
-.sbox{border:1px solid #444;padding:10px;display:flex;flex-direction:column;gap:8px}
-.slbl{font-size:.72em;color:#0ff;margin-bottom:2px}
-.spre{font-size:.86em;color:#ccc;white-space:pre;line-height:1.9}
-.dbadge{font-size:.82em;border:1px solid #8bc34a;color:#8bc34a;padding:2px 8px;margin-right:6px}
-.ctag{font-size:.82em;border:1px solid #444;color:#888;padding:2px 8px;margin-right:4px}
-.atcoder-link{display:inline-flex;align-items:center;gap:5px;font-size:.82em;color:#0ff;border:1px solid #0ff;padding:5px 11px;margin-top:10px}
-.atcoder-link:hover{background:#0ff;color:#000}
+.stab:hover{color:#000}
+.stab.active{background:#1565c0;color:#fff}
+.sbox{border:1px solid #ddd;padding:10px;display:flex;flex-direction:column;gap:8px}
+.slbl{font-size:.72em;color:#1565c0;margin-bottom:2px}
+.spre{font-size:.86em;color:#333;white-space:pre;line-height:1.9}
+.dbadge{font-size:.82em;border:1px solid #8bc34a;color:#2e7d32;padding:2px 8px;margin-right:6px}
+.ctag{font-size:.82em;border:1px solid #ddd;color:#888;padding:2px 8px;margin-right:4px}
+.atcoder-link{display:inline-flex;align-items:center;gap:5px;font-size:.82em;color:#1565c0;border:1px solid #1565c0;padding:5px 11px;margin-top:10px}
+.atcoder-link:hover{background:#1565c0;color:#fff}
+.ref-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.ref-link{display:inline-flex;align-items:center;gap:4px;font-size:.78em;color:#888;border:1px solid #ddd;padding:4px 10px}
+.ref-link:hover{border-color:#1565c0;color:#1565c0}
+.ref-link .mi{font-size:1.1em}
 
 /* ── S2 ── */
 .elayout{display:flex;gap:14px;min-height:240px}
 .ecol{flex:1;display:flex;flex-direction:column;gap:8px}
-.ecard{border:1px solid #444;padding:12px;flex:1}
-.ect{font-size:.8em;color:#888;margin-bottom:8px;border-bottom:1px solid #444;padding-bottom:5px}
-.ecard p{font-size:.92em;line-height:2.2;color:#ccc;margin-bottom:.3em}
-.ecard strong{color:#ff0}
-.ecard.bad{border-color:#f66}.ecard.bad .ect{color:#f66}
-.ecard.good{border-color:#4f8}.ecard.good .ect{color:#4f8}
-.fml{font-size:.88em;line-height:2.4;padding:9px 12px;border:2px solid #4af;color:#4af;margin:.6em 0;display:block;font-family:'Google Sans Code',monospace !important}
-.goal-box{border:2px solid #0ff;padding:13px;margin-bottom:10px;flex-shrink:0;background:rgba(0,255,255,.04)}
-.goal-box-title{font-size:.82em;color:#0ff;margin-bottom:8px;letter-spacing:.1em}
-.goal-step{font-size:.92em;color:#ccc;line-height:2.2;display:flex;gap:8px;align-items:flex-start;margin-bottom:.1em}
-.goal-step::before{content:'→';color:#0ff;flex-shrink:0}
+.ecarousel{position:relative}
+.estep{display:none}
+.estep.active{display:block}
+.ecard{border:1px solid #ddd;padding:12px;flex:1}
+.ect{font-size:.8em;color:#888;margin-bottom:8px;border-bottom:1px solid #ddd;padding-bottom:5px}
+.ecard p{font-size:.92em;line-height:2.2;color:#333;margin-bottom:.3em}
+.ecard strong{color:#e65100}
+.ecard.bad{border-color:#c62828}.ecard.bad .ect{color:#c62828}
+.ecard.good{border-color:#2e7d32}.ecard.good .ect{color:#2e7d32}
+.fml{font-size:.88em;line-height:2.4;padding:9px 12px;border:2px solid #0277bd;color:#0277bd;margin:.6em 0;display:block;font-family:'Google Sans Code',monospace !important}
+.goal-box{border:2px solid #1565c0;padding:13px;margin-bottom:10px;flex-shrink:0;background:rgba(21,101,192,.05)}
+.goal-box-title{font-size:.82em;color:#1565c0;margin-bottom:8px;letter-spacing:.1em}
+.goal-step{font-size:.92em;color:#333;line-height:2.2;display:flex;gap:8px;align-items:flex-start;margin-bottom:.1em}
+.goal-step::before{content:'→';color:#1565c0;flex-shrink:0}
 
 /* ── S3 (full viz) ── */
 .vlayout{display:flex;gap:20px;min-height:240px;align-items:flex-start}
 .vright{flex:1;display:flex;flex-direction:column;gap:8px}
-.vtit{font-size:.94em;color:#0ff;line-height:2;min-height:2em}
-.vdesc{font-size:.88em;color:#aaa;line-height:2;min-height:2.5em}
+.vtit{font-size:.94em;color:#1565c0;line-height:2;min-height:2em}
+.vdesc{font-size:.88em;color:#555;line-height:2;min-height:2.5em}
 .veq{font-size:.86em;line-height:2;padding:7px 11px;border:1px solid #4af;background:#050505;white-space:pre;min-height:36px;color:#4af;font-family:'Google Sans Code',monospace !important}
 .opbox{border:1px solid #555;padding:7px 12px;display:inline-block;background:#050505}
 .oplbl{font-size:.72em;color:#888;margin-bottom:3px}
 .opval{font-size:1.1em;color:#ff0}
 .snav{display:flex;gap:7px;align-items:center}
 .sctr{font-size:.76em;color:#888}
-.sbtn{font-family:'DotGothic16',monospace;font-size:.82em;border:1px solid #555;background:#000;color:#888;padding:5px 11px;cursor:pointer;transition:.1s}
-.sbtn:hover:not(:disabled){border-color:#0ff;color:#0ff}
+.sbtn{font-family:'DotGothic16',monospace;font-size:.82em;border:1px solid #ccc;background:#fff;color:#888;padding:5px 11px;cursor:pointer;transition:.1s}
+.sbtn:hover:not(:disabled){border-color:#1565c0;color:#1565c0}
 .sbtn:disabled{opacity:.25;cursor:default}
 
 /* ── Grid cells (full size) ── */
-.gcell{width:50px;height:50px;border:1px solid #444;display:flex;align-items:center;justify-content:center;font-size:1.05em;color:#fff;transition:background .18s,border-color .18s;position:relative}
-.gcell.hi-r{background:rgba(0,255,255,.12);border-color:#0ff}
-.gcell.hi-c{background:rgba(255,255,0,.1);border-color:#ff0}
-.gcell.focus{background:#0ff;color:#000;border-color:#0ff}
-.gcell.done{color:#444}
+.gcell{width:50px;height:50px;border:1px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:1.05em;color:#111;transition:background .18s,border-color .18s;position:relative}
+.gcell.hi-r{background:rgba(21,101,192,.1);border-color:#1565c0}
+.gcell.hi-c{background:rgba(230,81,0,.08);border-color:#e65100}
+.gcell.focus{background:#1565c0;color:#fff;border-color:#1565c0}
+.gcell.done{color:#bbb}
 .aov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.85);color:#4f8;font-size:.9em;opacity:0;transition:opacity .22s;pointer-events:none}
 .aov.show{opacity:1}
-.rcell{width:56px;height:50px;border:1px solid #444;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.68em;color:#555;transition:all .2s}
-.rcell.on{border-color:#0ff;color:#0ff;background:rgba(0,255,255,.08)}
-.ccell{width:50px;height:42px;border:1px solid #444;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.65em;color:#555;line-height:1.7;text-align:center;transition:all .2s}
-.ccell.on{border-color:#ff0;color:#ff0;background:rgba(255,255,0,.06)}
+.rcell{width:56px;height:50px;border:1px solid #ddd;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.68em;color:#777;transition:all .2s}
+.rcell.on{border-color:#1565c0;color:#1565c0;background:rgba(21,101,192,.06)}
+.ccell{width:50px;height:42px;border:1px solid #ddd;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.65em;color:#777;line-height:1.7;text-align:center;transition:all .2s}
+.ccell.on{border-color:#e65100;color:#e65100;background:rgba(230,81,0,.06)}
 
 /* ── Dual layout (S4/S5) ── */
 .duallayout{display:flex;gap:16px;min-height:240px}
@@ -131,38 +138,38 @@ body::after{
 pre.dcode{font-size:.84em;overflow-x:auto;overflow-y:auto;white-space:pre;line-height:2;padding:10px;max-height:180px;flex-shrink:0;background:#050505;border:1px solid #444;max-width:100%;min-width:0}
 pre.dcode.bad{color:#f99;border-color:#844}
 pre.dcode.good{color:#cfc;border-color:#484}
-.dsummary{border:1px solid #444;padding:11px;flex-shrink:0}
+.dsummary{border:1px solid #ddd;padding:11px;flex-shrink:0}
 .dstit{font-size:.76em;color:#888;margin-bottom:7px}
-.dsumi{font-size:.86em;color:#ccc;line-height:2.1;display:flex;gap:7px;margin-bottom:.1em}
-.dsumi.bad::before{content:'✗';color:#f66;flex-shrink:0}
-.dsumi.good::before{content:'✓';color:#4f8;flex-shrink:0}
+.dsumi{font-size:.86em;color:#333;line-height:2.1;display:flex;gap:7px;margin-bottom:.1em}
+.dsumi.bad::before{content:'✗';color:#c62828;flex-shrink:0}
+.dsumi.good::before{content:'✓';color:#2e7d32;flex-shrink:0}
 
 /* ── Compact grid (S4/S5) ── */
-.cviz{border:1px solid #444;padding:10px;flex-shrink:0;overflow:hidden;min-width:0}
-.cviz-title{font-size:.78em;margin-bottom:8px;border-bottom:1px solid #444;padding-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cgcell{width:40px;height:40px;border:1px solid #444;display:flex;align-items:center;justify-content:center;font-size:.92em;color:#fff;transition:background .18s,border-color .18s;position:relative}
-.cgcell.hi-r{background:rgba(0,255,255,.12);border-color:#0ff}
-.cgcell.hi-c{background:rgba(255,255,0,.1);border-color:#ff0}
-.cgcell.focus{background:#0ff;color:#000;border-color:#0ff}
-.cgcell.focus.bad-focus{background:#f66;color:#000;border-color:#f66}
-.cgcell.done{color:#444}
+.cviz{border:1px solid #ddd;padding:10px;flex-shrink:0;overflow:hidden;min-width:0}
+.cviz-title{font-size:.78em;margin-bottom:8px;border-bottom:1px solid #ddd;padding-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cgcell{width:40px;height:40px;border:1px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:.92em;color:#111;transition:background .18s,border-color .18s;position:relative}
+.cgcell.hi-r{background:rgba(21,101,192,.1);border-color:#1565c0}
+.cgcell.hi-c{background:rgba(230,81,0,.08);border-color:#e65100}
+.cgcell.focus{background:#1565c0;color:#fff;border-color:#1565c0}
+.cgcell.focus.bad-focus{background:#c62828;color:#fff;border-color:#c62828}
+.cgcell.done{color:#bbb}
 .cgcell .aov{font-size:.82em}
-.crcell{width:46px;height:40px;border:1px solid #444;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.62em;color:#555;transition:all .2s}
-.crcell.on{border-color:#0ff;color:#0ff;background:rgba(0,255,255,.08)}
-.cccell{width:40px;height:34px;border:1px solid #444;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.6em;color:#555;text-align:center;line-height:1.6;transition:all .2s}
-.cccell.on{border-color:#ff0;color:#ff0;background:rgba(255,255,0,.06)}
-.cviz-desc{font-size:.82em;color:#aaa;line-height:1.9;min-height:1.9em;margin:5px 0}
+.crcell{width:46px;height:40px;border:1px solid #ddd;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.62em;color:#777;transition:all .2s}
+.crcell.on{border-color:#1565c0;color:#1565c0;background:rgba(21,101,192,.06)}
+.cccell{width:40px;height:34px;border:1px solid #ddd;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.6em;color:#777;text-align:center;line-height:1.6;transition:all .2s}
+.cccell.on{border-color:#e65100;color:#e65100;background:rgba(230,81,0,.06)}
+.cviz-desc{font-size:.82em;color:#555;line-height:1.9;min-height:1.9em;margin:5px 0}
 .cviz-eq{font-size:.78em;padding:4px 8px;border:1px solid #4af;background:#050505;white-space:pre;color:#4af;min-height:24px;display:none;font-family:'Google Sans Code',monospace;margin-bottom:5px}
 .cviz-eq.red{border-color:#f66;color:#f99}
 
 /* ── Run box ── */
-.runbox{border:1px solid #444;display:flex;flex-direction:column;min-height:200px}
-.run-hdr{font-size:.8em;color:#888;padding:7px 11px;border-bottom:1px solid #444;background:#050505;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px;flex-shrink:0}
+.runbox{border:1px solid #444;background:#050505;display:flex;flex-direction:column;min-height:200px}
+.run-hdr{font-size:.8em;color:#888;padding:7px 11px;border-bottom:1px solid #444;background:#0a0a0a;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px;flex-shrink:0}
 .samp-btns{display:flex;gap:4px;flex-wrap:wrap}
 .samp-btn{font-family:'DotGothic16',monospace;font-size:.76em;border:1px solid #555;background:#000;color:#888;padding:3px 8px;cursor:pointer;transition:.1s}
 .samp-btn:hover{border-color:#0ff;color:#0ff}
 .run-input{width:100%;background:#000;color:#ccc;border:none;border-bottom:1px solid #444;padding:7px 11px;font-size:.88em;line-height:1.9;resize:none;outline:none;height:68px;flex-shrink:0}
-.run-footer{display:flex;align-items:center;gap:8px;padding:5px 10px;border-top:1px solid #444;background:#050505;flex-shrink:0;flex-wrap:wrap}
+.run-footer{display:flex;align-items:center;gap:8px;padding:5px 10px;border-top:1px solid #444;background:#0a0a0a;flex-shrink:0;flex-wrap:wrap}
 .run-btn{font-family:'DotGothic16',monospace;font-size:.86em;border:2px solid #0ff;background:#000;color:#0ff;padding:5px 14px;cursor:pointer;transition:.1s}
 .run-btn:hover:not(:disabled){background:#0ff;color:#000}
 .run-btn:disabled{border-color:#444;color:#555;cursor:default}
@@ -176,16 +183,46 @@ pre.dcode.good{color:#cfc;border-color:#484}
 .run-note{font-size:.7em;color:#888;flex-basis:100%;line-height:1.7}
 
 /* ── S6 体験 ── */
-#gtab6:not(.active){color:#ff0}
-#gtab6.active{background:#ff0;color:#000}
-.viz6d-cell{width:52px;height:52px;border:2px solid #444;display:flex;align-items:center;justify-content:center;font-size:1.1em;cursor:pointer;transition:.15s;position:relative}
+#gtab7:not(.active){color:#e65100}
+#gtab7.active{background:#1565c0;color:#fff}
+.viz6d-cell{width:52px;height:52px;border:2px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:1.1em;cursor:pointer;transition:.15s;position:relative}
 .viz6d-cell:hover{border-color:#888}
-.viz6d-cell.sel{border-color:#ff0;background:rgba(255,255,0,.12)}
-.viz6d-cell.hi-r{background:rgba(0,255,255,.08);border-color:#0ff}
-.viz6d-cell.hi-c{background:rgba(0,255,255,.05);border-color:#0aa}
-.viz6d-formula{font-size:.84em;color:#4af;border:1px solid #4af;padding:7px 12px;margin-top:8px;line-height:2;font-family:'Google Sans Code',monospace;white-space:pre;display:none}
+.viz6d-cell.sel{border-color:#e65100;background:rgba(230,81,0,.1)}
+.viz6d-cell.hi-r{background:rgba(21,101,192,.08);border-color:#1565c0}
+.viz6d-cell.hi-c{background:rgba(21,101,192,.05);border-color:#0277bd}
+.viz6d-formula{font-size:.84em;color:#0277bd;border:1px solid #0277bd;padding:7px 12px;margin-top:8px;line-height:2;font-family:'Google Sans Code',monospace;white-space:pre;display:none}
 .viz6d-formula.show{display:block}
-.viz6d-score{font-size:1.1em;color:#ff0;font-weight:bold;margin:4px 0}
+.viz6d-score{font-size:1.1em;color:#e65100;font-weight:bold;margin:4px 0}
+
+.mascot-wrap{position:fixed;right:18px;bottom:104px;left:auto;top:auto;z-index:150;display:flex;flex-direction:column;align-items:flex-end;pointer-events:none;transition:right .7s cubic-bezier(.34,1.56,.64,1),bottom .7s cubic-bezier(.34,1.56,.64,1),left .7s cubic-bezier(.34,1.56,.64,1),top .7s cubic-bezier(.34,1.56,.64,1)}
+.mascot-wrap.center{right:auto;bottom:auto;left:50%;top:38%;transform:translate(-50%,-50%);align-items:center}
+.mascot-bubble{background:#fff;border:2px solid #111;padding:4px 9px;font-size:.68rem;font-family:'DotGothic16',monospace;margin-bottom:6px;white-space:nowrap;box-shadow:2px 2px 0 #111;opacity:0;transform:translateY(4px);transition:opacity .15s,transform .15s,font-size .4s,padding .4s;color:#111}
+.mascot-bubble.show{opacity:1;transform:translateY(0)}
+.mascot-wrap.center .mascot-bubble{font-size:.9rem;padding:9px 15px;white-space:normal;max-width:min(70vw,320px);text-align:center;line-height:1.6}
+.mascot-canvas{width:14px;height:14px;border:none;image-rendering:pixelated;animation:mascot-float 2.2s ease-in-out infinite;pointer-events:auto;cursor:pointer;transition:width .5s cubic-bezier(.34,1.56,.64,1),height .5s cubic-bezier(.34,1.56,.64,1)}
+.mascot-wrap.center .mascot-canvas{width:70px;height:70px}
+.mascot-canvas.happy{animation:mascot-bounce .6s ease}
+.mascot-canvas.sad{animation:mascot-shake .4s ease}
+.mascot-canvas.dash-left{animation:mascot-dash-left 1.1s ease-in-out}
+.mascot-canvas.dash-up{animation:mascot-dash-up 1s ease-in-out}
+.mascot-canvas.spin{animation:mascot-spin 1.2s cubic-bezier(.45,0,.55,1)}
+.mascot-canvas.dance{animation:mascot-dance .9s ease-in-out}
+@keyframes mascot-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes mascot-bounce{0%{transform:translateY(0)}30%{transform:translateY(-10px)}50%{transform:translateY(0)}70%{transform:translateY(-4px)}100%{transform:translateY(0)}}
+@keyframes mascot-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@keyframes mascot-dash-left{0%{transform:translateX(0)}40%{transform:translateX(-200px)}60%{transform:translateX(-200px)}100%{transform:translateX(0)}}
+@keyframes mascot-dash-up{0%{transform:translateY(0)}40%{transform:translateY(-160px)}60%{transform:translateY(-160px)}100%{transform:translateY(0)}}
+@keyframes mascot-spin{0%{transform:rotate(0)}100%{transform:rotate(1080deg)}}
+@keyframes mascot-dance{0%{transform:rotate(0) scale(1)}20%{transform:rotate(-14deg) scale(1.15)}40%{transform:rotate(12deg) scale(1.1)}60%{transform:rotate(-10deg) scale(1.15)}80%{transform:rotate(6deg) scale(1.05)}100%{transform:rotate(0) scale(1)}}
+@media(max-width:600px){.mascot-wrap{right:10px;bottom:98px}.mascot-wrap.center{left:50%;top:34%}}
+.vgrid-wrap{flex-shrink:0;max-width:100%;overflow-x:auto}
+.viz6-left{flex-shrink:0}
+.viz6-right{flex:1;min-width:220px}
+@media(max-width:700px){
+  .playout,.vlayout,.duallayout{flex-direction:column}
+  .psamp,.vright,.viz6-left,.viz6-right{width:100%;min-width:0}
+  #vgrid,#bgrid,#cgrid,#viz6d-grid{max-width:100%;overflow-x:auto}
+}
 </style>
 </head>
 <body>
@@ -201,18 +238,22 @@ pre.dcode.good{color:#cfc;border-color:#484}
       <div class="prog" id="p1"></div>
     </div>
     <div class="content">
-      <div class="slabel">■ STAGE 1 / 5</div>
+      <div class="slabel">■ STAGE 1 / 6</div>
       <div class="stitle">問題</div>
       <div class="playout">
         <div class="pstmt">
           <p style="margin-bottom:12px"><span class="dbadge">★2</span><span class="ctag">累積和</span><span class="ctag">配列</span></p>
           <p>$H$ 行 $W$ 列のマス目があります。</p>
           <p>マス $(i,j)$ には整数 $A_{i,j}$ が書かれています。</p>
-          <p>すべてのマス $(i,j)$ について、<strong style="color:#ff0">同じ行または同じ列にある整数をすべて合計した値</strong>を求めてください。</p>
-          <p style="margin-top:12px;color:#aaa">制約：$2 \leq H,W \leq 2000$　$1 \leq A_{i,j} \leq 99$</p>
+          <p>すべてのマス $(i,j)$ について、<strong style="color:#e65100">同じ行または同じ列にある整数をすべて合計した値</strong>を求めてください。</p>
+          <p style="margin-top:12px;color:#777">制約：$2 \leq H,W \leq 2000$　$1 \leq A_{i,j} \leq 99$</p>
           <a class="atcoder-link" href="https://atcoder.jp/contests/typical90/tasks/typical90_d" target="_blank" rel="noopener">
             <span class="mi">open_in_new</span> AtCoder で問題を見る
           </a>
+          <div class="ref-links">
+            <a class="ref-link" href="../glossary/precomputation.html"><span class="mi">book_2</span> 前計算（累積和）</a>
+            <a class="ref-link" href="../code_reading.html"><span class="mi">menu_book</span> プログラムの読み方</a>
+          </div>
         </div>
         <div class="psamp">
           <div class="samp-tabs">
@@ -244,34 +285,35 @@ pre.dcode.good{color:#cfc;border-color:#484}
       <div class="prog" id="p2"></div>
     </div>
     <div class="content">
-      <div class="slabel">■ STAGE 2 / 5</div>
+      <div class="slabel">■ STAGE 2 / 6</div>
       <div class="stitle">問題の解説</div>
       <div style="display:flex;flex-direction:column;flex:1;min-height:0;gap:10px">
         <div class="goal-box">
           <div class="goal-box-title">▶ まず、何をすればいいの？</div>
           <div class="goal-step">各マス (i, j) を1つずつ見ていく</div>
-          <div class="goal-step"><strong style="color:#0ff">同じ行</strong>にある数を全部足す</div>
-          <div class="goal-step"><strong style="color:#ff0">同じ列</strong>にある数も全部足す</div>
-          <div class="goal-step">自分自身は2回足してしまうので<strong style="color:#f66">1回引く</strong></div>
+          <div class="goal-step"><strong style="color:#1565c0">同じ行</strong>にある数を全部足す</div>
+          <div class="goal-step"><strong style="color:#e65100">同じ列</strong>にある数も全部足す</div>
+          <div class="goal-step">自分自身は2回足してしまうので<strong style="color:#c62828">1回引く</strong></div>
           <div class="goal-step">それを全マスぶん繰り返す</div>
         </div>
-        <div class="elayout" style="flex:1;min-height:0">
-          <div class="ecol">
-            <div class="ecard bad">
-              <div class="ect">毎回計算すると遅い！</div>
-              <p>マスの数 → <strong>2000×2000 = 400万個</strong></p>
-              <p>1マスに <strong>H+W 回</strong>の計算が必要</p>
-              <p>→ 全体で <strong style="color:#f66">160億回 → TLE ✗</strong></p>
-            </div>
+        <div class="ecarousel" style="flex:1;min-height:0">
+          <div class="ecard bad estep active">
+            <div class="ect">毎回計算すると遅い！</div>
+            <p>マスの数 → <strong>2000×2000 = 400万個</strong></p>
+            <p>1マスに <strong>H+W 回</strong>の計算が必要</p>
+            <p>→ 全体で <strong style="color:#c62828">160億回 → TLE</strong></p>
           </div>
-          <div class="ecol">
-            <div class="ecard good">
-              <div class="ect">前計算で速くする ✓</div>
-              <p>先に<strong>各行・各列の合計</strong>を計算して覚えておけば…</p>
-              <span class="fml">B[i][j] = row[i] + col[j] − A[i][j]</span>
-              <p style="font-size:.88em;color:#aaa"><strong style="color:#ccc">Q. なぜ引く？</strong> A[i][j] は行にも列にも入るので2回足してしまう → 1回引く</p>
-            </div>
+          <div class="ecard good estep">
+            <div class="ect">前計算で速くする</div>
+            <p>先に<strong>各行・各列の合計</strong>を計算して覚えておけば…</p>
+            <span class="fml">B[i][j] = row[i] + col[j] − A[i][j]</span>
+            <p style="font-size:.88em;color:#777"><strong style="color:#333">Q. なぜ引く？</strong> A[i][j] は行にも列にも入るので2回足してしまう → 1回引く</p>
           </div>
+        </div>
+        <div class="snav" style="margin-top:8px">
+          <button class="sbtn" id="eprev" onclick="eStep(-1)" disabled>◀</button>
+          <span class="sctr" id="ectr">1 / 2</span>
+          <button class="sbtn" id="enext" onclick="eStep(1)">▶</button>
         </div>
       </div>
     </div>
@@ -285,10 +327,10 @@ pre.dcode.good{color:#cfc;border-color:#484}
       <div class="prog" id="p3"></div>
     </div>
     <div class="content">
-      <div class="slabel">■ STAGE 3 / 5</div>
+      <div class="slabel">■ STAGE 3 / 6</div>
       <div class="stitle">動かして確認しよう（正解アルゴリズム）</div>
       <div class="vlayout">
-        <div>
+        <div class="vgrid-wrap">
           <div style="display:flex;align-items:flex-start">
             <div id="vgrid"></div>
             <div id="vrsums"></div>
@@ -321,8 +363,8 @@ pre.dcode.good{color:#cfc;border-color:#484}
       <div class="prog" id="p4"></div>
     </div>
     <div class="content">
-      <div class="slabel">■ STAGE 4 / 5</div>
-      <div class="stitle" style="color:#f66">間違った回答（遅いコード）</div>
+      <div class="slabel">■ STAGE 4 / 6</div>
+      <div class="stitle" style="color:#c62828">間違った回答（遅いコード）</div>
       <div class="duallayout">
         <!-- 左: コード + なぜ遅い？ -->
         <div class="dcol">
@@ -341,18 +383,18 @@ for i in range(H):
         s -= A[i][j]
         row_out.append(s)
     print(' '.join(map(str, row_out)))</pre>
-          <div class="dsummary" style="border-color:#844">
-            <div class="dstit" style="color:#f66">なぜ遅い？</div>
+          <div class="dsummary" style="border-color:#c62828">
+            <div class="dstit" style="color:#c62828">なぜ遅い？</div>
             <div class="dsumi bad">毎回 行を全部ループして足す = W 回</div>
             <div class="dsumi bad">毎回 列を全部ループして足す = H 回</div>
             <div class="dsumi bad">1マスに O(H+W) かかる</div>
-            <div class="dsumi bad">400万マス × 4000 = 160億回 → TLE ✗</div>
+            <div class="dsumi bad">400万マス × 4000 = 160億回 → TLE</div>
           </div>
         </div>
         <!-- 右: 間違いアルゴリズムの動き + ランナー -->
         <div class="dcol">
-          <div class="cviz" style="border-color:#844">
-            <div class="cviz-title" style="color:#f66;border-color:#844">アルゴリズムの動き（間違いコード）</div>
+          <div class="cviz" style="border-color:#c62828">
+            <div class="cviz-title" style="color:#c62828;border-color:#c62828">アルゴリズムの動き（間違いコード）</div>
             <div style="display:flex;gap:10px;align-items:flex-start">
               <div>
                 <div style="display:flex;align-items:flex-start">
@@ -392,7 +434,6 @@ for i in range(H):
 1 1 1</textarea>
             <div class="run-footer">
               <button class="run-btn" style="border-color:#f66;color:#f66" id="bad-run-btn" onclick="runBad()" disabled>読み込み中...</button>
-              <button class="big-test-btn" id="bad-big-btn" onclick="runBigTest('bad')" disabled>速度テスト</button>
               <div class="run-time" id="bad-run-time"></div>
             </div>
             <div class="run-out" id="bad-run-out"><span class="run-loading">Pyodide を読み込み中...</span></div>
@@ -402,7 +443,7 @@ for i in range(H):
     </div>
   </div>
 
-  <!-- ─── S5: 正解 ─── -->
+  <!-- ─── S5: 速度比較 ─── -->
   <div class="screen" id="s5">
     <div class="topbar">
       <a class="topbar-back" href="../"><span class="mi">arrow_back</span> もどる</a>
@@ -410,8 +451,37 @@ for i in range(H):
       <div class="prog" id="p5"></div>
     </div>
     <div class="content">
-      <div class="slabel">■ STAGE 5 / 5 — CLEAR!</div>
-      <div class="stitle" style="color:#4f8">正解の回答</div>
+      <div class="slabel">■ STAGE 5 / 6</div>
+      <div class="stitle">速度比較：間違ったコード vs 正解コード</div>
+      <div class="dcol">
+        <div class="runbox" style="flex:none">
+          <div class="run-hdr"><span>速度テスト（400×400マス）</span></div>
+          <div class="run-footer" style="flex-wrap:wrap">
+            <button class="big-test-btn" id="speed-bad-btn" onclick="runSpeedTest('bad')" disabled>間違ったコード（400×400）</button>
+            <button class="big-test-btn" id="speed-good-btn" style="border-color:#4f8;color:#4f8" onclick="runSpeedTest('good')" disabled>正解コード（400×400）</button>
+            <div class="run-note">同じ 400×400 マスで両方のコードを実行し、速さを比べてみよう。</div>
+          </div>
+          <div class="run-out" id="speed-out" style="min-height:60px">読み込み中...</div>
+        </div>
+        <div class="dsummary" style="margin-top:8px">
+          <div class="dstit">比較</div>
+          <div class="dsumi bad">間違ったコード：O(HW(H+W)) → 400×400マスでも時間がかかる</div>
+          <div class="dsumi good">正解コード：O(HW) → 400×400マスでも一瞬</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── S6: 正解 ─── -->
+  <div class="screen" id="s6">
+    <div class="topbar">
+      <a class="topbar-back" href="../"><span class="mi">arrow_back</span> もどる</a>
+      <div class="topbar-title">004 — Cross Sum</div>
+      <div class="prog" id="p6"></div>
+    </div>
+    <div class="content">
+      <div class="slabel">■ STAGE 6 / 6 — CLEAR!</div>
+      <div class="stitle" style="color:#2e7d32">正解の回答</div>
       <div class="duallayout">
         <!-- 左: コード + ポイント -->
         <div class="dcol">
@@ -431,12 +501,12 @@ for i in range(H):
     print(' '.join(
         str(row[i] + col[j] - A[i][j])
         for j in range(W)))</pre>
-          <div class="dsummary" style="border-color:#484">
-            <div class="dstit" style="color:#4f8">ポイントまとめ</div>
+          <div class="dsummary" style="border-color:#2e7d32">
+            <div class="dstit" style="color:#2e7d32">ポイントまとめ</div>
             <div class="dsumi good">行・列の合計を先に前計算</div>
             <div class="dsumi good">B[i][j] = row[i] + col[j] − A[i][j]</div>
             <div class="dsumi good">A[i][j] を引くのは2重カウント防止</div>
-            <div class="dsumi good">計算量 O(HW) → 400万回で余裕 ✓</div>
+            <div class="dsumi good">計算量 O(HW) → 400万回で余裕</div>
           </div>
           <a class="atcoder-link" href="https://atcoder.jp/contests/typical90/tasks/typical90_d" target="_blank" rel="noopener">
             <span class="mi">open_in_new</span> AtCoder で提出する
@@ -444,8 +514,8 @@ for i in range(H):
         </div>
         <!-- 右: 正解ステップ可視化 + ランナー -->
         <div class="dcol">
-          <div class="cviz" style="border-color:#484">
-            <div class="cviz-title" style="color:#4f8;border-color:#484">アルゴリズムの動き（正解コード）</div>
+          <div class="cviz" style="border-color:#2e7d32">
+            <div class="cviz-title" style="color:#2e7d32;border-color:#2e7d32">アルゴリズムの動き（正解コード）</div>
             <div style="display:flex;gap:10px;align-items:flex-start">
               <div>
                 <div style="display:flex;align-items:flex-start">
@@ -485,7 +555,6 @@ for i in range(H):
 1 1 1</textarea>
             <div class="run-footer">
               <button class="run-btn" id="good-run-btn" onclick="runGood()" disabled>読み込み中...</button>
-              <button class="big-test-btn" id="good-big-btn" onclick="runBigTest('good')" disabled>速度テスト</button>
               <div class="run-time" id="good-run-time"></div>
             </div>
             <div class="run-out" id="good-run-out"><span class="run-loading">Pyodide を読み込み中...</span></div>
@@ -495,34 +564,34 @@ for i in range(H):
     </div>
   </div>
 
-<!-- S6: 体験 -->
-<div class="screen" id="s6">
+<!-- S7: 体験 -->
+<div class="screen" id="s7">
   <div class="topbar">
     <a class="topbar-back" href="../"><span class="mi">arrow_back</span> もどる</a>
     <div class="topbar-title">004 — Cross Sum</div>
-    <div class="prog" id="p6"></div>
+    <div class="prog" id="p7"></div>
   </div>
   <div class="content">
     <div class="slabel">■ TRY IT</div>
     <div class="stitle">クロスサムを感じてみよう</div>
     <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">
-      <div style="flex-shrink:0">
-        <div style="font-size:.76em;color:#0ff;margin-bottom:10px">▼ マスをクリックしてクロスサムを確認しよう</div>
-        <div id="viz6d-grid" style="display:inline-block;border:1px solid #333"></div>
-        <div style="font-size:.72em;color:#888;margin-top:6px;line-height:1.8">
-          <span style="background:rgba(0,255,255,.08);border:1px solid #0ff;padding:1px 6px">■</span> 同じ行・列
+      <div class="viz6-left">
+        <div style="font-size:.76em;color:#1565c0;margin-bottom:10px">▼ マスをクリックしてクロスサムを確認しよう</div>
+        <div id="viz6d-grid" style="display:inline-block;border:1px solid #ddd"></div>
+        <div style="font-size:.72em;color:#777;margin-top:6px;line-height:1.8">
+          <span style="background:rgba(21,101,192,.08);border:1px solid #1565c0;padding:1px 6px">■</span> 同じ行・列
           &nbsp;
-          <span style="background:rgba(255,255,0,.12);border:1px solid #ff0;padding:1px 6px">■</span> 選択セル
+          <span style="background:rgba(230,81,0,.12);border:1px solid #e65100;padding:1px 6px">■</span> 選択セル
         </div>
         <div class="viz6d-formula" id="viz6d-formula"></div>
         <div class="viz6d-score" id="viz6d-score"></div>
         <button class="sbtn" onclick="viz6dReset()" style="margin-top:8px">リセット</button>
       </div>
-      <div style="flex:1;min-width:220px">
-        <div style="font-size:.76em;color:#888;margin-bottom:6px">行・列の合計（前計算）</div>
+      <div class="viz6-right">
+        <div style="font-size:.76em;color:#777;margin-bottom:6px">行・列の合計（前計算）</div>
         <div id="viz6d-sums" style="font-size:.84em;line-height:2.2;border:1px solid #333;padding:8px 12px;background:#050505"></div>
-        <div style="font-size:.76em;color:#aaa;margin-top:8px;line-height:2">
-          <strong style="color:#ff0">ポイント：</strong><br>
+        <div style="font-size:.76em;color:#555;margin-top:8px;line-height:2">
+          <strong style="color:#e65100">ポイント：</strong><br>
           各マスのクロスサムは<br>
           row[i] + col[j] - A[i][j]<br>
           で O(1) で求まる！
@@ -534,25 +603,31 @@ for i in range(H):
 
 </div><!-- /screens -->
 
+<div class="mascot-wrap">
+  <div id="mascot-bubble" class="mascot-bubble"></div>
+  <canvas id="mascot-canvas" class="mascot-canvas" width="10" height="10"></canvas>
+</div>
+
 <nav class="gnav">
   <div class="tabstrip">
     <button class="tbtn active" id="gtab1" onclick="goTo(1)">① 問題</button>
     <button class="tbtn" id="gtab2" onclick="goTo(2)">② 解説</button>
     <button class="tbtn" id="gtab3" onclick="goTo(3)">③ 確認</button>
     <button class="tbtn" id="gtab4" onclick="goTo(4)">④ 間違い</button>
-    <button class="tbtn" id="gtab5" onclick="goTo(5)">⑤ 正解</button>
-    <button class="tbtn" id="gtab6" onclick="goTo(6)">体験</button>
+    <button class="tbtn" id="gtab5" onclick="goTo(5)">⑤ 速度比較</button>
+    <button class="tbtn" id="gtab6" onclick="goTo(6)">⑥ 正解</button>
+    <button class="tbtn" id="gtab7" onclick="goTo(7)">体験</button>
   </div>
   <div class="navrow">
     <button class="nbtn" id="gprev" onclick="goTo(cur-1)" disabled>◀ もどる</button>
-    <div class="hint" id="ghint" style="font-size:.6em;color:#444">本サイトは個人学習目的のみで使用し、商用利用・公開配布はしていません。</div>
+    <div class="hint" id="ghint" style="font-size:.6em;color:#888">本サイトは個人学習目的のみで使用し、商用利用・公開配布はしていません。</div>
     <button class="nbtn go" id="gnext" onclick="goTo(cur+1)">つぎへ ▶</button>
   </div>
 </nav>
 
 <script>
 // ── Navigation ───────────────────────────────────────
-var TOTAL=6, cur=1;
+var TOTAL=7, cur=1;
 var pids=['p1','p2','p3','p4','p5','p6'];
 pids.forEach(function(id){
   var el=document.getElementById(id); if(!el)return;
@@ -573,7 +648,8 @@ function goTo(n){
   cur=n;
   document.getElementById('s'+cur).classList.add('active');
   updateUI(cur);
-  if(cur===4||cur===5) initPy();
+  mascotCenterTip(STAGE_TIPS[cur]);
+  if(cur===4||cur===5||cur===6) initPy();
 }
 updateUI(1);
 document.addEventListener('keydown',function(e){if(e.key==='ArrowRight')goTo(cur+1);if(e.key==='ArrowLeft')goTo(cur-1);});
@@ -610,11 +686,11 @@ function buildGrid(id,cc,withAns){
 }
 function buildRsums(id,cls){
   var el=document.getElementById(id);el.innerHTML='';
-  for(var i=0;i<3;i++){var c=document.createElement('div');c.className=cls;c.id=id+'-'+i;c.innerHTML='<div style="color:#555">r['+i+']</div><div>?</div>';el.appendChild(c);}
+  for(var i=0;i<3;i++){var c=document.createElement('div');c.className=cls;c.id=id+'-'+i;c.innerHTML='<div style="color:#777">r['+i+']</div><div>?</div>';el.appendChild(c);}
 }
 function buildCsums(id,cls){
   var el=document.getElementById(id);el.innerHTML='';
-  for(var j=0;j<3;j++){var c=document.createElement('div');c.className=cls;c.id=id+'-'+j;c.innerHTML='<div style="color:#555">c['+j+']</div><div>?</div>';el.appendChild(c);}
+  for(var j=0;j<3;j++){var c=document.createElement('div');c.className=cls;c.id=id+'-'+j;c.innerHTML='<div style="color:#777">c['+j+']</div><div>?</div>';el.appendChild(c);}
 }
 
 // ── Good algorithm steps (S3 full + S5 compact) ───────
@@ -670,9 +746,9 @@ function renderStep(s,steps,gId,rId,cId,cc,rc,ccc,tId,dId,eqId,opId,pvId,nxId,ct
       var a=document.getElementById(gId+'-a-'+i+'-'+j);
       if(a) a.className='aov'+(doneCells?' show':'');
     }
-    if(rId){var rc2=document.getElementById(rId+'-'+i);if(rc2){var ron=st.rR&&st.rR[i];rc2.className=rc+(ron?' on':'');rc2.innerHTML='<div style="color:'+(ron?'#0ff':'#555')+'">r['+i+']</div><div>'+(ron?ROW[i]:'?')+'</div>';}}
+    if(rId){var rc2=document.getElementById(rId+'-'+i);if(rc2){var ron=st.rR&&st.rR[i];rc2.className=rc+(ron?' on':'');rc2.innerHTML='<div style="color:'+(ron?'#1565c0':'#777')+'">r['+i+']</div><div>'+(ron?ROW[i]:'?')+'</div>';}}
   }
-  for(var j=0;j<3;j++){if(cId){var cc2=document.getElementById(cId+'-'+j);if(cc2){var con=st.cR&&st.cR[j];cc2.className=ccc+(con?' on':'');cc2.innerHTML='<div style="color:'+(con?'#ff0':'#555')+'">c['+j+']</div><div>'+(con?COL[j]:'?')+'</div>';}}}
+  for(var j=0;j<3;j++){if(cId){var cc2=document.getElementById(cId+'-'+j);if(cc2){var con=st.cR&&st.cR[j];cc2.className=ccc+(con?' on':'');cc2.innerHTML='<div style="color:'+(con?'#e65100':'#777')+'">c['+j+']</div><div>'+(con?COL[j]:'?')+'</div>';}}}
   if(pvId)document.getElementById(pvId).disabled=(s===0);
   if(nxId)document.getElementById(nxId).disabled=(s===steps.length-1);
 }
@@ -722,10 +798,10 @@ function viz6dBuild(){
   // sums
   var sumsEl=document.getElementById('viz6d-sums');
   if(sumsEl){
-    var html='<div style="color:#555;font-size:.78em;margin-bottom:4px">行合計 (row)</div>';
-    for(var i=0;i<3;i++) html+='row['+i+'] = '+VIZ6D_ROW[i]+'<br>';
-    html+='<div style="color:#555;font-size:.78em;margin:8px 0 4px">列合計 (col)</div>';
-    for(var j=0;j<3;j++) html+='col['+j+'] = '+VIZ6D_COL[j]+'<br>';
+    var html='<div style="color:#888;font-size:.78em;margin-bottom:4px">行合計 (row)</div>';
+    for(var i=0;i<3;i++) html+='<span style="color:#ccc">row['+i+'] = '+VIZ6D_ROW[i]+'</span><br>';
+    html+='<div style="color:#888;font-size:.78em;margin:8px 0 4px">列合計 (col)</div>';
+    for(var j=0;j<3;j++) html+='<span style="color:#ccc">col['+j+'] = '+VIZ6D_COL[j]+'</span><br>';
     sumsEl.innerHTML=html;
   }
 }
@@ -738,6 +814,7 @@ function viz6dClick(i,j){
   fml.textContent='row['+i+'] + col['+j+'] - A['+i+']['+j+']\n= '+VIZ6D_ROW[i]+' + '+VIZ6D_COL[j]+' - '+VIZ6D_G[i][j]+'\n= '+val;
   fml.className='viz6d-formula show';
   document.getElementById('viz6d-score').textContent='クロスサム: '+val;
+  mascotSetMood('happy', 'せいかい！ '+val);
 }
 
 function viz6dReset(){
@@ -745,7 +822,214 @@ function viz6dReset(){
   document.getElementById('viz6d-formula').className='viz6d-formula';
   document.getElementById('viz6d-score').textContent='';
   viz6dBuild();
+  mascotSetMood('sad', 'クリックしてみて！');
 }
+
+// === マスコット（ドット絵ロボット） ===
+var MASCOT_BODY='#37474f', MASCOT_EYE='#fff', MASCOT_HAPPY='#2e7d32', MASCOT_SAD='#c62828';
+var MASCOT_FRAMES={
+  idle:      ['0000100000','0000100000','0011111100','0012002100','0011111100','0111111110','1011111101','0111111110','0011001100','0011001100'],
+  blink:     ['0000100000','0000100000','0011111100','0011001100','0011111100','0111111110','1011111101','0111111110','0011001100','0011001100'],
+  happy:     ['0000100000','0000100000','0011111100','0012002100','0013333100','0111111110','1011111101','0111111110','0011001100','0011001100'],
+  sad:       ['0000100000','0000100000','0011111100','0012002100','0013003100','0111111110','1011111101','0111111110','0011001100','0011001100']
+};
+var mascotMood='idle';
+function mascotDraw(frameKey){
+  var cvs=document.getElementById('mascot-canvas');
+  if(!cvs)return;
+  var ctx=cvs.getContext('2d');
+  ctx.clearRect(0,0,10,10);
+  var grid=MASCOT_FRAMES[frameKey]||MASCOT_FRAMES.idle;
+  var accent=frameKey==='sad'?MASCOT_SAD:(frameKey==='happy'?MASCOT_HAPPY:MASCOT_BODY);
+  for(var y=0;y<10;y++){
+    for(var x=0;x<10;x++){
+      var c=grid[y][x];
+      if(c==='0')continue;
+      ctx.fillStyle = c==='1'?MASCOT_BODY:(c==='2'?MASCOT_EYE:accent);
+      ctx.fillRect(x,y,1,1);
+    }
+  }
+}
+function mascotSay(text,dur){
+  var b=document.getElementById('mascot-bubble');
+  if(!b)return;
+  b.textContent=text;
+  b.classList.add('show');
+  clearTimeout(mascotSay._t);
+  mascotSay._t=setTimeout(function(){b.classList.remove('show');},dur||2200);
+}
+function mascotSetMood(mood,msg){
+  mascotMood=mood;
+  var cvs=document.getElementById('mascot-canvas');
+  cvs.classList.remove('happy','sad');
+  mascotDraw(mood);
+  if(mood!=='idle'){
+    void cvs.offsetWidth;
+    cvs.classList.add(mood);
+  }
+  if(msg)mascotSay(msg);
+  if(mood!=='idle')setTimeout(function(){mascotMood='idle';mascotDraw('idle');},2200);
+}
+var STAGE_TIPS={
+  1:'まずは問題をよく読んでみよう！',
+  2:'1枚ずつ読んでいこう！',
+  3:'うごかしながら確認してみよう',
+  4:'このやり方だと何が遅いか見てみよう',
+  5:'実際の速さのちがいを見てみよう！',
+  6:'正しいコードを試してみよう',
+  7:'クロスサムを感じてみよう！'
+};
+var mascotCenterTimer=null;
+function mascotCenterTip(msg){
+  if(!msg)return;
+  mascotSay(msg,3000);
+}
+var MASCOT_TRIVIA=[
+  "コードは間違えても大丈夫、直せばOK！",
+  "1つずつ確認すれば怖くない",
+  "速さより正確さが先だよ",
+  "詰まったら一回休憩してみよう",
+  "同じ問題も何回か解くと発見があるよ",
+  "エラーメッセージはヒントの宝庫",
+  "小さい入力で試すと原因が見つかりやすいよ",
+  "できるまで何回でもやり直せるよ",
+  "print()で値を見るのは最強のデバッグ方法",
+  "変数の中身を紙に書き出すとわかりやすいよ",
+  "「なぜ動かないか」を声に出して説明してみよう",
+  "バグは恥ずかしいことじゃないよ、みんな通る道",
+  "コピペする前に意味を理解しよう",
+  "インデントがずれるとPythonは怒るよ",
+  "for文は「繰り返す回数」を意識しよう",
+  "配列は0番目から数えるよ",
+  "全探索でも解ける問題はたくさんあるよ",
+  "まずは愚直に書いてから、速くする方法を考えよう",
+  "二分探索は「半分に絞る」が合言葉",
+  "貪欲法は「今が一番得な選択」を選ぶ考え方だよ",
+  "DPは「同じ計算を繰り返さない」工夫だよ",
+  "BFSは「近い場所から順番に」探す方法だよ",
+  "累積和を使うと合計がすぐ求まるよ",
+  "計算量を考えると、間に合うかどうかがわかるよ",
+  "O(N²)は N が大きいと大変になるよ",
+  "再帰は「同じ処理を自分の中に呼ぶ」考え方だよ",
+  "スタックは「後から入れたものが先に出る」よ",
+  "キューは「先に入れたものが先に出る」よ",
+  "グラフは「点と線」でできてるよ",
+  "木はグラフの中でも特別な形をしているよ",
+  "競プロは慣れると読むスピードが上がるよ",
+  "わからない用語は用語集で調べてみよう",
+  "型（int, str）を意識すると計算ミスが減るよ",
+  "サンプルが合っても提出前にもう一度見直そう",
+  "制約をよく読むと、使うべき方法が見えてくるよ",
+  "TLEは「時間切れ」ということだよ",
+  "WAは「答えが違う」ということだよ",
+  "REは「実行時エラー」ということだよ",
+  "焦らず一行ずつ読めば必ずわかるようになるよ",
+  "今日解けなくても、明日には解けるかも",
+  "得意な問題から始めると自信がつくよ",
+  "苦手な分野ほど、少しずつ触れてみよう",
+  "コードは何回も読み返すと理解が深まるよ",
+  "友達に説明できたら、本当に理解できた証拠だよ",
+  "変数名は意味がわかる名前にすると読みやすいよ",
+  "コメントをつけると後で自分が助かるよ",
+  "頭の中だけで解こうとせず、紙に書いてみよう",
+  "具体的な数字で試すと、法則が見えてくるよ",
+  "「なぜ」を考えるくせをつけよう",
+  "1回で完璧を目指さなくて大丈夫だよ",
+  "プログラミングは筋トレと似てる、続けると伸びるよ",
+  "休憩も大事な勉強のうちだよ",
+  "わからないことは恥ずかしくない、聞くのが一番早いよ",
+  "解けた瞬間の「わかった！」が気持ちいいよね",
+  "「競プロ」は「競技プログラミング」の略だよ",
+  "AtCoderは日本発の競プロサイトだよ",
+  "アルゴリズムって「手順」って意味なんだよ",
+  "コンピューターは言われた通りにしか動かないよ",
+  "だからこそ、正確に命令を書く練習が大事なんだ",
+  "数学が苦手でも競プロは楽しめるよ",
+  "パズルを解く感覚で挑戦してみよう",
+  "一歩ずつ進めば、いつか山の頂上にたどり着くよ",
+  "間違えた問題こそ、一番の勉強になるよ",
+  "解説を読む前に、まず自分で考えてみよう",
+  "制限時間を意識すると、集中力が上がるよ",
+  "大きい数の計算はコンピューターの得意分野だよ",
+  "人間が苦手な「繰り返し」もコンピューターならすぐだよ",
+  "でも「賢いやり方」を考えるのは人間の役目だよ",
+  "二重ループは計算回数がかけ算になるよ",
+  "ループの中でループを回すと重くなることがあるよ",
+  "配列の外を見ようとするとエラーになるよ",
+  "無限ループにはご用心",
+  "条件分岐は「もし〜なら」を整理すると書きやすいよ",
+  "論理演算のand/orは日本語の「かつ/または」と同じだよ",
+  "変数に代入するときは「=」で「入れる」って意味だよ",
+  "「==」は「等しいか比べる」って意味だよ、間違えやすいから注意",
+  "文字列と数値は違う型だから気をつけよう",
+  "int()で変換すれば文字列を数値にできるよ",
+  "リストのソートは並べ替えのことだよ",
+  "辞書（dict）はキーと値のペアを持てるよ",
+  "セット（set）は重複をなくしてくれるよ",
+  "標準入力は「キーボードから受け取る値」のことだよ",
+  "標準出力は「画面に表示する値」のことだよ",
+  "改行を忘れずにprintしよう",
+  "コードの見直しは自分のコードを客観視するいい機会だよ",
+  "他の人のコードを読むのも勉強になるよ",
+  "同じ答えでも書き方はたくさんあるよ",
+  "シンプルなコードほど読みやすいよ",
+  "動くコードを書いてから、きれいにする順番でOK",
+  "完璧じゃなくても、まず動かしてみよう",
+  "今日の1問が、明日の得意分野になるかも",
+  "続ける力が一番の才能だよ",
+  "できたことを振り返ると自信になるよ",
+  "新しいアルゴリズムを知るのはワクワクするよね",
+  "「なるほど！」の瞬間を大事にしよう",
+  "苦手な問題も、いつかの得意技になるよ",
+  "一緒に頑張ろうね！",
+  "今日も一問、解いてみよう！",
+  "わたしはいつでもここで応援してるよ",
+  "さあ、次の問題に挑戦だ！"
+];
+function mascotBigCenter(){
+  var wrap=document.querySelector('.mascot-wrap');
+  if(!wrap)return;
+  wrap.classList.add('center');
+  mascotSay(MASCOT_TRIVIA[Math.floor(Math.random()*MASCOT_TRIVIA.length)],3200);
+  setTimeout(function(){wrap.classList.remove('center');},3200);
+}
+function mascotTrick(){
+  var cvs=document.getElementById('mascot-canvas');
+  if(!cvs)return;
+  if(Math.random()<.08){mascotBigCenter();return;}
+  var tricks=['dash-left','dash-up','spin','dance','trivia'];
+  var t=tricks[Math.floor(Math.random()*tricks.length)];
+  if(t==='trivia'){
+    mascotSay(MASCOT_TRIVIA[Math.floor(Math.random()*MASCOT_TRIVIA.length)],3000);
+    return;
+  }
+  cvs.classList.remove('happy','sad','dash-left','dash-up','spin','dance');
+  void cvs.offsetWidth;
+  cvs.classList.add(t);
+  var dur=(t==='spin')?1200:(t==='dash-up')?1000:(t==='dash-left')?1100:900;
+  setTimeout(function(){cvs.classList.remove(t);},dur);
+}
+(function(){var cvs=document.getElementById('mascot-canvas');if(cvs)cvs.addEventListener('click',mascotTrick);})();
+setInterval(function(){
+  if(mascotMood==='idle'&&Math.random()<.4){mascotTrick();}
+},24000);
+setInterval(function(){
+  if(mascotMood!=='idle')return;
+  mascotDraw('blink');
+  setTimeout(function(){if(mascotMood==='idle')mascotDraw('idle');},150);
+},3000);
+mascotDraw('idle');
+
+// === S2 解説カルーセル ===
+var eStepIdx=0, E_STEPS=2;
+function updateEStep(){
+  document.querySelectorAll('.ecarousel .estep').forEach(function(el,i){el.classList.toggle('active',i===eStepIdx);});
+  document.getElementById('ectr').textContent=(eStepIdx+1)+' / '+E_STEPS;
+  document.getElementById('eprev').disabled=(eStepIdx===0);
+  document.getElementById('enext').disabled=(eStepIdx===E_STEPS-1);
+}
+function eStep(d){eStepIdx=Math.max(0,Math.min(E_STEPS-1,eStepIdx+d));updateEStep();}
+updateEStep();
 
 viz6dBuild();
 // ── Pyodide ───────────────────────────────────────────
@@ -781,7 +1065,7 @@ function initPy(){
       pyodide=py; pyLoaded=true;
       ['bad-run-out','good-run-out'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent='';});
       ['bad-run-btn','good-run-btn'].forEach(function(id){var btn=document.getElementById(id);if(btn){btn.disabled=false;btn.textContent='▶ 実行する';}});
-      ['bad-big-btn','good-big-btn'].forEach(function(id){var btn=document.getElementById(id);if(btn)btn.disabled=false;});
+      ['bad-big-btn','good-big-btn','speed-bad-btn','speed-good-btn'].forEach(function(id){var btn=document.getElementById(id);if(btn)btn.disabled=false;});
     }).catch(function(e){var el=document.getElementById('bad-run-out');if(el)el.innerHTML='<span class="run-err">読み込みエラー: '+e.message+'</span>';});
   };
   document.head.appendChild(s);
@@ -826,6 +1110,38 @@ function runBigTest(which){
     }catch(e){outEl.innerHTML='<span class="run-err">'+e.message+'</span>';}
   },50);
 }
+var speedResults={bad:null,good:null};
+function runSpeedTest(which){
+  if(!pyLoaded)return;
+  var code=(which==='bad')?BAD_CODE:GOOD_CODE;
+  var N=400;
+  var btnId=(which==='bad')?'speed-bad-btn':'speed-good-btn';
+  var label=(which==='bad')?'間違ったコード（400×400）':'正解コード（400×400）';
+  var outEl=document.getElementById('speed-out');
+  document.getElementById(btnId).disabled=true;
+  outEl.textContent='計算中... ('+N+'×'+N+' マス)';
+  setTimeout(function(){
+    var inp=genBigInput(N,N);
+    var inpLines=inp.split('\n'),idx=0,lines=[];
+    pyodide.setStdin({stdin:function(){return inpLines[idx++]||'';}});
+    pyodide.setStdout({batched:function(s){lines.push(s);}});
+    pyodide.setStderr({batched:function(s){lines.push(s);}});
+    var t0=performance.now();
+    try{
+      pyodide.runPython(code);
+      var ms=(performance.now()-t0).toFixed(1);
+      speedResults[which]=ms;
+      var txt=label+'：'+ms+' ms';
+      if(speedResults.bad&&speedResults.good){
+        var ratio=Math.round(speedResults.bad/speedResults.good);
+        txt+='\n\n速度差：約'+ratio+'倍！';
+      }
+      outEl.textContent=txt;
+    }catch(e){outEl.innerHTML='<span class="run-err">'+e.message+'</span>';}
+    document.getElementById(btnId).disabled=false;
+  },50);
+}
+setTimeout(function(){mascotCenterTip(STAGE_TIPS[1]);},900);
 </script>
 </body>
 </html>

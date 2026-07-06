@@ -26,7 +26,6 @@
 
 <main class="detail-view">
   <h1 class="detail-title"><span class="mi">book_2</span> グラフ・木</h1>
-  <div class="detail-meta" style="margin-bottom:16px"><a class="print-link" href="../print/glossary_graph_tree.html" target="_blank"><span class="mi">print</span> 印刷用</a></div>
   <p class="glossary-short" style="margin-bottom:24px">「点（ノード）」と「線（辺）」でつながりを表すデータ構造</p>
   <section class="detail-section">
     <h2 class="section-title"><span class="mi">auto_stories</span> 解説</h2>
@@ -78,5 +77,98 @@ for _ in range(N - 1):
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-core.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/autoloader/prism-autoloader.min.js"></script>
 <footer style="text-align:center;padding:24px 16px;color:#555;font-size:.78rem;border-top:1px solid #333;margin-top:40px;font-family:'DotGothic16',monospace">本サイトは個人学習目的のみで使用し、商用利用・公開配布はしていません。</footer>
+<div class="mascot-wrap">
+  <div id="mascot-bubble" class="mascot-bubble"></div>
+  <canvas id="mascot-canvas" class="mascot-canvas" width="10" height="10"></canvas>
+</div>
+<script>
+var MASCOT_BODY='#37474f', MASCOT_EYE='#fff';
+var MASCOT_FRAMES={
+  idle:  ['0000100000','0000100000','0011111100','0012002100','0011111100','0111111110','1011111101','0111111110','0011001100','0011001100'],
+  blink: ['0000100000','0000100000','0011111100','0011001100','0011111100','0111111110','1011111101','0111111110','0011001100','0011001100']
+};
+function mascotDraw(frameKey){
+  var cvs=document.getElementById('mascot-canvas');
+  if(!cvs)return;
+  var ctx=cvs.getContext('2d');
+  ctx.clearRect(0,0,10,10);
+  var grid=MASCOT_FRAMES[frameKey]||MASCOT_FRAMES.idle;
+  for(var y=0;y<10;y++){
+    for(var x=0;x<10;x++){
+      var c=grid[y][x];
+      if(c==='0')continue;
+      ctx.fillStyle = c==='2'?MASCOT_EYE:MASCOT_BODY;
+      ctx.fillRect(x,y,1,1);
+    }
+  }
+}
+function mascotSay(text,dur){
+  var b=document.getElementById('mascot-bubble');
+  if(!b)return;
+  b.textContent=text;
+  b.classList.add('show');
+  clearTimeout(mascotSay._t);
+  mascotSay._t=setTimeout(function(){b.classList.remove('show');},dur||2200);
+}
+var MASCOT_TRIVIA=[
+  'コードは間違えても大丈夫、直せばOK！','1つずつ確認すれば怖くない','速さより正確さが先だよ','詰まったら一回休憩してみよう',
+  '同じ問題も何回か解くと発見があるよ','エラーメッセージはヒントの宝庫','小さい入力で試すと原因が見つかりやすいよ','できるまで何回でもやり直せるよ',
+  'print()で値を見るのは最強のデバッグ方法','変数の中身を紙に書き出すとわかりやすいよ','「なぜ動かないか」を声に出して説明してみよう','バグは恥ずかしいことじゃないよ、みんな通る道',
+  'コピペする前に意味を理解しよう','インデントがずれるとPythonは怒るよ','for文は「繰り返す回数」を意識しよう','配列は0番目から数えるよ',
+  '全探索でも解ける問題はたくさんあるよ','まずは愚直に書いてから、速くする方法を考えよう','二分探索は「半分に絞る」が合言葉','貪欲法は「今が一番得な選択」を選ぶ考え方だよ',
+  'DPは「同じ計算を繰り返さない」工夫だよ','BFSは「近い場所から順番に」探す方法だよ','累積和を使うと合計がすぐ求まるよ','計算量を考えると、間に合うかどうかがわかるよ',
+  'O(N²)は N が大きいと大変になるよ','再帰は「同じ処理を自分の中に呼ぶ」考え方だよ','スタックは「後から入れたものが先に出る」よ','キューは「先に入れたものが先に出る」よ',
+  'グラフは「点と線」でできてるよ','木はグラフの中でも特別な形をしているよ','競プロは慣れると読むスピードが上がるよ','わからない用語は用語集で調べてみよう',
+  '型（int, str）を意識すると計算ミスが減るよ','サンプルが合っても提出前にもう一度見直そう','制約をよく読むと、使うべき方法が見えてくるよ','TLEは「時間切れ」ということだよ',
+  'WAは「答えが違う」ということだよ','REは「実行時エラー」ということだよ','焦らず一行ずつ読めば必ずわかるようになるよ','今日解けなくても、明日には解けるかも',
+  '得意な問題から始めると自信がつくよ','苦手な分野ほど、少しずつ触れてみよう','コードは何回も読み返すと理解が深まるよ','友達に説明できたら、本当に理解できた証拠だよ',
+  '変数名は意味がわかる名前にすると読みやすいよ','コメントをつけると後で自分が助かるよ','頭の中だけで解こうとせず、紙に書いてみよう','具体的な数字で試すと、法則が見えてくるよ',
+  '「なぜ」を考えるくせをつけよう','1回で完璧を目指さなくて大丈夫だよ','プログラミングは筋トレと似てる、続けると伸びるよ','休憩も大事な勉強のうちだよ',
+  'わからないことは恥ずかしくない、聞くのが一番早いよ','解けた瞬間の「わかった！」が気持ちいいよね','「競プロ」は「競技プログラミング」の略だよ','AtCoderは日本発の競プロサイトだよ',
+  'アルゴリズムって「手順」って意味なんだよ','コンピューターは言われた通りにしか動かないよ','だからこそ、正確に命令を書く練習が大事なんだ','数学が苦手でも競プロは楽しめるよ',
+  'パズルを解く感覚で挑戦してみよう','一歩ずつ進めば、いつか山の頂上にたどり着くよ','間違えた問題こそ、一番の勉強になるよ','解説を読む前に、まず自分で考えてみよう',
+  '制限時間を意識すると、集中力が上がるよ','大きい数の計算はコンピューターの得意分野だよ','人間が苦手な「繰り返し」もコンピューターならすぐだよ','でも「賢いやり方」を考えるのは人間の役目だよ',
+  '二重ループは計算回数がかけ算になるよ','ループの中でループを回すと重くなることがあるよ','配列の外を見ようとするとエラーになるよ','無限ループにはご用心',
+  '条件分岐は「もし〜なら」を整理すると書きやすいよ','論理演算のand/orは日本語の「かつ/または」と同じだよ','変数に代入するときは「=」で「入れる」って意味だよ','「==」は「等しいか比べる」って意味だよ、間違えやすいから注意',
+  '文字列と数値は違う型だから気をつけよう','int()で変換すれば文字列を数値にできるよ','リストのソートは並べ替えのことだよ','辞書（dict）はキーと値のペアを持てるよ',
+  'セット（set）は重複をなくしてくれるよ','標準入力は「キーボードから受け取る値」のことだよ','標準出力は「画面に表示する値」のことだよ','改行を忘れずにprintしよう',
+  'コードの見直しは自分のコードを客観視するいい機会だよ','他の人のコードを読むのも勉強になるよ','同じ答えでも書き方はたくさんあるよ','シンプルなコードほど読みやすいよ',
+  '動くコードを書いてから、きれいにする順番でOK','完璧じゃなくても、まず動かしてみよう','今日の1問が、明日の得意分野になるかも','続ける力が一番の才能だよ',
+  'できたことを振り返ると自信になるよ','新しいアルゴリズムを知るのはワクワクするよね','「なるほど！」の瞬間を大事にしよう','苦手な問題も、いつかの得意技になるよ',
+  '一緒に頑張ろうね！','今日も一問、解いてみよう！','わたしはいつでもここで応援してるよ','さあ、次の問題に挑戦だ！'
+];
+function mascotBigCenter(){
+  var wrap=document.querySelector('.mascot-wrap');
+  if(!wrap)return;
+  wrap.classList.add('center');
+  mascotSay(MASCOT_TRIVIA[Math.floor(Math.random()*MASCOT_TRIVIA.length)],3200);
+  setTimeout(function(){wrap.classList.remove('center');},3200);
+}
+function mascotTrick(){
+  var cvs=document.getElementById('mascot-canvas');
+  if(!cvs)return;
+  if(Math.random()<.08){mascotBigCenter();return;}
+  var tricks=['dash-left','dash-up','spin','dance','trivia'];
+  var t=tricks[Math.floor(Math.random()*tricks.length)];
+  if(t==='trivia'){
+    mascotSay(MASCOT_TRIVIA[Math.floor(Math.random()*MASCOT_TRIVIA.length)],3000);
+    return;
+  }
+  cvs.classList.remove('dash-left','dash-up','spin','dance');
+  void cvs.offsetWidth;
+  cvs.classList.add(t);
+  var dur=(t==='spin')?1200:(t==='dash-up')?1000:(t==='dash-left')?1100:900;
+  setTimeout(function(){cvs.classList.remove(t);},dur);
+}
+(function(){var cvs=document.getElementById('mascot-canvas');if(cvs)cvs.addEventListener('click',mascotTrick);})();
+setInterval(function(){
+  if(Math.random()<.4){mascotTrick();}
+},24000);
+setInterval(function(){
+  mascotDraw('blink');
+  setTimeout(function(){mascotDraw('idle');},150);
+},3000);
+mascotDraw('idle');
+</script>
 </body>
 </html>

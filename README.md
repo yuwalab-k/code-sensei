@@ -8,36 +8,42 @@
 
 ```
 code-sensei/
-├── data/                  # 問題データ（編集対象）
+├── data/                  # 問題データ（編集対象・参照用ソース）
 │   ├── index.json         # 問題一覧（ビルド時に自動更新）
 │   └── problems/
-│       └── typical90.json # 問題の本文・解説・コード
-├── docs/                  # 自動生成される HTML（GitHub Pages 用、編集不要）
-│   ├── index.html
-│   ├── problems/
-│   │   └── typical90_a.html
-│   ├── print/
-│   │   └── typical90_a.html
-│   └── style.css
+│       └── typical90_a.json など # 問題ごとの本文・制約・解答コード
+├── docs/                  # GitHub Pages に展開される HTML
+│   ├── index.html         # 自動生成（編集不要）
+│   ├── glossary/          # 自動生成（編集不要）
+│   ├── code_reading.html  # 自動生成（編集不要）
+│   ├── style.css          # 自動生成（編集不要）
+│   └── problems/
+│       └── typical90_a.html など # 手動作成のスライドショーページ（要コミット・要保管）
 └── src/                   # ビルドツール（Go）
     ├── main.go
     └── go.mod
 ```
 
+> `docs/problems/*.html` はゲーム風UI・マスコット・実行環境つきの手作りページです。
+> `go run . -f`（強制ビルド）で消えるので、必ず Git にコミットして保管してください。
+> `data/problems/*.json` は問題文・サンプル・模範解答などの**参照用ソース**で、
+> 実際のページ制作時は [PROMPT.md](PROMPT.md) の構成に沿って `docs/problems/*.html` を直接作成・編集します。
+
 ---
 
 ## 問題を追加する手順
 
-1. `data/problems/typical90.json` の `problems` 配列に問題オブジェクトを追加する
-2. `data/index.json` にエントリを追加する
-3. ビルドコマンドを実行する
+1. `data/problems/typical90_x.json`（問題ごとに1ファイル）に問題オブジェクトを追加する
+2. `data/index.json` に `"file": "typical90_x"` でエントリを追加する
+3. [PROMPT.md](PROMPT.md) の構成に沿って、`docs/problems/typical90_x.html` をゲーム風スライドショーとして直接作成する（マスコット・ロボット含む）
+4. ビルドコマンドを実行する（`docs/index.html` や `docs/glossary/*` など自動生成ページのみ更新される。手作りした `docs/problems/*.html` は上書きされない）
 
    ```bash
    cd src
    go run .
    ```
 
-4. `git push` → GitHub Pages に反映
+5. `git push` → GitHub Pages に反映
 
 ---
 
@@ -67,14 +73,16 @@ go run . serve     # ローカル確認 http://localhost:8080
     "title": "Yokan Party",
     "difficulty": 4,
     "tags": ["二分探索", "貪欲"],
-    "file": "typical90"
+    "file": "typical90_a"
   }
 ]
 ```
 
-### data/problems/typical90.json
+### data/problems/typical90_x.json
 
-問題の全データ。`file` の値（例: `typical90`）がファイル名になる。
+問題の参照用データ（本文・制約・サンプル・模範解答）。`file` の値（例: `typical90_a`）がファイル名になる。
+実際に表示されるゲーム風ページ（`docs/problems/typical90_x.html`）は、このデータを元に
+[PROMPT.md](PROMPT.md) の構成に沿って別途手作りする。
 
 ```json
 {
